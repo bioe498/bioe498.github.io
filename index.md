@@ -11,6 +11,7 @@ Experiment Design & Optimization</h2>
 
 #### Course Materials
 * [Syllabus](files/BIOE_498_Syllabus.pdf)
+* [Webpage](http://www.stat.columbia.edu/~gelman/arm/) for *Data Analysis Using Regression and Multilevel/Hierarchical Models* by Gelman & Hill
 * Assignments
   - [Homework Submission Guide](files/BIOE210_Homework_Submission_Guide.pdf)
 
@@ -19,5 +20,5 @@ Experiment Design & Optimization</h2>
 * F 1/24: Hypothesis testing [ [Rmd] ](files/Lecture02.Rmd)
 * M 1/27: *no class*
 * W 1/29: Introduction to R [ [R code] ](files/Intro_to_R.R)
-* F 1/31: Linear Modeling I
+* F 1/31: Linear Modeling I (Gelman & Hill 3.0 - 3.3)
 * M 2/03: Linear Modeling II
