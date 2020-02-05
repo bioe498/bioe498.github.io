@@ -22,3 +22,4 @@ Experiment Design & Optimization</h2>
 * W 1/29: Introduction to R [ [R code] ](files/Intro_to_R.R)
 * F 1/31: Linear Modeling I (Gelman & Hill 3.0 - 3.3)
 * M 2/03: Linear Modeling II
+* W 2/05: Transformations [ [slides] ](files/Transformations.pdf) [ [Rmd] ](files/Transformations.Rmd)
