@@ -13,7 +13,7 @@ Experiment Design & Optimization</h2>
 * [Syllabus](files/BIOE_498_Syllabus.pdf)
 * [Webpage](http://www.stat.columbia.edu/~gelman/arm/) for *Data Analysis Using Regression and Multilevel/Hierarchical Models* by Gelman & Hill
 * Assignments
-  - [Homework Submission Guide](files/BIOE210_Homework_Submission_Guide.pdf)
+  - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
   - [Homework 1](files/Homework1.pdf) due 2/19 by 9:00am.
     - File [Melanoma_screen.csv](files/Melanoma_screen.csv)
 
