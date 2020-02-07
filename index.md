@@ -26,6 +26,6 @@ Experiment Design & Optimization</h2>
 * M 2/03: Linear Modeling II
 * W 2/05: Transformations [ [slides] ](files/Transformations.pdf) [ [Rmd] ](files/Transformations.Rmd)
 * F 2/07: Introduction (1) [ [slides] ](slides/IntroDesign.pdf)
-* M 2/10: Completely Random Designs (2.4.2)
+* M 2/10: Completely Random Designs (2-2.4.2)
 * M 2/12: Factorial Designs (3.1-3.5)
 * F 2/14: Factorial Designs (3.6-3.9)
