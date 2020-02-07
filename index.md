@@ -14,6 +14,8 @@ Experiment Design & Optimization</h2>
 * [Webpage](http://www.stat.columbia.edu/~gelman/arm/) for *Data Analysis Using Regression and Multilevel/Hierarchical Models* by Gelman & Hill
 * Assignments
   - [Homework Submission Guide](files/BIOE210_Homework_Submission_Guide.pdf)
+  - [Homework 1](files/Homework1.pdf) due 2/19 by 9:00am.
+    - File [Melanoma_screen.csv](files/Melanoma_screen.csv)
 
 #### Schedule
 * W 1/22: Introduction and Motivation [ [slides] ](slides/Lecture01.pptx)
@@ -23,3 +25,6 @@ Experiment Design & Optimization</h2>
 * F 1/31: Linear Modeling I (Gelman & Hill 3.0 - 3.3)
 * M 2/03: Linear Modeling II
 * W 2/05: Transformations [ [slides] ](files/Transformations.pdf) [ [Rmd] ](files/Transformations.Rmd)
+* F 2/07: Completely Random Designs (1, 2.4.2)
+* M 2/10: Factorial Designs (3.1-3.5)
+* W 2/12: Factorial Designs (3.6-3.9)
