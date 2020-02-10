@@ -118,3 +118,9 @@ No. A contrast must be *estimable* for it to be tested. A contrast is estimable 
 Any contrast about the interaction terms is not estimable. To test for an $\beta_{12}$ effect ($H_0:\, \beta_{12} - \beta_0 = 0$)
 \[ c = \begin{pmatrix} 1&0&0&-1&0&0 \end{pmatrix} \]
 which is not a combination of the rows in $\mathbf{X}$. In fact, we cannot fit this model since the interaction terms are confounded!
+
+## Testing all possible contrasts
+
+As our models grow, the number of possible contrasts increases rapidly. It is likely that at least one random contrast passes our $p$-value threshold **even if there is not true difference**.
+
+When testing all contrasts in a model it is wise to adjust your $p$-value threshold accordingly. A good method is Tukey's HSD. See Section 2.8.2 for an example.

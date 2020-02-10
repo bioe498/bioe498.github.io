@@ -18,14 +18,14 @@ Experiment Design & Optimization</h2>
     - File [Melanoma_screen.csv](files/Melanoma_screen.csv)
 
 #### Schedule
-* W 1/22: Introduction and Motivation [ [slides] ](slides/Lecture01.pptx)
+* W 1/22: Introduction and Motivation [ [slides] ](files/Lecture01.pptx)
 * F 1/24: Hypothesis testing [ [Rmd] ](files/Lecture02.Rmd)
 * M 1/27: *no class*
 * W 1/29: Introduction to R [ [R code] ](files/Intro_to_R.R)
 * F 1/31: Linear Modeling I (Gelman & Hill 3.0 - 3.3)
 * M 2/03: Linear Modeling II
 * W 2/05: Transformations [ [slides] ](files/Transformations.pdf) [ [Rmd] ](files/Transformations.Rmd)
-* F 2/07: Introduction (1) [ [slides] ](slides/IntroDesign.pdf)
+* F 2/07: Introduction (1) [ [slides] ](files/IntroDesign.pdf)
 * M 2/10: Completely Random Designs (2-2.4.2) [ [slides] ](files/CRD.pdf) [ [Rmd] ](files/CRD.Rmd)
 * M 2/12: Factorial Designs (3.1-3.5)
 * F 2/14: Factorial Designs (3.6-3.9)
