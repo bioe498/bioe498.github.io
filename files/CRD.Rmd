@@ -78,7 +78,8 @@ What if we wanted to make other comparisons?
 
 \pause
 There are all *contrasts*, or comparisons between effect sizes. The null hypotheses for each contrast can be written as a linear combination of the model's coefficients:
-\[ \beta_\mathrm{C} + \beta_\mathrm{D} - \beta_\mathrm{B} = 0 \]
+\[ \frac{1}{2}\beta_\mathrm{C} + \frac{1}{2}\beta_\mathrm{D} - \beta_\mathrm{B} = 0 \]
+When specifying contrasts, we require that the coefficient sum to zero (hence the 1/2 factors above).
 
 ## How do we test contrasts?
 
@@ -99,18 +100,21 @@ We can also test multiple contrasts at the same time using a contrast matrix as 
 
 ## Can we test any contrasts?
 
-No. A contrast must be *estimable* for it to be tested. A contrast is estimable if it can be expressed as a linear combination of the rows of the design matrix.
+No. A contrast must be *estimable* for it to be tested. A contrast is estimable if
+
+- its coefficients sum to zero
+- it can be expressed as a linear combination of the rows of the design matrix.
 
 ## Estimable Example: Measuring only main effects
 
-\[ \mathbf{X} = \bordermatrix{~ & \beta_1 & \beta_2 & \beta_3 & \beta_{12} & \beta_{13} & \beta_{23} \cr 
+\[ \mathbf{X} = \bordermatrix{~ & \beta_0 & \beta_2 & \beta_3 & \beta_{12} & \beta_{13} & \beta_{23} \cr 
                                 & 1 & 0 & 0 & 0 & 0 & 0 \cr 
                                 & 1 & 0 & 0 & 0 & 0 & 0 \cr 
-                                & 0 & 1 & 0 & 0 & 0 & 0 \cr 
-                                & 0 & 1 & 0 & 0 & 0 & 0 \cr 
-                                & 0 & 0 & 1 & 0 & 0 & 0 \cr 
-                                & 0 & 0 & 1 & 0 & 0 & 0 \cr }   \]
+                                & 1 & 1 & 0 & 0 & 0 & 0 \cr 
+                                & 1 & 1 & 0 & 0 & 0 & 0 \cr 
+                                & 1 & 0 & 1 & 0 & 0 & 0 \cr 
+                                & 1 & 0 & 1 & 0 & 0 & 0 \cr }   \]
 
-Any contrast about the interaction terms is not estimable. To test for an $\beta_{12}$ effect
-\[ c = \begin{pmatrix} 0&0&0&1&0&0 \end{pmatrix} \]
+Any contrast about the interaction terms is not estimable. To test for an $\beta_{12}$ effect ($H_0:\, \beta_{12} - \beta_0 = 0$)
+\[ c = \begin{pmatrix} 1&0&0&-1&0&0 \end{pmatrix} \]
 which is not a combination of the rows in $\mathbf{X}$. In fact, we cannot fit this model since the interaction terms are confounded!
