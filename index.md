@@ -16,6 +16,7 @@ Experiment Design & Optimization</h2>
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
   - [Homework 1](files/Homework1.pdf) due 2/19 by 9:00am.
     - File [Melanoma_screen.csv](files/Melanoma_screen.csv)
+  - [Homework 2](files/Homework2.pdf) due 3/5 by 9:00am.
 
 #### Schedule
 * W 1/22: Introduction and Motivation [ [slides] ](files/Lecture01.pptx)
@@ -30,4 +31,8 @@ Experiment Design & Optimization</h2>
 * W 2/12: Homework 1 review & Logistic Regression [ [slides] ](files/HomeworkReview.pdf) [ [Rmd] ](files/HomeworkReview.Rmd)
 * F 2/14: Factorial Designs (3.1-3.5) [ [slides] ](files/FactorialDesigns.pdf)
 * M 2/17: Factorial Designs and Rank (3.6-3.9) [ [slides] ](files/FactorialRank.pdf) [ [Rmd] ](files/FactorialRank.Rmd)
-* 
+* W 2/19: ANOVA [ [slides] ](files/ANOVA.pdf) [ [Rmd] ](files/ANOVA.Rmd)
+* F 2/21: Power analysis
+* M 2/24: Half-fractional designs (6.1-6.2) [ [slides] ](FractionalFactorial.pdf)
+* W 2/26: Higher-fractional and augmented designs (6.2-6.5)
+* F 2/28: Robust and screening designs (6.6-6.8)
