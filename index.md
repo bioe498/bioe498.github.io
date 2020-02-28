@@ -34,5 +34,5 @@ Experiment Design & Optimization</h2>
 * W 2/19: ANOVA [ [slides] ](files/ANOVA.pdf) [ [Rmd] ](files/ANOVA.Rmd)
 * F 2/21: Power analysis
 * M 2/24: Half-fractional designs (6.1-6.2) [ [slides] ](files/FractionalFactorial.pdf)
-* W 2/26: Higher-fractional and augmented designs (6.2-6.5)
-* F 2/28: Robust and screening designs (6.6-6.8)
+* W 2/26: Lower-fractional and augmented designs (6.2-6.5) [ [slides] ](files/LowerFractionalDesigns.pptx)
+* F 2/28: Alternative fractional designs (6.6-6.8) [ [slides] ](files/AlternativeFractional.pptx)
