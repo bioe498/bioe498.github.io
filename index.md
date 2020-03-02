@@ -36,3 +36,6 @@ Experiment Design & Optimization</h2>
 * M 2/24: Half-fractional designs (6.1-6.2) [ [slides] ](files/FractionalFactorial.pdf)
 * W 2/26: Lower-fractional and augmented designs (6.2-6.5) [ [slides] ](files/LowerFractionalDesigns.pptx)
 * F 2/28: Alternative fractional designs (6.6-6.8) [ [slides] ](files/AlternativeFractional.pptx)
+* M 3/2: Exam 1 review [ [Exam Topics] ](files/Exam1Review.pdf)
+* W 3/5: **Exam 1**
+* F 3/7: Response Surface Designs (10.1-10.3)
