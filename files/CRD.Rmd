@@ -85,7 +85,7 @@ When specifying contrasts, we require that the coefficient sum to zero (hence th
 
 - Fit a linear model with a categorical variable:
 ```{r, eval=FALSE, echo=TRUE}
-model <- lm(y ~ var1 + var2)
+model <- aov(y ~ var1 + var2)
 ```
 - Let's say var1 had four levels and we wanted to test if $\beta_1 = (\beta_2 + \beta_3)/2$. First we define the *contrast coefficients* for the null hypothesis.
 ```{r eval=FALSE, echo=TRUE}
@@ -93,7 +93,7 @@ contrast <- c(1, -0.5, -0.5, 0)
 ```
 - Then we use the fit.contrast function from the gmodels package to test the contrast.
 ```{r eval=FALSE, echo=TRUE}
-gmodels::fit.contrast(model, var1, contrast)
+gmodels::fit.contrast(model, "var1", contrast)
 ```
 
 We can also test multiple contrasts at the same time using a contrast matrix as shown in the textbook.
