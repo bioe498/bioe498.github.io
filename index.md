@@ -37,5 +37,6 @@ Experiment Design & Optimization</h2>
 * W 2/26: Lower-fractional and augmented designs (6.2-6.5) [ [slides] ](files/LowerFractionalDesigns.pptx)
 * F 2/28: Alternative fractional designs (6.6-6.8) [ [slides] ](files/AlternativeFractional.pptx)
 * M 3/2: Exam 1 review [ [Exam Topics] ](files/Exam1Review.pdf)
-* W 3/5: **Exam 1**
-* F 3/7: Response Surface Designs (10.1-10.3)
+* W 3/4: **Exam 1**
+* F 3/6: Project Presentations
+* M 3/9: Response Surface Designs: CCD (10.1-10.3.1) [ [slides] ](files/RSM_CCD.pdf)
