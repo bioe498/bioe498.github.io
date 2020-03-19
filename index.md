@@ -32,7 +32,7 @@ Experiment Design & Optimization</h2>
 * F 2/14: Factorial Designs (3.1-3.5) [ [slides] ](files/FactorialDesigns.pdf)
 * M 2/17: Factorial Designs and Rank (3.6-3.9) [ [slides] ](files/FactorialRank.pdf) [ [Rmd] ](files/FactorialRank.Rmd)
 * W 2/19: ANOVA [ [slides] ](files/ANOVA.pdf) [ [Rmd] ](files/ANOVA.Rmd)
-* F 2/21: Power analysis
+* F 2/21: Power analysis [ [slides] ](files/PowerAnalysis.pdf)
 * M 2/24: Half-fractional designs (6.1-6.2) [ [slides] ](files/FractionalFactorial.pdf)
 * W 2/26: Lower-fractional and augmented designs (6.2-6.5) [ [slides] ](files/LowerFractionalDesigns.pptx)
 * F 2/28: Alternative fractional designs (6.6-6.8) [ [slides] ](files/AlternativeFractional.pptx)
@@ -41,4 +41,4 @@ Experiment Design & Optimization</h2>
 * F 3/6: Project Presentations
 * M 3/9: Response Surface Designs: CCD (10.1-10.3.1) [ [slides] ](files/RSM_CCD.pdf)
 * W 3/11: Response Surface Designs: Alternative Designs (10.3.2-10.5) [ [slides] ](files/RSM_BBD.pdf)
-* F 3/13: Fitting Response Surfaces (10.6-10.7) 
+* F 3/13: Fitting Response Surfaces (10.6-10.7)
