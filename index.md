@@ -41,5 +41,6 @@ Experiment Design & Optimization</h2>
 * F 3/6: Project Presentations
 * M 3/9: Response Surface Designs: CCD (10.1-10.3.1) [ [slides] ](files/RSM_CCD.pdf)
 * W 3/11: Response Surface Designs: Alternative Designs (10.3.2-10.5) [ [slides] ](files/RSM_BBD.pdf)
-* F 3/13: Fitting Response Surfaces (10.6-10.7)
+* F 3/13: *no class*
 * <i>Spring Break</i>
+* W 3/25: Fitting Response Surfaces (10.6-10.7) [ [video] ](https://youtu.be/4PtffjmESdw) [ [Rmd] ](files/FittingRSM.Rmd)
