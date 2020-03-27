@@ -44,3 +44,4 @@ Experiment Design & Optimization</h2>
 * F 3/13: *no class*
 * <i>Spring Break</i>
 * W 3/25: Fitting Response Surfaces (10.6-10.7) [ [video] ](https://youtu.be/4PtffjmESdw) [ [Rmd] ](files/FittingRSM.Rmd)
+* F 3/27: The RSM package [ [video] ](https://youtu.be/sbloRpRNQCA) [ [Rmd] ](files/RSMpackage.Rmd)
