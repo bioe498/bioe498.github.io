@@ -17,6 +17,7 @@ Experiment Design & Optimization</h2>
   - [Homework 1](files/Homework1.pdf) due 2/19 by 9:00am.
     - File [Melanoma_screen.csv](files/Melanoma_screen.csv)
   - [Homework 2](files/Homework2.pdf) due 3/5 by 9:00am.
+  - [Homework 3](https://github.com/bioe498/bioe498pj.hw3) due 4/8 by 5pm CDT.
 
 #### Schedule
 * W 1/22: Introduction and Motivation [ [slides] ](files/Lecture01.pptx)
