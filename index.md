@@ -47,3 +47,4 @@ Experiment Design & Optimization</h2>
 * W 3/25: Fitting Response Surfaces (10.6-10.7) [ [video] ](https://youtu.be/4PtffjmESdw) [ [Rmd] ](files/FittingRSM.Rmd)
 * F 3/27: The RSM package [ [video] ](https://youtu.be/i5fncIINMt8) [ [Rmd] ](files/RSMpackage.Rmd)
 * W 4/1: Mixture Designs [ [video] ](https://youtu.be/GwvByZ0teW0) [ [slides] ](files/MixtureDesigns.pdf)
+* F 4/3: Mixture Examples [ [video] ](https://youtu.be/RaOxBC8JNUY) [ [Rmd] ](files/MixtureExamples.Rmd) [ [slides] ](files/MixtureExamples.pdf)
