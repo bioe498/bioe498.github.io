@@ -49,3 +49,4 @@ Experiment Design & Optimization</h2>
 * W 4/1: Mixture Designs [ [video] ](https://youtu.be/GwvByZ0teW0) [ [slides] ](files/MixtureDesigns.pdf)
 * F 4/3: Mixture Examples [ [video] ](https://youtu.be/RaOxBC8JNUY) [ [Rmd] ](files/MixtureExamples.Rmd) [ [slides] ](files/MixtureExamples.pdf)
 * W 4/8: Crossover Designs [ [video] ](https://youtu.be/F-5KygfSBz4) [ [Rmd] ](files/CrossoverDesigns.Rmd) [ [slides] ](files/CrossoverDesigns.pdf)
+* M 4/13: Sequential Experimentation [ [video] ](https://youtu.be/8Az0jjNZuDM) [ [slides] ](files/SequentialExperimentsIntro.pdf)
