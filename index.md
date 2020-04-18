@@ -50,5 +50,5 @@ Experiment Design & Optimization</h2>
 * F 4/3: Mixture Examples [ [video] ](https://youtu.be/RaOxBC8JNUY) [ [Rmd] ](files/MixtureExamples.Rmd) [ [slides] ](files/MixtureExamples.pdf)
 * W 4/8: Crossover Designs [ [video] ](https://youtu.be/F-5KygfSBz4) [ [Rmd] ](files/CrossoverDesigns.Rmd) [ [slides] ](files/CrossoverDesigns.pdf)
 * M 4/13: Sequential Experimentation [ [video] ](https://youtu.be/8Az0jjNZuDM) [ [slides] ](files/SequentialExperimentsIntro.pdf)
-* F 4/17: Final Project Guidelines [ [video] ](https://youtu.be/3D0yVv5gNRo) [ [slides] ](files/FinalProject.pdf)
+* F 4/17: Final Project Guidelines [ [video] ](https://youtu.be/b6h4DDqBwkE) [ [slides] ](files/FinalProject.pdf)
   - Link to [online trebuchet simulator](https://jensenlab.shinyapps.io/trebsim/)
