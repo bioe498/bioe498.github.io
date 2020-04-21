@@ -46,9 +46,14 @@ Experiment Design & Optimization</h2>
 * <i>Spring Break</i>
 * W 3/25: Fitting Response Surfaces (10.6-10.7) [ [video] ](https://youtu.be/4PtffjmESdw) [ [Rmd] ](files/FittingRSM.Rmd)
 * F 3/27: The RSM package [ [video] ](https://youtu.be/i5fncIINMt8) [ [Rmd] ](files/RSMpackage.Rmd)
-* W 4/1: Mixture Designs [ [video] ](https://youtu.be/GwvByZ0teW0) [ [slides] ](files/MixtureDesigns.pdf)
-* F 4/3: Mixture Examples [ [video] ](https://youtu.be/RaOxBC8JNUY) [ [Rmd] ](files/MixtureExamples.Rmd) [ [slides] ](files/MixtureExamples.pdf)
-* W 4/8: Crossover Designs [ [video] ](https://youtu.be/F-5KygfSBz4) [ [Rmd] ](files/CrossoverDesigns.Rmd) [ [slides] ](files/CrossoverDesigns.pdf)
-* M 4/13: Sequential Experimentation [ [video] ](https://youtu.be/8Az0jjNZuDM) [ [slides] ](files/SequentialExperimentsIntro.pdf)
+* W 4/1: Mixture Designs (11.1-11.2.1,11.5.0) [ [video] ](https://youtu.be/GwvByZ0teW0) [ [slides] ](files/MixtureDesigns.pdf)
+* F 4/3: Mixture Examples (11.3-11.4) [ [video] ](https://youtu.be/RaOxBC8JNUY) [ [Rmd] ](files/MixtureExamples.Rmd) [ [slides] ](files/MixtureExamples.pdf)
+* W 4/8: Crossover Designs (9.1-9.3.0) [ [video] ](https://youtu.be/F-5KygfSBz4) [ [Rmd] ](files/CrossoverDesigns.Rmd) [ [slides] ](files/CrossoverDesigns.pdf)
+* M 4/13: Sequential Experimentation (13.1-13.2,13.5-13.6) [ [video] ](https://youtu.be/8Az0jjNZuDM) [ [slides] ](files/SequentialExperimentsIntro.pdf)
 * F 4/17: Final Project Guidelines [ [video] ](https://youtu.be/b6h4DDqBwkE) [ [slides] ](files/FinalProject.pdf)
   - Link to [online trebuchet simulator](https://jensenlab.shinyapps.io/trebsim/)
+* M 4/19: Review Q&A [ [video] ](https://youtu.be/twqgkGviNAk)
+* W 4/21: **Exam 2**
+  - Response Surface Methodology
+  - Mixture Designs
+  - Crossover Designs
