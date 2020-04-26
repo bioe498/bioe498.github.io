@@ -12,6 +12,7 @@ Experiment Design & Optimization</h2>
 #### Course Materials
 * [Syllabus](files/BIOE_498_Syllabus.pdf)
 * [Webpage](http://www.stat.columbia.edu/~gelman/arm/) for *Data Analysis Using Regression and Multilevel/Hierarchical Models* by Gelman & Hill
+* [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/the-book.html) by Sutton and Barto
 * Assignments
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
   - [Homework 1](files/Homework1.pdf) due 2/19 by 9:00am.
@@ -57,3 +58,4 @@ Experiment Design & Optimization</h2>
   - Response Surface Methodology
   - Mixture Designs
   - Crossover Designs
+* F 4/23: Introduction to Reinforcement Learning [ [video] ](https://youtu.be/XjFsyrS8mpY) [ [slides] ](files/RL_Intro.pdf)
