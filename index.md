@@ -59,3 +59,5 @@ Experiment Design & Optimization</h2>
   - Mixture Designs
   - Crossover Designs
 * F 4/23: Introduction to Reinforcement Learning [ [video] ](https://youtu.be/XjFsyrS8mpY) [ [slides] ](files/RL_Intro.pdf)
+* M 4/27: Value Functions [ [video] ](https://youtu.be/Na6i01Z4tW0) [ [slides] ](files/Gridworld_Value.pdf)
+  - [Matlab Code](https://github.com/bioe498/gridworld) for Gridworld simulations
