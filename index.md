@@ -20,6 +20,7 @@ Experiment Design & Optimization</h2>
   - [Homework 2](files/Homework2.pdf) due 3/5 by 9:00am.
   - [Homework 3](https://github.com/bioe498/bioe498pj.hw3) due 4/8 by 5pm CDT.
   - [Homework 4](files/Homework4.pdf) due 5/7 by 5pm CDT.
+    - [AlphaGo -- The Movie](https://www.youtube.com/watch?v=WXuK6gekU1Y)
 
 #### Schedule
 * W 1/22: Introduction and Motivation [ [slides] ](files/Lecture01.pptx)
