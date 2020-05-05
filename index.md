@@ -64,3 +64,5 @@ Experiment Design & Optimization</h2>
 * M 4/27: Value Functions [ [video] ](https://youtu.be/Na6i01Z4tW0) [ [slides] ](files/Gridworld_Value.pdf)
   - [Matlab Code](https://github.com/bioe498/gridworld) for Gridworld simulations
 * W 4/29: Policies [ [video] ](https://youtu.be/SiNIcXvqBmE) [ [slides] ](files/Policies.pdf)
+* M 5/4: Function Approximation [ [video] ](https://youtu.be/L2mQTs0nYKE) [ [slides] ](files/FunctionApproximation.pdf)
+* W 5/6: **Exam 3**
