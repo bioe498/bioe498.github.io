@@ -11,10 +11,12 @@ Experiment Design & Optimization</h2>
 
 #### Course Materials
 * [Syllabus](files/BIOE_498_Syllabus_Sp2021.pdf)
-* [Webpage](https://bioe210.github.io) for *Linear Algebra: Foundations of Machine Learning* (BIOE 210)
-* [Webpage](https://avehtari.github.io/ROS-Examples/) for *Regression and Other Stories* by Gelman, Hill, & Vehtari
-* [Webpage](http://incompleteideas.net/book/the-book.html) for *Reinforcement Learning: An Introduction* by Sutton and Barto
-* Assignments
+* **Textbooks**
+  - [*Design and Analysis of Experiments with R*](https://www.routledge.com/Design-and-Analysis-of-Experiments-with-R/Lawson/p/book/9781439868133) by Lawson
+  - [*Linear Algebra: Foundations of Machine Learning*](https://bioe210.github.io) (BIOE 210 course website)
+  - [*Regression and Other Stories*](https://avehtari.github.io/ROS-Examples/) by Gelman, Hill, & Vehtari
+  - [*Reinforcement Learning: An Introduction*](http://incompleteideas.net/book/the-book.html) by Sutton and Barto
+* **Assignments**
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
 
 #### Schedule
