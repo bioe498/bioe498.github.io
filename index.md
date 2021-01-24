@@ -5,7 +5,7 @@ layout: main-layout
 <link href="style.css" rel="stylesheet">
 
 <center>
-<h2>BIOE 498/598: Spring 2021<br>
+<h2>BIOE 498/598 PJ: Spring 2021<br>
 Experiment Design & Optimization</h2>
 </center>
 
