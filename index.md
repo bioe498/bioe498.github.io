@@ -20,8 +20,8 @@ Experiment Design & Optimization</h2>
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
 
 #### Schedule
-* M 1/25: Introduction and Motivation
-* W 1/27: Summary Statistics
+* M 1/25: Introduction and Motivation [[slides]](files/01_Introduction.pptx)
+* W 1/27: Summary Statistics [[slides]](files/02_Summary_Stats.pdf) [[Rmd]](files/02_Summary_Stats.Rmd) [[data]](files/birthdays.txt)
 * F 1/29: Bootstrapping and Distributions
 * M 2/01: Linear Models: Main Effects
 * W 2/03: Linear Models: Interactions
