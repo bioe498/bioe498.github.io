@@ -21,7 +21,7 @@ Experiment Design & Optimization</h2>
 
 #### Schedule
 * M 1/25: Introduction and Motivation [[slides]](files/01_Introduction.pptx)
-* W 1/27: Summary Statistics [[slides]](files/02_SummaryStats.pdf) [[Rmd]](files/02_SummaryStats.Rmd) [[birthdays.txt]](files/birthdays.txt)
+* W 1/27: Summary Statistics [[slides]](files/02_SummaryStats.pdf) [[Rmd]](files/02_SummaryStats.Rmd)  [[birthdays.txt]](files/birthdays.txt) [[notes]](files/02_notes.pdf)
 * F 1/29: Bootstrapping and Distributions
 * M 2/01: Linear Models: Main Effects
 * W 2/03: Linear Models: Interactions
