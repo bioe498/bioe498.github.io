@@ -1,0 +1,93 @@
+---
+title: "The Bootstrap and Distributions"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+set.seed(56757)
+```
+
+## Does BDotM differ for the BIOE 498 and BIOE 598 students?
+
+```{r}
+days498 <- c(3,19,15,10,22,23,6,2,2,17,25,15,17,26,13,8,17,10)
+days598 <- c(27,16,22,26,7,11,26,16,5,15,7,5)
+
+hist(days498, n=31, col=rgb(0,0,1,0.5), xlab="birth day of month (BDotM)", main="BDotM: 498 (blue) vs. 598 (red)")
+hist(days598, n=31, col=rgb(1,0,0,0.5), add=TRUE)
+```
+
+## Goal: Test if the difference between 498 and 598 BDotM's is signficant
+
+```{r echo=TRUE}
+mean(days498)
+mean(days598)
+test_diff <- mean(days498) - mean(days598)
+test_diff
+```
+
+## Creating a boostrap null distribution
+
+```{r echo=TRUE}
+# put all the BDotMs in one pool
+days <- c(days498, days598)
+n498 <- length(days498)
+n598 <- length(days598)
+
+diffs <- replicate(10000, {
+  sample498 <- sample(n498, days, replace=TRUE)
+  sample598 <- sample(n598, days, replace=TRUE)
+  # return the difference between the two groups
+  mean(sample498) - mean(sample598)
+})
+```
+
+## Creating a boostrap null distribution
+
+```{r}
+plot(density(diffs), main="Bootstrap Null Distribution", xlab="mean(498 BDotM) - mean(598 BDotM)")
+abline(v=test_diff, col="red", lty="dashed")
+```
+
+## Estimating the $p$-value
+
+The $p$-value is the probability that a difference at least as large can be seen randomly.
+
+We can estimate this probability as the fraction of bootstrap samples that are as large as the test difference.
+
+```{r echo=TRUE}
+mean(abs(diffs) >= abs(test_diff))
+```
+
+With a $p$-value this large, we cannot reject the null hypothesis that the BDotM is the same for both groups.
+
+## Shortcut method: the $t$-test
+
+```{r echo=TRUE}
+t.test(days498, days598, alternative="two.sided")
+```
+
+## Shortcut method: the $t$-test (equal variance)
+
+```{r echo=TRUE}
+t.test(days498, days598, alternative="two.sided", 
+       var.equal=TRUE)
+```
+
+## Is the sampling distribution normal?
+
+```{r echo=TRUE}
+# Shapiro-Wilk in R is limited to 5000 points
+shapiro.test(diffs[1:5000])
+```
+
+We reject the null hypothesis of normality.
+
+## Is the sampling distribution normal?
+
+```{r}
+car::qqPlot(diffs, id=FALSE, cex=0.3)
+```
