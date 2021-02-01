@@ -1,6 +1,6 @@
 ---
 title: "Linear Models: Main Effects"
-author: "Paul Jensen"
+author: "BIOE 498/598 PJ"
 date: "Spring 2021"
 fontsize: 10pt
 output: beamer_presentation
