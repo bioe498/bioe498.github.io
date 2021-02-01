@@ -1,0 +1,233 @@
+---
+title: "Linear Models: Main Effects"
+author: "Paul Jensen"
+date: "Spring 2021"
+fontsize: 10pt
+output: beamer_presentation
+---
+
+```{r echo=FALSE}
+knitr::knit_hooks$set(mysize = function(before, options, envir) {
+  if (before) 
+    return(options$size)
+})
+```
+
+```{r, include=FALSE}
+library(tibble)
+library(ggplot2)
+library(cowplot)
+theme_set(
+    theme_classic(base_size = 25)
+)
+```
+
+## Does BDotM differ for the BIOE 498 and BIOE 598 students?
+
+```{r echo=FALSE}
+days498 <- c(3,19,15,10,22,23,6,2,2,17,25,15,17,26,13,8,17,10)
+days598 <- c(27,16,22,26,7,11,26,16,5,15,7,5)
+
+hist(days498, n=31, col=rgb(0,0,1,0.5), xlab="birth day of month (BDotM)", main="BDotM: 498 (blue) vs. 598 (red)")
+hist(days598, n=31, col=rgb(1,0,0,0.5), add=TRUE)
+```
+
+## Shortcut method: the $t$-test
+
+```{r echo=TRUE}
+t.test(days498, days598, alternative="two.sided")
+```
+
+## New technique: Linear Models
+
+Previous approach: Split data into two groups; test for a difference in BDotM
+
+New appraoch: Build a model that predicts BDotM; ask if 498/598 knowledge helps
+
+## Linear Models
+
+$$ y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_n x_n + \epsilon $$
+
+* $y$ is the **response**
+* $x_i$ is a **predictor** or **factor**
+* $\beta_0$ is the **intercept**
+* $\beta_i, i>0$ is a **coefficient**, **effect size**, or **parameter**
+* $\epsilon$ is a **residual**
+
+```{r echo=FALSE}
+days_data <- data.frame(day=c(days498, days598), 
+                        undergrad=c(rep(TRUE, length(days498)), rep(FALSE, length(days598))))
+days_data <- days_data[sample.int(nrow(days_data)), ]
+row.names(days_data) <- 1:nrow(days_data)
+```
+
+## Re-organizing our data into a **data frame**
+
+```{r}
+head(days_data)
+```
+
+## Working with data frames
+
+Checking the size (\# rows and \# columns)
+```{r}
+dim(days_data)
+```
+
+\pause
+Extracting a single entry
+```{r}
+days_data[12, ]
+```
+
+\pause
+Or just the day
+```{r}
+days_data[12,"day"]
+```
+
+## Our data frame contains two vectors
+
+```{r}
+days_data$day
+days_data$undergrad
+```
+
+## Building a linear model with `lm`: $y = \beta_0 + \epsilon$
+
+```{r}
+lm( days_data$day ~ 1 )
+```
+
+\pause
+```{r}
+mean(days_data$day)
+```
+
+## Modeling with a predictor: $y = \beta_0 + \beta_1 x + \epsilon$
+```{r}
+lm( days_data$day ~ 1 + days_data$undergrad )
+```
+
+\pause
+```{r}
+mean(days498) - mean(days598)
+```
+
+## What does this model mean?
+
+We fit the parameters $\beta_0$ and $\beta_1$ in the model
+$$\text{day} = \beta_0 + \beta_1 \times \text{undergrad} + \epsilon$$
+\pause
+Substituting the fitted values:
+$$\text{day} = 15.3 - 1.4 \times \text{undergrad} + \epsilon$$
+
+\pause
+For undergrads: $\text{day} = 15.3 - 1.4\times1 = 13.9$
+
+\pause
+For grad students: $\text{day} = 15.3 - 1.4\times0 = 15.3$
+
+\pause
+These are the means for each group.
+
+## Let's clean up our calls to `lm`: Intercepts
+
+An intercept is always assumed.
+```{r eval=FALSE}
+lm( y ~ 1 + x )
+```
+is equivalent to
+```{r eval=FALSE}
+lm( y ~ x )
+```
+
+If you don't want an intercept, use a `0`
+```{r eval=FALSE}
+lm( y ~ 0 + x )
+```
+
+## Let's clean up our calls to `lm`: Naming a data frame
+
+We can give `lm` a data frame where it can find our response and predictor variables.
+```{r eval=FALSE}
+lm( days_data$day ~ days_data$undergrad )
+```
+is equivalent to
+```{r eval=FALSE}
+lm( day ~ undergrad, data=days_data )
+```
+
+## Storing our model for further analysis
+
+We can assign the output of a model to a variable.
+```{r}
+model <- lm( day ~ undergrad, data=days_data )
+summary(model)
+```
+
+## Testing a new blood presure medication
+```{r, include=FALSE}
+library(tibble)
+bp_data <- tribble(
+  ~BPchange, ~treated, ~male,
+  -0.5252988, TRUE, FALSE,
+  4.1742790,  TRUE, FALSE,
+  6.0256724, TRUE, TRUE,
+  -1.4029857, TRUE, FALSE,
+  0.4926655,  TRUE, FALSE,
+  12.8885132,  FALSE, TRUE,
+  6.7517331, FALSE, TRUE,
+  4.9016320, TRUE, FALSE,
+  45.95538,  FALSE, TRUE,
+  19.05073,  FALSE, FALSE,
+  30.32632,  TRUE, TRUE,
+  33.18965,  FALSE, TRUE,
+  5.73430,  TRUE, FALSE,
+  33.07533,  FALSE, TRUE,
+  5.58772,  FALSE, FALSE,
+  31.44072,  FALSE, TRUE
+)
+```
+
+```{r}
+head(bp_data)
+```
+
+## Does our BP treatment work?
+```{r}
+qplot(data=bp_data, x=treated, y=BPchange, size=I(5))
+```
+
+## Hypothesis testing the treatment effect
+```{r}
+t.test(BPchange ~ treated, data=bp_data)
+```
+
+
+## A linear model with effect of treatment
+
+```{r}
+model <- lm(BPchange ~ treated, bp_data)
+summary(model)
+```
+
+## What else could explain the effect?
+```{r}
+summary(lm(BPchange ~ treated + male, bp_data))
+```
+
+## Does our BP treatment work?
+```{r}
+qplot(data=bp_data, x=treated, y=BPchange, color=male, size=I(5))
+```
+
+## Summary
+
+* Linear models can be used for hypothesis testing.
+
+\pause
+* Multivariate linear models consider how **all** factors affect the response. This is a form of conditioning.
+
+\pause
+* Next time: What if the factors interact?
