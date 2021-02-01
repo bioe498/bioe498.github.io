@@ -16,6 +16,8 @@ Experiment Design & Optimization</h2>
   - [*Linear Algebra: Foundations of Machine Learning*](https://bioe210.github.io) (BIOE 210 course website)
   - [*Regression and Other Stories*](https://avehtari.github.io/ROS-Examples/) by Gelman, Hill, & Vehtari
   - [*Reinforcement Learning: An Introduction*](http://incompleteideas.net/book/the-book.html) by Sutton and Barto
+* **R Resources**
+  - [[RStudio]](https://rstudio.com/products/rstudio/): Open Source Desktop Edition
 * **Assignments**
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
 
