@@ -26,5 +26,5 @@ Experiment Design & Optimization</h2>
 * W 1/27: Summary Statistics [[slides]](files/02_SummaryStats.pdf) [[Rmd]](files/02_SummaryStats.Rmd)  [[birthdays.txt]](files/birthdays.txt) [[notes]](files/02_notes.pdf)
 * F 1/29: Bootstrapping and Distributions [[slides]](files/03_BootstrapDistributions.pdf) [[Rmd]](files/03_BootstrapDistributions.Rmd) [[notes]](files/03_notes.pdf)
 * M 2/01: Linear Models: Main Effects [[slides]](files/04_MainEffects.pdf) [[Rmd]](files/04_MainEffects.Rmd)
-* W 2/03: Linear Models: Interactions
+* W 2/03: Linear Models: Interactions [[slides]](files/05_Interactions.pdf) [[Rmd]](files/05_Interactions.Rmd)
 * F 2/05: Linear Models: Transformations

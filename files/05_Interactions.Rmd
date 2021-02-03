@@ -1,0 +1,212 @@
+---
+title: 'Linear Models: Interactions'
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
+output: beamer_presentation
+fontsize: 10pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## What is an interaction?
+
+Imagine we're modeling the response ($y$) from two input variables, $x_1$ and $x_2$. The simplest model is
+
+\[ y = \beta_1x_1 + \beta_2x_2 + \epsilon \]
+
+\pause
+The coefficient $\beta_1$ measures the effect of $x_1$ and $\beta_2$ measures the effect of $x_2$. These effects are \textbf{independent}.
+
+\bigskip
+\pause
+What is there is another effect that depends on both $x_1$ and $x_2$? This is an \textbf{interaction} between $x_1$ and $x_2$.
+
+## How do we model interactions?
+
+We model the interaction of $x_1$ and $x_2$ using the product of these variables.
+\[ y = \beta_1x_1 + \beta_2x_2 + \beta_{12}x_1x_2 + \epsilon \]
+
+The coefficient $\beta_{12}$ is the effect size of the interaction.
+
+\pause
+\bigskip
+Why do we multiply $x_1$ and $x_2$? There are at least two ways to interpret this term.
+
+## The coded factor interpretation
+
+Often we set up design matrices using \textbf{coded variables}. If we're testing the variable at two levels, we code the variable as "on/off" ($\{0,1\}$) or "low/high" ($\{-1,+1\}$).
+
+\pause
+\bigskip
+\begin{columns}
+\begin{column}{0.55\textwidth}
+on/off $\rightarrow$ interaction when both ``on"
+\begin{center}
+\begin{tabular}{cc|c}
+	$x_1$ & $x_2$ & $x_1x_2$ \\
+	\hline
+	0 & 0 & 0 \\
+	0 & 1 & 0 \\
+	1 & 0 & 0 \\
+	1 & 1 & 1
+\end{tabular}
+\end{center}
+\end{column}
+
+\pause
+\begin{column}{0.5\textwidth}
+high/low $\rightarrow$ interaction when both ``high" or both ``low"
+\begin{center}
+\begin{tabular}{cc|c}
+	$x_1$ & $x_2$ & $x_1x_2$ \\
+	\hline
+	$-1$ & $-1$ & $+1$ \\
+	$-1$ & $+1$ & $-1$ \\
+	$+1$ & $-1$ & $-1$ \\
+	$+1$ & $+1$ & $+1$
+\end{tabular}
+\end{center}
+\end{column}
+\end{columns}
+
+
+## The augmented slope interpretation
+
+We can also interpret the interaction as one variable changing the effect of the other variable.
+
+\begin{align*}
+	y &= \beta_1x_1 + \beta_2(x_1)x_2 + \epsilon \\
+	 &= \beta_1x_1 + (\beta_2 + \beta_{12}x_1)x_2 + \epsilon \\
+	 &= \beta_1x_1 + \beta_2x_2 + \beta_{12}x_1x_2 + \epsilon
+\end{align*}
+
+## Interactions with `lm`
+
+```{r, include=FALSE}
+library(tibble)
+bp_data <- tribble(
+  ~BPchange, ~treated, ~male,
+  -0.5252988, TRUE, FALSE,
+  4.1742790,  TRUE, FALSE,
+  6.0256724, TRUE, TRUE,
+  -1.4029857, TRUE, FALSE,
+  0.4926655,  TRUE, FALSE,
+  12.8885132,  FALSE, TRUE,
+  6.7517331, FALSE, TRUE,
+  4.9016320, TRUE, FALSE,
+  45.95538,  FALSE, TRUE,
+  19.05073,  FALSE, FALSE,
+  30.32632,  TRUE, TRUE,
+  33.18965,  FALSE, TRUE,
+  5.73430,  TRUE, FALSE,
+  33.07533,  FALSE, TRUE,
+  5.58772,  FALSE, FALSE,
+  31.44072,  FALSE, TRUE
+)
+```
+
+Recall the data frame from out blood pressure clinical trial:
+```{r}
+head(bp_data)
+```
+
+## Adding an interaction term to our model
+
+```{r}
+model_int <- lm( BPchange ~ treated + male + treated:male, bp_data )
+summary(model_int)
+```
+
+## A shortcut for adding interactions and main effects
+
+```{r}
+model_int <- lm( BPchange ~ treated*male, bp_data )
+summary(model_int)
+```
+
+## A shortcut for adding interactions and main effects
+
+```{r include=FALSE}
+x1 <- runif(10)
+x2 <- runif(10)
+x3 <- runif(10)
+y <- runif(10)
+```
+
+```{r}
+summary(lm( y ~ x1*x2*x3 ))
+```
+
+## How many interactions are there?
+
+\begin{center}
+\begin{tabular}{lccc}
+term & $x_1$ & $x_2$ & $x_3$ \\
+\hline
+$\beta_0$ & 0 & 0 & 0 \\
+$\beta_1x_1$ & 1 & 0 & 0 \\
+$\beta_2x_2$ & 0 & 1 & 0 \\
+$\beta_3x_3$ & 0 & 0 & 1 \\
+$\beta_{12}x_1$ & 1 & 1 & 0 \\
+$\beta_{13}x_2$ & 1 & 0 & 1 \\
+$\beta_{23}x_2x_3$ & 0 & 1 & 1 \\
+$\beta_{123}x_1x_2x_3$ & 1 & 1 & 1
+\end{tabular}
+\end{center}
+
+\bigskip
+\pause
+A model with $n$ factors has $2^n$ possible terms; $2^n-n-1$ of these are interactions.
+
+## Hierarchical ordering to the rescue
+
+**Hierarchical Ordering principle**
+
+* Lower order effects are more likely to be important than higher order effects. 
+* Effects of the same order are equally likely to be important.
+
+## How many interactions are there?
+
+\begin{center}
+\begin{tabular}{ccccc}
+$n$ & intercept & main effects & TWI & higher-order \\
+\hline
+1 & 1 & 1 & 0 & 0 \\
+2 & 1 & 2 & `r choose(2,2)` & `r 2^2 - 2 - 1 - choose(2,2)` \\
+3 & 1 & 3 & `r choose(3,2)` & `r 2^3 - 3 - 1 - choose(3,2)` \\
+4 & 1 & 4 & `r choose(4,2)` & `r 2^4 - 4 - 1 - choose(4,2)` \\
+5 & 1 & 5 & `r choose(5,2)` & `r 2^5 - 5 - 1 - choose(5,2)` \\
+6 & 1 & 6 & `r choose(6,2)` & `r 2^6 - 6 - 1 - choose(6,2)` \\
+7 & 1 & 7 & `r choose(7,2)` & `r 2^7 - 7 - 1 - choose(7,2)` \\
+8 & 1 & 8 & `r choose(8,2)` & `r 2^8 - 8 - 1 - choose(8,2)` \\
+9 & 1 & 9 & `r choose(9,2)` & `r 2^9 - 9 - 1 - choose(9,2)` \\
+10 & 1 & 10 & `r choose(10,2)` & `r 2^10 - 10 - 1 - choose(10,2)` \\
+\end{tabular}
+\end{center}
+
+\pause
+\bigskip
+We will design experiments that focus on main effects and two-way interactions.
+
+## Hierarchical ordering to the rescue
+
+**Hierarchical Ordering Principle**
+
+* Lower-order effects are more likely to be important than higher-order effects. 
+* Effects of the same order are equally likely to be important.
+
+\bigskip
+If we neglect an important higher-order term, the effects can appear anywhere in our model!
+
+We can design the experiment to constrain where higher-order effects appear.
+
+## Things to remember about interactions
+
+\begin{itemize}
+	\item Interaction are modeled as the product of variables.
+	\item The interaction effect is ``above and beyond" the independent effects (synergy/super-additivity, antagonism/sub-additivity).
+	\item Higher-order interactions are possible (e.g. $x_1x_2x_3$), but these are rare.
+	\item Proper experiment design is needed when "ignoring" higher-order interactions.
+\end{itemize}
