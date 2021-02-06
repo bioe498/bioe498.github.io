@@ -1,0 +1,93 @@
+---
+title: 'Factorial Designs: Rank and Replicates'
+author: "BIOE 498/598"
+date: "2/17/2020"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Rank revisited
+
+The rank of a matrix quantifies the number of linearly independent rows or columns.
+
+The column rank of a matrix is always equal to the row rank.
+\[ \mathrm{rank}(\mathbf{X}) = \mathrm{rank}(\mathbf{X}^\mathrm{T}) \]
+
+This limits the rank to be at most the smaller dimension of the matrix.
+\[ \mathrm{rank}(\mathbf{X}) \le \min\{m,n\} \quad\mathrm{if}\quad \mathrm{dim}(\mathbf{A}) = m\times n \]
+
+If the above *equality* holds, we say that the matrix is **full rank**.
+
+## Rank and linear modeling
+
+Each parameter in a linear model requires one independent piece of information.
+
+The linear model $\mathbf{y} = \mathbf{X}\mathbf{\beta} + \mathbf{\epsilon}$ is solvable if and only if the design matrix $\mathbf{X}$ is full rank.
+
+## Solvability vs. power
+
+A model is solvable if the design matrix is full rank. However, we need ``extra" rows to estimate the uncertainty in the model.
+
+Consider the one parameter model $y = \beta x + \epsilon$. 
+
+Given data ($x$,$y$) = (3,6):
+\[ \hat{\beta} = x^{-1}y = 2 \]
+\pause
+Substituting back we see that
+\[ \epsilon = y - \hat{\beta} x = 6 - 2\times 3 = 0 \]
+With one data point our estimate is always exact!
+
+\pause
+Now let's use two data points: ($x$,$y$) = (3,6) and ($x$,$y$) = (4,12).
+\[ \hat{\beta} = \begin{pmatrix} 3\\4 \end{pmatrix}^+ \begin{pmatrix} 6\\12 \end{pmatrix} = 2.64 \]
+\[ \epsilon_1 = y_1 - \hat{\beta} x = 6 - 2.64\times 3 = -1.92 \]
+\[ \epsilon_2 = y_2 - \hat{\beta} x = 12 - 2.64\times 4 = 1.44 \]
+
+## What does this mean for factorial designs?
+
+A full factorial design with $n$ variables has $2^n$ experiments. It also has $2^n$ coefficients (intercept, first-order, and interaction). We can fit a model to a full factorial design but will have no information leftover to estimate the error.
+
+We have three options if we want statistical power behind our factorial designs:
+
+1. perform replicates of some (or all) runs
+2. only estimate a subset of the $2^n$ coefficients
+3. some combination of 1 & 2
+
+\pause
+* For small $n$ designs we perform replicates since there are already few runs and the interactions are probably significant.
+* For large $n$ designs we drop coefficients for higher order terms since we already have lots of runs and the higher-order interactions are most likely zero.
+
+## CO emissions example
+
+```{r}
+eth_data <- read.csv("EthEmissions.csv")
+summary(lm(CO ~ Ratio * Eth, data=eth_data))
+```
+
+## Interaction plot
+
+```{r}
+with(eth_data, interaction.plot(Eth, Ratio, CO, type = "b", pch = c(18,24,22), leg.bty = "o", main = "Interaction Plot of Ethanol and air/fuel ratio", xlab = "Ethanol", ylab = "CO emissions"))
+```
+
+## Throwing example
+\small
+```{r, echo=TRUE}
+throw <- read.csv("AndersThrow.csv")
+with(throw, cor.test(run, distance))
+```
+
+## Throwing example (continued)
+\small
+```{r, echo=TRUE}
+summary(lm(distance ~ 0 +hand + hat + boots + hand:hat + hand:boots, data=throw))
+```
+
+## Interaction plot
+```{r, echo=TRUE}
+with(throw, interaction.plot(hat, hand, distance))
+```
+

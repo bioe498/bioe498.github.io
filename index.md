@@ -28,3 +28,13 @@ Experiment Design & Optimization</h2>
 * M 2/01: Linear Models: Main Effects [[slides]](files/04_MainEffects.pdf) [[Rmd]](files/04_MainEffects.Rmd)
 * W 2/03: Linear Models: Interactions [[slides]](files/05_Interactions.pdf) [[Rmd]](files/05_Interactions.Rmd)
 * F 2/05: Linear Models: Transformations [[slides]](files/06_Transformations.pdf) [[Rmd]](files/06_Transformations.Rmd)
+* M 2/08: Completely Random Designs (1; 2-2.4.2) [[slides]](files/07_CRD.pdf) [[Rmd]](files/07_CRD.Rmd)
+* W 2/10: Factorial Designs (3.1-3.5) [[slides]](files/08_FactorialDesigns.pdf) [[Rmd]](files/08_FactorialDesigns.Rmd)
+* F 2/12: Factorial Designs: Rank (3.6-3.9)
+* M 2/15: Power analysis
+* W 2/17: ANOVA
+* F 2/19: Fractional Factorial Designs: Half-fractional (6.1-6.2)
+* M 2/22: Fractional Factorial Designs: Lower-fractional & augmented (6.2-6.5)
+* W 2/24: Fractional Factorial Designs: Alternative designs (6.6-6.8)
+* F 2/26: Review
+* M 3/1: **Exam 1**

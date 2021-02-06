@@ -1,0 +1,66 @@
+---
+title: "Power Analysis"
+author: "BIOE 498/598"
+date: "3/2020"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## When is an effect size significant?
+
+Linear models compute estimates of the true value of the parameters $\beta$.
+
+The uncertainty in our estimate is quantified by the *standard error*.
+
+Let's say we estimate $\beta$ using $n$ samples from a population with standard deviation $\sigma$. The standard error of our estimate is
+\[ \text{s.e.} = \sigma/\sqrt{n} \]
+
+The 95\% confidence interval for a parameter is 1.96 standard errors* on each side of the estimate:
+\[ \text{95\% C.I. of }\beta = [\beta-1.96\text{s.e.},\, \beta+1.96\text{s.e.}] \]
+
+\tiny
+ \* We often use 2 standard errors as a slightly conservative (and more convenient) estimate of the 95\% confidence interval.
+
+## The 95\% Confidence Interval
+
+If a parameter estimate has a 95\% C.I. that includes zero, we cannot be certain that the true value of the parameter is nonzero.
+
+A parameter estimate is *significant* if and only if the 95\% C.I. excludes zero.
+
+The 95\% C.I. depends on the number of samples ($\text{s.e.}=\sigma/\sqrt{n}$). We can narrow the 95\% C.I. and improve our estimate of $\beta$ by increasing $n$.
+
+## Example
+
+Let's say we fit a model and found an estimate of $\beta=3.1$ with $\text{s.e.}=1.9$ using $n=4$ samples. How many samples would we need before our estimate of $\beta$ is significant?
+
+We always assume that the population standard deviation ($\sigma$) is independent of $n$. In our example, $\sigma = \sqrt{n}\,\text{s.e.} = 3.8$. For our estimate to be significant, the lower end of the 95\% C.I. must exclude zero, so
+\begin{align*}
+  \beta - 1.96\sigma/\sqrt{n} &> 0 \\
+  n &> (1.96\sigma/\beta)^2 \\
+  n &> (1.96\times 3.8/3.1)^2 \\
+  n &> 5.77
+\end{align*}
+Two more samples ($n=6$) would have been sufficient for our estimate of $\beta$ to be significantly nonzero.
+
+## Power Analysis
+
+The previous example makes two assumptions:
+
+- The standard deviation ($\sigma$) will not change in subsequent experiments.
+- The parameter estimate ($\beta$) will not change when new samples are added.
+
+The first assumption is valid since $\sigma$ is a property of the underlying population. Assuming our samples are drawn from the same population, they will have the same variation.
+
+Our assumption about $\beta$ is not valid. Remember that $\beta$ is only an estimate of the true parameter value. If we re-sample the population we will get a new estimate. If the new estimate of $\beta$ is any lower, the confidence interval in the previous example will again include zero.
+
+## Power Analysis (continued)
+
+We need to be more conservative in our estimate of $n$ to account for differences in the new estimates of $\beta$. Adding another 0.84 s.e. to our bound will ensure the 95\% C.I. for $\beta$ excludes zero **for 80\% of the new estimates of $\beta$**. Our new estimate for the sample size is
+
+\[ \beta - (1.96\text{s.e.} + 0.84\text{s.e.}) > 0 \]
+\[ \Rightarrow n > (2.80\sigma/\beta)^2 \]
+
+Even with this conservative estimate, there is still a 20\% chance that our estimate of $\beta$ will not be significant, although this level of uncertainty seems to be acceptable to most experimenters.
