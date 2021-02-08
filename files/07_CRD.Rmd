@@ -96,7 +96,7 @@ This matrix is not full rank since the columns are not linearly independent. ($\
 
 ## Contrasts in the Rothamsted Experiment
 
-The sugar beet experiment is modeled as a single variable with four treatments:
+The sugar beet experiment is modeled as four treatment variables:
 
 - (A) no fertilizer
 - (B) plowed fertilizer in January
@@ -120,19 +120,19 @@ What if we wanted to make other comparisons?
 - Effect of any fertilizer: (A) = (B, C, & D)
 
 \pause
-There are all *contrasts*, or comparisons between effect sizes. The null hypotheses for each contrast can be written as a linear combination of the model's coefficients:
+There are all *contrasts*, or comparisons between variables. The null hypotheses for each contrast can be written as a linear combination of the model's variables:
 \[ \frac{1}{2}\beta_\text{C} + \frac{1}{2}\beta_\text{D} - \beta_\text{B} = 0 \]
 When specifying contrasts, we require that the coefficient sum to zero (hence the 1/2 factors above).
 
 ## How do we test contrasts?
 
-- Fit a linear model with a categorical variable:
+- Fit a linear model with three categorical variables:
 ```{r, eval=FALSE, echo=TRUE}
-model <- aov(y ~ var1 + var2)
+model <- aov(y ~ var1 + var2 + var3)
 ```
-- Let's say var1 had four levels and we wanted to test if $\beta_1 = (\beta_2 + \beta_3)/2$. First we define the *contrast coefficients* for the null hypothesis.
+- Let's test if $\beta_1 = (\beta_2 + \beta_3)/2$. First we define the *contrast coefficients* for the null hypothesis.
 ```{r eval=FALSE, echo=TRUE}
-contrast <- c(1, -0.5, -0.5, 0)
+contrast <- c(1, -0.5, -0.5)
 ```
 - Then we use the fit.contrast function from the gmodels package to test the contrast.
 ```{r eval=FALSE, echo=TRUE}
