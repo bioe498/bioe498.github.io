@@ -20,6 +20,9 @@ Experiment Design & Optimization</h2>
   - [RStudio](https://rstudio.com/products/rstudio/): Open Source Desktop Edition
 * **Assignments**
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
+  - Case Study 1: due 2/24 before 5pm Central
+    - [Problem Statement](files/CaseStudy1.pdf)
+    - [comR12_tx_data.csv](files/comR12_tx_data.csv)
 
 #### Schedule
 * M 1/25: Introduction and Motivation [[slides]](files/01_Introduction.pptx)
