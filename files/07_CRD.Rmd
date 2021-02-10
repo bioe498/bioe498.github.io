@@ -163,7 +163,7 @@ gmodels::fit.contrast(model, "treat", contrast)
 \pause
 We can also test multiple contrasts at the same time using a contrast matrix as shown in the textbook.
 
-## Can we test any contrasts?
+## Can we test any contrast?
 
 No. A contrast must be *estimable* for it to be tested. A contrast is estimable if
 
