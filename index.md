@@ -31,7 +31,7 @@ Experiment Design & Optimization</h2>
 * M 2/01: Linear Models: Main Effects [[slides]](files/04_MainEffects.pdf) [[Rmd]](files/04_MainEffects.Rmd)
 * W 2/03: Linear Models: Interactions [[slides]](files/05_Interactions.pdf) [[Rmd]](files/05_Interactions.Rmd)
 * F 2/05: Linear Models: Transformations [[slides]](files/06_Transformations.pdf) [[Rmd]](files/06_Transformations.Rmd)
-* M 2/08: Completely Random Designs (1; 2-2.4.2) [[slides]](files/07_CRD.pdf) [[Rmd]](files/07_CRD.Rmd)
+* M 2/08: Completely Random Designs (1; 2-2.4.2) [[slides]](files/07_CRD.pdf) [[Rmd]](files/07_CRD.Rmd) (updated 2/9)
 * W 2/10: Factorial Designs (3.1-3.5) [[slides]](files/08_FactorialDesigns.pdf)
 * F 2/12: Factorial Designs: Rank (3.6-3.9)
 * M 2/15: Power analysis

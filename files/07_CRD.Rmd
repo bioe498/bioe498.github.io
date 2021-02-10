@@ -124,21 +124,43 @@ There are all *contrasts*, or comparisons between variables. The null hypotheses
 \[ \frac{1}{2}\beta_\text{C} + \frac{1}{2}\beta_\text{D} - \beta_\text{B} = 0 \]
 When specifying contrasts, we require that the coefficient sum to zero (hence the 1/2 factors above).
 
+## Rothamsted Sugar Beet Data
+
+```{r include=FALSE}
+library(daewr)
+```
+
+```{r}
+sugarbeet
+```
+
 ## How do we test contrasts?
 
-- Fit a linear model with three categorical variables:
-```{r, eval=FALSE, echo=TRUE}
-model <- aov(y ~ var1 + var2 + var3)
-```
-- Let's test if $\beta_1 = (\beta_2 + \beta_3)/2$. First we define the *contrast coefficients* for the null hypothesis.
-```{r eval=FALSE, echo=TRUE}
-contrast <- c(1, -0.5, -0.5)
-```
-- Then we use the fit.contrast function from the gmodels package to test the contrast.
-```{r eval=FALSE, echo=TRUE}
-gmodels::fit.contrast(model, "var1", contrast)
+Fit a linear model with a categorical variable with four levels (treatments).
+```{r echo=TRUE}
+model <- lm(yield ~ treat, data=sugarbeet)
+summary(model)
 ```
 
+## How do we test contrasts?
+
+Fit a linear model with a categorical variable with four levels (treatments).
+```{r echo=TRUE}
+model <- lm(yield ~ treat, data=sugarbeet)
+```
+
+Let's test the effect of broadcast vs. plowed fertilizer (C & D) = (B). First we define the *contrast coefficients* for the null hypothesis.
+```{r echo=TRUE}
+contrast <- c(0, -1, 0.5, 0.5)
+```
+
+\pause
+Then we use the fit.contrast function from the gmodels package to test the contrast.
+```{r echo=TRUE}
+gmodels::fit.contrast(model, "treat", contrast)
+```
+
+\pause
 We can also test multiple contrasts at the same time using a contrast matrix as shown in the textbook.
 
 ## Can we test any contrasts?
@@ -167,3 +189,64 @@ which is not a combination of the rows in $\mathbf{X}$. In fact, we cannot fit t
 As our models grow, the number of possible contrasts increases rapidly. It is likely that at least one random contrast passes our $p$-value threshold **even if there is not a true difference**.
 
 When testing all contrasts in a model it is wise to adjust your $p$-value threshold accordingly. A good method is Tukey's HSD. See Section 2.8.2 for an example.
+
+## Blocking Factors
+
+Sometimes we are unable to perform all runs on the same day, or with the same reagent batch, or in the same field, etc.
+
+How do we account for differences between each *block* of runs?
+
+\pause
+
+Solution: Add a **blocking factor** with a level for each block. The blocking factor is included as a main effect in our model.
+
+## Blocking Factors: Example
+
+```{r}
+set.seed(58103)
+data <- dplyr::tribble(
+  ~y, ~x1, ~x2, ~block,
+   0,   1,   0,  "day1",
+   0,   1,   1,  "day1",
+   0,   0,   0,  "day1",
+   0,   0,   1,  "day1",
+   0,  -1,   0,  "day2",
+   0,  -1,  -1,  "day2",
+   0,   0,  -1,  "day2",
+   0,   0,   0,  "day2"
+)
+data$y <- 0.5 + 0.3*data$x1 + 0.7*data$x2 - 0.4*data$x1*data$x2 + 0.1*rnorm(nrow(data))
+data$y[data$block=="day2"] <- data$y[data$block=="day2"] - 1.3 + 0.1*rnorm(4)
+```
+
+```{r echo=TRUE}
+data
+```
+
+## Blocking Factors: Example (continued)
+
+```{r}
+summary(lm(y ~ block + x1 * x2, data))
+```
+
+## What if we forgot to block?
+```{r}
+summary(lm(y ~ x1 * x2, data))
+```
+
+## Limitations of Blocking Factors
+
+Blocking factors allow the means of each block to be different. The blocking factor adjusts the intercept for each group of runs 
+
+Couldn't the main effects and interactions also be different in each block?
+
+\pause
+
+Yes, but there are two issues when correcting this:
+
+1. Adding multiple blocking factors reduces our degrees of freedom, requiring more runs.
+2. Some of these effects are confounded with background variables in the block.
+
+\pause
+
+**Our recommendation:** Always include a blocking factor when needed, but assume the blocking effects are limited to the intercept.
