@@ -428,5 +428,90 @@ $x_1$ & $x_2$ & $x_4$ \\
 \end{columns}	
 \end{frame}
 
+\begin{frame}{Rank revisited}
+
+The rank of a matrix quantifies the number of linearly independent rows or columns.
+
+\medskip
+The column rank of a matrix is always equal to the row rank.
+\[ \mathrm{rank}(\mathbf{X}) = \mathrm{rank}(\mathbf{X}^\mathrm{T}) \]
+
+This limits the rank to be at most the smaller dimension of the matrix.
+\[ \mathrm{rank}(\mathbf{X}) \le \min\{m,n\} \quad\mathrm{if}\quad \mathrm{dim}(\mathbf{A}) = m\times n \]
+
+If the above \emph{equality} holds, we say that the matrix is \textbf{full rank}.
+
+\end{frame}
+
+\begin{frame}{Rank and linear modeling}
+
+Each parameter in a linear model requires one independent piece of information.
+
+\medskip
+The linear model $\mathbf{y} = \mathbf{X}\mathbf{\beta} + \mathbf{\epsilon}$ is solvable if and only if the design matrix $\mathbf{X}$ is full rank.
+\end{frame}
+
+\begin{frame}{Solvability vs.\ power}
+
+A model is solvable if the design matrix is full rank. However, we need ``extra'' rows (degrees of freedom) to estimate the model's uncertainty.
+
+\medskip
+Consider the one parameter model $y = \beta x + \epsilon$. 
+
+Given data ($x$,$y$) = (3,6):
+\[ \hat{\beta} = x^{-1}y = 2 \]
+\pause
+Substituting back we see that
+\[ \epsilon = y - \hat{\beta} x = 6 - 2\times 3 = 0 \]
+With one data point our estimate is always exact!
+
+\pause
+Now let's use two data points: ($x$,$y$) = (3,6) and ($x$,$y$) = (4,12).
+\[ \hat{\beta} = \begin{pmatrix} 3\\4 \end{pmatrix}^+ \begin{pmatrix} 6\\12 \end{pmatrix} = 2.64 \]
+\[ \epsilon_1 = y_1 - \hat{\beta} x = 6 - 2.64\times 3 = -1.92 \]
+\[ \epsilon_2 = y_2 - \hat{\beta} x = 12 - 2.64\times 4 = 1.44 \]
+\end{frame}
+
+\begin{frame}{What does this mean for factorial designs?}
+
+A full factorial design with $n$ variables has $2^n$ experiments. It also has $2^n$ coefficients (intercept, first-order, and interaction). We can fit a model to a full factorial design but will have no information leftover to estimate the error.
+
+\medskip
+We have three options if we want statistical power behind our factorial designs:
+
+\begin{enumerate}
+	\item perform replicates of some (or all) runs
+	\item only estimate a subset of the $2^n$ coefficients
+	\item some combination of 1 \& 2
+\end{enumerate}
+
+\pause
+\begin{itemize}
+	\item For small $n$ designs we perform replicates since there are already few runs and the interactions are probably significant.
+	\item For large $n$ designs we drop coefficients for higher order terms since we already have lots of runs and the higher-order interactions are most likely zero.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Summary}
+
+Factorial designs produce more information with fewer runs than OFAT designs.
+\begin{itemize}
+\item Factorial designs find better optima.
+\item Factorial designs are more efficient.
+\item Factorial designs make better estimates of effect sizes.
+\end{itemize}
+
+\pause
+\medskip
+As the number of factors increases, factorial designs become \textbf{more} efficient.
+
+\medskip
+However, the number of runs can be prohibitive, and we rarely need to estimate higher-order interactions.
+
+\pause
+\medskip
+\textbf{Fractional factorial designs} require fewer runs by purposefully ignoring the higher-order terms.
+
+\end{frame}
 
 \end{document}
