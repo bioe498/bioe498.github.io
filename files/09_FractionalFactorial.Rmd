@@ -1,7 +1,7 @@
 ---
 title: "Fractional Factorial Designs"
-author: "BIOE 498/598"
-date: "2/24/2020"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
 output: beamer_presentation
 ---
 
@@ -19,7 +19,7 @@ Their efficiency \textbf{grows} as the number of factors increases.
 \pause
 Unfortunately, the number of runs also grows. Quickly.
 
-Factors ($k$) | Experiments ($2^k$)
+Factors ($k$) | Runs ($2^k$)
 --------------|--------------------
 4 | 16
 5 | 32
@@ -49,9 +49,9 @@ We can instead test $k$ factors using only half of the runs of a $2^k$ design. T
 \pause
 For example:
 
-* A $2^4$ design tests four 2-level factors using 16 runs.
-* A $2^{4-1}$ design tests four 2-level factors using 8 runs.
-* A $2^3$ design tests three 2-level factors using 8 runs.
+* A $2^4$ design tests 4 factors using 16 runs.
+* A $2^{4-1}$ design tests 4 factors using 8 runs.
+* A $2^3$ design tests 3 factors using 8 runs.
 
 ## Why do fractional factorial designs work?
 
@@ -60,7 +60,7 @@ Fractional designs are motivated by two guiding principles in statistical modeli
 1. The *effect sparsity principle* states that only a small proportion of the factors in an experiment will have significant effects.
 2. The *hierarchical ordering principle* states that lower-order interactions (including primary effects) are more important that higher-order interactions.
 
-Both principles become ``more true" as the number of factors increases.
+Both principles become ``more true'' as the number of factors increases.
 
 \pause
 Fractional designs rely on an assumption that 
@@ -94,6 +94,7 @@ If we choose to set D equal to an existing column in our design, we have *confou
 For example, let D=ABC. Then
 \[ \beta_\mathrm{D|ABC} = \beta_\mathrm{D} + \beta_\mathrm{ABC} \]
 
+\pause
 However, by the hierarchical ordering principle we expect that $\beta_\mathrm{ABC} \approx 0 \ll \beta_\mathrm{D}$, so
 \[ \beta_\mathrm{D|ABC} = \beta_\mathrm{D} \]
 
@@ -136,6 +137,7 @@ D + ABC && I + ABCD
 
 Filling in the entire design is impractical, especially for large designs. We can identify the *confounding pattern* (or *alias structure*) using a special type of algebra.
 
+\pause
 Generator Algebra Axioms
 
 * XX = X$^2$ = I for any factor X.
@@ -148,12 +150,14 @@ Generator Algebra Axioms
 \newcommand\vB{\mathrm{B}}
 \newcommand\vC{\mathrm{C}}
 \newcommand\vD{\mathrm{D}}
+\newcommand\vE{\mathrm{E}}
 \newcommand\vI{\mathrm{I}}
 
 We start with the *generator* of the design --- the replacement we made to the base design.
 
 \begin{align*}
   \vD &= \vA\vB\vC \\
+  (\vD)\vD &= (\vA\vB\vC)\vD \\
   \vD^2 &= \vA\vB\vC\vD \\
   \vI &= \vA\vB\vC\vD
 \end{align*}
@@ -182,3 +186,36 @@ For the interaction CD:
   \vA\vB &= \vA\vB\vC^2\vD^2 \\
     &= \vA\vB
 \end{align*}
+
+## Practice: A $2^{5-1}$ design
+
+Let's make a $2^{5-1}$ fractional factorial design (A, B, C, D, \& E).
+
+* What is the best generator for this design?
+\pause
+\[ \vE = \vA\vB\vC\vD \]
+
+* Use this generator to construct the defining relation.
+\pause
+\begin{align*}
+  \vE\vE &= \vA\vB\vC\vD\vE \\
+  \vI &= \vA\vB\vC\vD\vE
+\end{align*}
+
+* What is the interaction AB confounded with in our design?
+\pause
+\begin{align*}
+  \vA\vB(\vI) &= \vA\vB(\vA\vB\vC\vD\vE) \\
+  \vA\vB &= \vA^2\vB^2\vC\vD\vE \\
+  \vA\vB &= \vC\vD\vE
+\end{align*}
+
+## Next time: Lower fractional factorial designs
+
+A $2^{k-1}$ fractional factorial design has half the runs of a factorial design.
+
+\medskip
+We can also construct $2^{k-2}$ designs (1/4 of the runs), $2^{k-3}$ designs (1/8 of the runs), etc.
+
+\medskip
+These lower fractional designs trade fewer runs for greater confounding. We will develop a metric to characterize the level of confounding.
