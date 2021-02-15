@@ -183,7 +183,7 @@ For the interaction CD:
 \pause
 \begin{align*}
   \vC\vD(\vI) &= \vC\vD(\vA\vB\vC\vD) \\
-  \vA\vB &= \vA\vB\vC^2\vD^2 \\
+  \vC\vD &= \vA\vB\vC^2\vD^2 \\
     &= \vA\vB
 \end{align*}
 
