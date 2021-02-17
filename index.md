@@ -34,11 +34,11 @@ Experiment Design & Optimization</h2>
 * M 2/08: Completely Random Designs (1; 2-2.4.2) [[slides]](files/07_CRD.pdf) [[Rmd]](files/07_CRD.Rmd) (updated 2/9)
 * W 2/10: Completely Random Designs (continued)
 * F 2/12: Factorial Designs & Rank (3.1-3.9) [[slides]](files/08_FactorialDesigns.pdf)
-* M 2/15: Fractional Factorial Designs: Half-fractional (6.1-6.2) [[slides]](files/09_FractionalFactorial.pdf) (updated 2/15)
+* M 2/15: Fractional Factorial Designs: Half-fractional (6.1-6.2) [[slides]](files/09_FractionalFactorial.pdf) [[Rmd]](files/09_FractionalFactorial.Rmd) (updated 2/15)
 * W 2/17: *no class*
-* F 2/19: Fractional Factorial Designs: Lower-fractional & augmented (6.2-6.5)
-* M 2/22: Fractional Factorial Designs: Alternative designs (6.6-6.8)
-* W 2/24: Power analysis
-* F 2/26: ANOVA
+* F 2/19: Fractional Factorial Designs: Lower-fractional designs (6.2-6.5) [[slides]](files/10_LowerFractional.pdf) [[Rmd]](files/10_LowerFractional.Rmd)
+* M 2/22: Fractional Factorial Designs: Alternative designs (6.6-6.8) [[slides]](files/11_AlternativeFractional.pdf) [[Rmd]](files/11_AlternativeFractional.Rmd)
+* W 2/24: ANOVA
+* F 2/26: Power analysis
 * M 3/1: Review
 * W 3/3: **Exam 1**
