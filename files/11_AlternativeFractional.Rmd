@@ -89,6 +89,21 @@ ggplot2::qplot(data=designs %>% dplyr::filter(runs < 150),
   ggplot2::theme_classic(base_size=36)
 ```
 
+##
+\begin{columns}
+
+\begin{column}{0.8\textwidth}
+\begin{center}
+\includegraphics{figures/frf2-resolution.png}
+\end{center}
+\end{column}
+
+\begin{column}{0.2\textwidth}
+{\footnotesize Gromping, 2014\\ \emph{J.\ Stat.\ Software}}
+\end{column}
+
+\end{columns}
+
 ## Foldover Designs
 
 \begin{columns}
