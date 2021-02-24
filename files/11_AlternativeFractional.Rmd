@@ -6,15 +6,17 @@ output: beamer_presentation
 fontsize: 10pt
 ---
 
-\newcommand\lo{\ensuremath{\boldsymbol{-}}}
-\newcommand\hi{\ensuremath{\boldsymbol{+}}}
-\newcommand\iii{\ensuremath{\mathrm{III}}}
-\newcommand\iv{\ensuremath{\mathrm{IV}}}
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(magrittr)
 ```
+
+## How low can we go?
+
+\newcommand\lo{\ensuremath{\boldsymbol{-}}}
+\newcommand\hi{\ensuremath{\boldsymbol{+}}}
+\newcommand\iii{\ensuremath{\mathrm{III}}}
+\newcommand\iv{\ensuremath{\mathrm{IV}}}
 
 ```{r include=FALSE}
 designs <- tibble::tribble(
@@ -65,8 +67,6 @@ designs %<>%
   dplyr::mutate(resolution = ifelse(is.na(resolution), "full", as.character(resolution))) %>%
   dplyr::mutate(resolution = factor(resolution, levels=c("full", "5", "4", "3")))
 ```
-
-## How low can we go?
 
 The efficiency of fractional factorial designs offsets the exponential increase in runs for factorial designs.
 

@@ -1,8 +1,9 @@
 ---
 title: "Power Analysis"
-author: "BIOE 498/598"
-date: "3/2020"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
 output: beamer_presentation
+fontsize: 10pt
 ---
 
 ```{r setup, include=FALSE}
@@ -21,7 +22,7 @@ Let's say we estimate $\beta$ using $n$ samples from a population with standard 
 The 95\% confidence interval for a parameter is 1.96 standard errors* on each side of the estimate:
 \[ \text{95\% C.I. of }\beta = [\beta-1.96\text{s.e.},\, \beta+1.96\text{s.e.}] \]
 
-\tiny
+\small
  \* We often use 2 standard errors as a slightly conservative (and more convenient) estimate of the 95\% confidence interval.
 
 ## The 95\% Confidence Interval
@@ -36,6 +37,7 @@ The 95\% C.I. depends on the number of samples ($\text{s.e.}=\sigma/\sqrt{n}$). 
 
 Let's say we fit a model and found an estimate of $\beta=3.1$ with $\text{s.e.}=1.9$ using $n=4$ samples. How many samples would we need before our estimate of $\beta$ is significant?
 
+\pause
 We always assume that the population standard deviation ($\sigma$) is independent of $n$. In our example, $\sigma = \sqrt{n}\,\text{s.e.} = 3.8$. For our estimate to be significant, the lower end of the 95\% C.I. must exclude zero, so
 \begin{align*}
   \beta - 1.96\sigma/\sqrt{n} &> 0 \\
@@ -43,6 +45,8 @@ We always assume that the population standard deviation ($\sigma$) is independen
   n &> (1.96\times 3.8/3.1)^2 \\
   n &> 5.77
 \end{align*}
+
+\pause
 Two more samples ($n=6$) would have been sufficient for our estimate of $\beta$ to be significantly nonzero.
 
 ## Power Analysis
@@ -52,15 +56,118 @@ The previous example makes two assumptions:
 - The standard deviation ($\sigma$) will not change in subsequent experiments.
 - The parameter estimate ($\beta$) will not change when new samples are added.
 
+\pause
 The first assumption is valid since $\sigma$ is a property of the underlying population. Assuming our samples are drawn from the same population, they will have the same variation.
 
+\pause
 Our assumption about $\beta$ is not valid. Remember that $\beta$ is only an estimate of the true parameter value. If we re-sample the population we will get a new estimate. If the new estimate of $\beta$ is any lower, the confidence interval in the previous example will again include zero.
 
 ## Power Analysis (continued)
 
-We need to be more conservative in our estimate of $n$ to account for differences in the new estimates of $\beta$. Adding another 0.84 s.e. to our bound will ensure the 95\% C.I. for $\beta$ excludes zero **for 80\% of the new estimates of $\beta$**. Our new estimate for the sample size is
+We need to be more conservative in our estimate of $n$ to account for differences in the new estimates of $\beta$. Adding another 0.84 s.e. to our bound will ensure the 95\% C.I. for $\beta$ excludes zero **for 80\% of the new estimates of $\beta$**. 
+
+\pause
+Our new estimate for the sample size is
 
 \[ \beta - (1.96\text{s.e.} + 0.84\text{s.e.}) > 0 \]
 \[ \Rightarrow n > (2.80\sigma/\beta)^2 \]
 
+\pause
 Even with this conservative estimate, there is still a 20\% chance that our estimate of $\beta$ will not be significant, although this level of uncertainty seems to be acceptable to most experimenters.
+
+## Power calculations using a $t$-test
+
+The significance of an effect size is determined by a $t$-test, which can differ from the normal distribution used on the previous slide.
+
+Unfortunately, calculating $n$ using a $t$-distribution is not simple. We use the R function `power.t.test` instead.
+
+\pause
+```{r, eval=FALSE, echo=TRUE}
+power.t.test(n=NULL, 
+             delta=..., 
+             sd=..., 
+             power=..., 
+             alternative="one.sided")
+```
+
+\small 
+
+* `delta` is the effect size ($\beta$)
+* `sd` is the standard deviation
+* `power` is 0.8 for an 80\% chance of seeing a significant result
+* `alternative="one.sided"` assumes the effect won't change signs
+
+
+## Back to the farm
+
+```{r}
+set.seed(1092)
+
+
+phosphate <- runif(6)
+ammonia <- runif(6)
+yield <- 0.3 * phosphate + 0.1*rnorm(length(phosphate))
+
+fert <- data.frame(yield, phosphate, ammonia)
+
+model <- lm(yield ~ ammonia + phosphate, data=fert)
+summary(model)
+```
+
+## Power analysis for phosphate
+
+```{r}
+summary(model)$coefficients
+```
+\pause
+```{r echo=TRUE}
+power.t.test(n=NULL, delta=0.4201, sd=0.2273*sqrt(3), 
+             power=0.8, alternative="one.sided")
+```
+\pause
+Six more runs (12 total) should be sufficient 80\% of the time.
+
+## After adding six more runs...
+
+```{r}
+k <- 6
+phosphate <- runif(k)
+ammonia <- runif(k)
+yield <- 0.3*phosphate + 0.1*rnorm(k)
+
+aug_fert <- rbind(fert, list(yield, phosphate, ammonia))
+summary(lm(yield ~ ammonia + phosphate, data=aug_fert))
+```
+
+## Is six more runs always enough?
+
+Below are the $p$-values for the phosphate effect from 1,000 models fit with six additional runs.
+
+```{r}
+nsims <- 1000
+pvals <- numeric(nsims)
+
+k <- 6
+for (i in 1:nsims) {
+  phosphate <- runif(k)
+  ammonia <- runif(k)
+  yield <- 0.3*phosphate + 0.1*rnorm(k)
+
+  aug_fert <- rbind(fert, list(yield, phosphate, ammonia))
+  model <- lm(yield ~ ammonia + phosphate, data=aug_fert)
+  pvals[i] <- summary(model)$coefficients["phosphate","Pr(>|t|)"]
+}
+
+plot(pvals)
+abline(h=0.05, col="red")
+```
+
+## One last note
+
+Given enough runs, any effect size --- no matter how small --- will become statistically significant.
+
+\medskip
+Never forget that **statistical** significance does not imply **practical** significance.
+
+\medskip
+Keep your focus on the effect size, not the $p$-value.

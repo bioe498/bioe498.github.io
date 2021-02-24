@@ -1,0 +1,57 @@
+---
+title: "Practice Problem"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
+output: beamer_presentation
+fontsize: 10pt
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Comparing $2^{5-2}$ design generators
+
+\newcommand\lo{\ensuremath{\boldsymbol{-}}}
+\newcommand\hi{\ensuremath{\boldsymbol{+}}}
+\newcommand\iii{\ensuremath{\mathrm{III}}}
+\newcommand\iv{\ensuremath{\mathrm{IV}}}
+
+\begin{columns}
+
+\begin{column}{0.5\textwidth}
+\textbf{Generators:} $D=AB$, $E=AC$
+\textbf{Defining relation:}
+\[ I = ABD = ACE = BCDE \]
+Resolution \iii, Aberration 2
+
+\begin{align*}
+A &+ BD + CE &&+ ABCDE \\
+B &+ AD &&+ CDE +ABCE \\
+C &+ AE &&+ BDE + ABCD \\
+D &+ AB &&+ BCE + ACDE \\
+E &+ AC &&+ BCD + ABDE
+\end{align*}
+
+\end{column}
+
+\pause
+\begin{column}{0.5\textwidth}
+\textbf{Generators:} $D=ABC$, $E=AB$
+\textbf{Defining relation:}
+\[ I = ABE = CDE = ABCD \]
+Resolution \iii, Aberration 2
+
+\begin{align*}
+A &+ BE &&+ BCD + ACDE \\
+B &+ AE &&+ ACD + BCDE \\
+C &+ DE &&+ ABD + ABCE \\
+D &+ CE &&+ ABC + ABDE \\
+E &+ AB + CD &&+ ABCDE
+\end{align*}
+
+\end{column}
+
+
+\end{columns}
