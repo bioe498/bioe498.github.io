@@ -1,22 +1,16 @@
 ---
 title: "Analysis of Variance"
-author: "BIOE 498/598"
-date: "2/19/2020"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
 output: beamer_presentation
+fontsize: 10pt
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Does our model do anything?
-Let's return to our data of my son throwing the stuffed monkey.
-\tiny
-```{r}
-attach(read.csv("AndersThrow.csv"))
-model <- lm(distance ~ 0 + hand + hat + boots)
-summary(model)
-```
+
 
 ## The sum of squares
 
@@ -42,11 +36,20 @@ How do we calculate each one for a model $\y = \mathbf{X}\mathbf{\beta}$?
 \pause
 \[ \ssx = \sst - \ssr \]
 
+## Does our model do anything?
+Let's analyze the data from the stuffed monkey throwing experiment.
+\footnotesize
+```{r echo=FALSE}
+attach(read.csv("MonkeyThrow.csv"))
+model <- lm(distance ~ hand + hat + boots)
+summary(model)
+```
+
 ## For our throwing data
 
 ```{r}
 ss <- function(x) sum(x^2)
-sst <- ss(distance - 0)
+sst <- ss(distance - mean(distance))
 ssr <- ss(residuals(model))
 ssx <- sst - ssr
 c(sst, ssr, ssx)
@@ -54,10 +57,13 @@ c(sst, ssr, ssx)
 
 ## Degrees of freedom
 
-The amount of variation we see depends on the number of independent parameters in the model. These are the *degrees of freedom*.
+The amount of variation we expect to see depends on the number of independent parameters in the model. These are the *degrees of freedom*, and we need to normalize the SS by them.
 
+For analyzing variation, the number of parameters does not include the intercept.
+
+- For $\sst$, DF = (# data points) - 1
 - For $\ssx$, DF = # of parameters
-- For $\ssr$, DF = (# data points) - (# parameters)
+- For $\ssr$, DF = (# data points) - (# parameters) - 1
 
 ## The $F$-statistic
 
@@ -68,12 +74,13 @@ The value of our model is explained by the ratio between the explained variance 
 \pause
 For our throwing example
 
-\[ F = \frac{329.125 /4}{5.875 / (8-4)} = 56.02 \]
+\[ F = \frac{16.625 /3}{5.875 / (8-3-1)} = 3.773 \]
 
-## How big should the $F$-statistic be?
+\pause
+**How big should the $F$-statistic be?** The $F$-statistic follows the $F$-distribution. We can use this distribution to convert the $F$-statistic into a $p$-value.
 
-That depends on the number of degrees of freedom. The $F$-statistic follows the $F$-distribution. We can use this distribution to convert the $F$-statistic into a $p$-value.
-\tiny
+## 
+
 ```{r}
 summary(model)
 ```
@@ -89,14 +96,14 @@ This is called the *analysis of variance*, or ANOVA.
 Let's find the explained variance for a model with only handedness:
 \small
 ```{r}
-model_hand <- lm(distance ~ 0 + hand)
+model_hand <- lm(distance ~ hand)
 sst - ss(residuals(model_hand))
 ```
 \normalsize
 Now let's compare this to the residuals of the entire model:
 
 \pause
-\[ F = \frac{322.625 /2}{5.875 / (8-4)} = 109.83 \]
+\[ F = \frac{10.125 /1}{5.875 / (8-3-1)} = 6.894 \]
 
 ## ANOVA on a linear model
 
@@ -109,7 +116,7 @@ anova(model)
 
 - $p$-values on effect sizes tell us if the effect size in nonzero.
 - A significant effect size does not mean the effect matters.
-- ANOVA can tell us which variables (not parameters!) explain a significant fraction of the variance in our data.
+- ANOVA can tell us which variables explain a significant fraction of the variance in our data.
 - Significance is realtive to the unexplained variance in the model.
 
 
