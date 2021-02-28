@@ -69,7 +69,7 @@ For analyzing variation, the number of parameters does not include the intercept
 
 The value of our model is explained by the ratio between the explained variance and the residual (unexplained) variance *after adjusting for the DF*.
 
-\[ F = \frac{\ssx / \mathrm{DF}(\ssx)}{\ssr / \mathrm{DF(\ssr)}} \]
+\[ F = \frac{\ssx / \mathrm{DF}(\ssx)}{\ssr / \mathrm{DF}(\ssr)} \]
 
 \pause
 For our throwing example
