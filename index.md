@@ -24,6 +24,8 @@ Experiment Design & Optimization</h2>
   - Case Study 1: due 2/24 before 5pm Central
     - [Problem Statement](files/CaseStudy1.pdf)
     - [comR12_tx_data.csv](files/comR12_tx_data.csv)
+  - Case Study 2
+    - [Introduction](files/CaseStudy2_Intro.pdf)
 
 #### Schedule
 * M 1/25: Introduction and Motivation [[slides]](files/01_Introduction.pptx)
