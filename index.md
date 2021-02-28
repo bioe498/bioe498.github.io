@@ -42,6 +42,6 @@ Experiment Design & Optimization</h2>
 * F 2/19: Fractional Factorial Designs: Lower-fractional designs (6.2-6.5) [[slides]](files/10_LowerFractional.pdf) [[Rmd]](files/10_LowerFractional.Rmd)
 * M 2/22: Fractional Factorial Designs: Alternative designs (6.6-6.8) [[slides]](files/11_AlternativeFractional.pdf) [[Rmd]](files/11_AlternativeFractional.Rmd)
 * W 2/24: Power analysis [[slides]](files/12_PowerAnalysis.pdf) [[Rmd]](files/12_PowerAnalysis.Rmd)
-* F 2/26: ANOVA [[slides]](files/13_ANOVA.pdf) [[Rmd]](files/13_ANOVA.Rmd)
+* F 2/26: ANOVA [[slides]](files/13_ANOVA.pdf) [[Rmd]](files/13_ANOVA.Rmd) [[notes]](files/13_notes.pdf)
 * M 3/1: Review
 * W 3/3: **Exam 1**
