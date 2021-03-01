@@ -43,5 +43,5 @@ Experiment Design & Optimization</h2>
 * M 2/22: Fractional Factorial Designs: Alternative designs (6.6-6.8) [[slides]](files/11_AlternativeFractional.pdf) [[Rmd]](files/11_AlternativeFractional.Rmd)
 * W 2/24: Power analysis [[slides]](files/12_PowerAnalysis.pdf) [[Rmd]](files/12_PowerAnalysis.Rmd)
 * F 2/26: ANOVA [[slides]](files/13_ANOVA.pdf) [[Rmd]](files/13_ANOVA.Rmd) [[notes]](files/13_notes.pdf)
-* M 3/1: Review
+* M 3/1: Review [[topics]](files/Exam1Topics.pdf)
 * W 3/3: **Exam 1**
