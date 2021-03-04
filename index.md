@@ -31,6 +31,7 @@ Experiment Design & Optimization</h2>
       - The first cell should include an identifier for your team -- use letters only, no spaces or punctuation.
       - Factor should be set as "1" or "-1", just like the sample run (which you should replace with your own run 1).
       - Leave blank any runs that you are saving for the second round.
+      - Round 1 runs must be submitted to Gradescope by 5pm Central on 3/8.
 
 #### Schedule
 * M 1/25: Introduction and Motivation [[slides]](files/01_Introduction.pptx)
