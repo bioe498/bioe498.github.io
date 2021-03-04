@@ -26,6 +26,11 @@ Experiment Design & Optimization</h2>
     - [comR12_tx_data.csv](files/comR12_tx_data.csv)
   - Case Study 2
     - [Introduction](files/CaseStudy2_Intro.pdf)
+    - [Run Template](files/CaseStudy2RunTemplate.csv)
+      - You must submit this file as a CSV, not an Excel workbook.
+      - The first cell should include an identifier for your team -- use letters only, no spaces or punctuation.
+      - Factor should be set as "1" or "-1", just like the sample run (which you should replace with your own run 1).
+      - Leave blank any runs that you are saving for the second round.
 
 #### Schedule
 * M 1/25: Introduction and Motivation [[slides]](files/01_Introduction.pptx)
