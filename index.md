@@ -51,3 +51,5 @@ Experiment Design & Optimization</h2>
 * F 2/26: ANOVA [[slides]](files/13_ANOVA.pdf) [[Rmd]](files/13_ANOVA.Rmd) [[notes]](files/13_notes.pdf)
 * M 3/1: Review [[topics]](files/Exam1Topics.pdf)
 * W 3/3: **Exam 1**
+* F 3/5: Screening Designs [[slides]](files/14_ScreeningDesigns.pdf)
+* M 3/7: Steepest Ascent [[slides]](files/15_SteepestAscent.pdf)

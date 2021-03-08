@@ -1,0 +1,46 @@
+---
+title: "RSM_fit"
+author: "BIOE 498/598 PJ"
+date: "3/5/2021"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+
+x <- x1 <- x2 <- seq(-1, 1, length=100)
+g <- expand.grid(x1, x2)
+
+rs1 <- function(x1, x2) { -0.6*((x1+0.5)^2 + (x2+0.5)^2) } 
+rs2 <- function(x1, x2) { -5*((x1-0.5)^2 + (x2-0.5)^2) + 0.5}
+
+y1 <- matrix(rs1(g[,1], g[,2]), ncol=length(x2))
+y2 <- matrix(rs2(g[,1], g[,2]), ncol=length(x2))
+
+image(x1, x2, y1)
+contour(x1, x2, matrix(y1, ncol=length(x2)), add=TRUE)
+
+
+image(x1, x2, y2)
+contour(x1, x2, matrix(y2, ncol=length(x2)), add=TRUE)
+
+yy <- pmax(y1,y2)
+image(x1, x2, yy)
+contour(x1, x2, matrix(yy, ncol=length(x2)), add=TRUE)
+```
+
+```{r}
+ccd1 <- rsm::ccd(2, n0=1, coding=list(x1 ~ X1+0.5, x2 ~ X2+0.5))
+ccd1_decoded <- rsm::decode.data(ccd1)
+response1 <- rs1(ccd1_decoded$X1, ccd1_decoded$X2)
+#m1 <- lm(y ~ X1 * X2 + I(X1^2) + I(X2^2), cbind(ccd1_decoded, y=response1))
+m1 <- rsm::rsm(y ~ rsm::SO(x1,x2), cbind(ccd1, y=response1))
+summary(m1)
+
+yhat1 <- matrix(predict(m1, data.frame(X1=g[,1], X2=g[,2])), ncol=length(x2))
+image(x1, x2, yhat1)
+contour(x1, x2, matrix(yhat1, ncol=length(x2)), add=TRUE)
+```
