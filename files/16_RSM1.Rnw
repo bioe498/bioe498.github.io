@@ -1,0 +1,93 @@
+\documentclass[10pt]{beamer}
+
+\beamertemplatenavigationsymbolsempty
+
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes.misc,calc,backgrounds,scopes} 
+\tikzset{boxed/.style={
+  thick,
+  draw=black,
+  top color=white,
+  text height=1.5ex,
+  text depth=.25ex
+}}
+
+
+\newcommand\lo{\ensuremath{\boldsymbol{-}}}
+\newcommand\hi{\ensuremath{\boldsymbol{+}}}
+
+\title{Response Surface Methodology}
+\author{BIOE 498/598 PJ}
+\date{Spring 2021}
+
+\begin{document}
+\frame{\titlepage}
+
+
+\begin{frame}{Last time: The method of steepest ascent}
+
+\begin{columns}
+\begin{column}{0.6\textwidth}
+  \begin{itemize}
+    \item Begin with a FF+CP design.
+    \item<2-> Follow path of steepest ascent until the model breaks.
+    \item<3-> New FF+CP; repeat steepest ascent.
+    \item<4-> Stop when model detects lack of fit.
+    \item<5-> \textbf{Today}: Fitting a model to a curved response surface.
+  \end{itemize}
+\end{column}
+\begin{column}{0.4\textwidth}
+  \begin{tikzpicture}
+    \begin{scope}[scale=0.5]
+      \filldraw [black] (1,1) circle (2pt) -- (-1,1) circle (2pt) -- (-1,-1) circle (2pt) -- (1,-1) circle (2pt) -- (1,1);
+      \fill [black] (0,0) circle (2pt);
+      \onslide<2->{
+        \draw [thick,black,rotate=30,->] (0,0) -- (4,0) coordinate (c2);
+        \fill [black,rotate=30] (0,0) circle (2pt) ++ (1,0) circle (2pt) ++ (1,0) circle (2pt) ++ (1,0) circle (2pt) ++ (1,0) circle (2pt);
+      }
+      \onslide<3->{
+        \fill [blue] (c2) circle (2pt) +(1,1) circle (2pt) +(-1,1) circle (2pt) +(-1,-1) circle (2pt) +(1,-1) circle (2pt);
+        \draw [blue] ($(c2) +(1,1)$) -- ++(-2,0) -- ++(0,-2) -- ++(2,0) -- cycle;
+        \draw [thick,blue,rotate=110,->] (c2) -- ++(4,0) coordinate (c3);
+        \fill [blue,rotate=110] (c2) circle (2pt) ++ (1,0) circle (2pt) ++ (1,0) circle (2pt) ++ (1,0) circle (2pt) ++ (1,0) circle (2pt);
+      }
+      \onslide<4->{
+        \fill [red] (c3) circle (2pt) +(1,1) circle (2pt) +(-1,1) circle (2pt) +(-1,-1) circle (2pt) +(1,-1) circle (2pt);
+        \draw [red] ($(c3) +(1,1)$) -- ++(-2,0) -- ++(0,-2) -- ++(2,0) -- cycle;
+      }
+      \onslide<5->{
+        \fill [red] (c3) +(1.414,0) circle (2pt) +(0,1.414) circle (2pt) +(-1.414,0) circle (2pt) +(0,-1.414) circle (2pt);
+        \draw [red] (c3) -- +(1.414,0) (c3) -- +(-1.414,0) (c3) -- +(0,1.414) (c3) -- +(0,-1.414);
+      }
+    \end{scope}
+  \end{tikzpicture}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Fitting models with curvature}
+
+\begin{itemize}
+  \item We need two things to model a curved response surface:
+    \begin{enumerate}
+      \item A model that is flexible enough to curve.
+      \item Data that can detect the curvature.
+    \end{enumerate}
+  \item<2-> The optimal operating conditions correspond to a maximum in the response surface.
+  \item<2-> We need models that can model maxima.
+  \item<3-> FO + TWI models are curved, but are rarely bounded.
+\end{itemize}
+
+\onslide<4->{
+  \[ y = 20 + 3.6x_1 - 1.8x_2 - 0.6x_1x_2 \]
+  \medskip
+  Set $x_2=0$, then $y\rightarrow\infty$ as $x_1\rightarrow\infty$.
+}
+
+\end{frame}
+
+\end{document}
