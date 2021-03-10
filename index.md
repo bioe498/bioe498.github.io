@@ -53,3 +53,4 @@ Experiment Design & Optimization</h2>
 * W 3/3: **Exam 1**
 * F 3/5: Screening Designs [[slides]](files/14_ScreeningDesigns.pdf)
 * M 3/7: Steepest Ascent [[slides]](files/15_SteepestAscent.pdf)
+* W 3/9: RSM1: CCDs [[slides]](files/16_RSM1.pdf)
