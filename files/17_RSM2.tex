@@ -88,13 +88,12 @@ The response at the stationary point only depends on the intercept and the main 
 \bigskip
 \begin{columns}
 \begin{column}{0.5\textwidth}
-	Imagine a downward facing parabola $y = 3 + 0.4x - (x-3)^2$.
+	Imagine a downward facing parabola \[y = 3 - (x-3)^2.\]
 	
-	\bigskip
 	The argmax is $x_s=3$ with response 
 	\begin{align*} 
-		y_s &= 3 + 0.4(3) - (3-3)^2 \\
-		 &= 3 + 1.2 - 0^2.
+		y_s &= 3 - (3-3)^2 \\
+		 &= 3 - 0^2.
 	\end{align*}
 \end{column}	
 
@@ -110,9 +109,9 @@ The response at the stationary point only depends on the intercept and the main 
 			style sheet=vary hue]
 		data [format=function] {
 			var x : interval [0:6];
-			func y = 3 - (\value x-3)*(\value x-3) + 0.4*(\value x);
+			func y = 3 - (\value x-3)*(\value x-3);
 		};
-		\draw [help lines] (1.6,0) -- (1.6,2.5);
+		\draw [help lines] (1.5,0) -- (1.5,2.5);
 	\end{tikzpicture}
 \end{column}	
 \end{columns}	
@@ -168,7 +167,7 @@ Concentration $= 19.7$\%
 \begin{frame}{When does $\Vx_s$ produce a maximum?}
 
 \begin{itemize}
-	\item The stationary point can be an argmax, argmin, or location of a stationary point.
+	\item The stationary point can be an argmax, argmin, or location of a saddle point.
 	\item<2-> The type of extremum is determined by the eigenvalues ($\lambda_i$) of the matrix $\VB$.
 		\begin{itemize}
 			\item All $\lambda_i < 0 \rightarrow$ maximum
