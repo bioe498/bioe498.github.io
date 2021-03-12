@@ -1,0 +1,32 @@
+\documentclass{beamer}
+
+\beamertemplatenavigationsymbolsempty
+\renewcommand\mathfamilydefault{cmr}
+
+\usepackage{booktabs}
+\usepackage{tikz}
+
+\begin{document}
+
+\newcommand\ct{\tikz{\filldraw [blue] (0,0) rectangle (0.25,0.25);}$\,$}
+
+\begin{frame}{Case Study 2: Round 1 run counts} 
+
+\begin{center}
+	\begin{tabular}{rl}
+		\toprule
+		Runs & Groups \\
+		\midrule
+		24 & \ct \ct \ct \ct \\
+		32 & \ct \ct \ct \ct \\
+		40 & \ct \\
+		48 & \ct \ct \ct \\
+		64 & \ct \ct \ct \ct \\
+		\bottomrule	
+		\end{tabular}
+\end{center}
+
+	
+\end{frame}
+
+\end{document}

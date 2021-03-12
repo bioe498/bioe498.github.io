@@ -54,3 +54,4 @@ Experiment Design & Optimization</h2>
 * F 3/5: Screening Designs [[slides]](files/14_ScreeningDesigns.pdf)
 * M 3/7: Steepest Ascent [[slides]](files/15_SteepestAscent.pdf)
 * W 3/9: RSM1: CCDs [[slides]](files/16_RSM1.pdf)
+* F 3/11: RSM2: Optimizing second-order models [[slides]](files/17_RSM2.pdf)
