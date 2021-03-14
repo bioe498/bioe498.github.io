@@ -52,6 +52,11 @@ Experiment Design & Optimization</h2>
 * M 3/1: Review [[topics]](files/Exam1Topics.pdf)
 * W 3/3: **Exam 1**
 * F 3/5: Screening Designs [[slides]](files/14_ScreeningDesigns.pdf)
-* M 3/7: Steepest Ascent [[slides]](files/15_SteepestAscent.pdf)
-* W 3/9: RSM1: CCDs [[slides]](files/16_RSM1.pdf)
-* F 3/11: RSM2: Optimizing second-order models [[slides]](files/17_RSM2.pdf)
+* M 3/8: Steepest Ascent [[slides]](files/15_SteepestAscent.pdf)
+* W 3/10: RSM 1: CCDs (10.1-10.3.1) [[slides]](files/16_RSM1.pdf)
+* F 3/12: RSM 2: Optimizing second-order models (10.6-10.7) [[slides]](files/17_RSM2.pdf)
+* M 3/15: The RSM package
+* W 3/17: *Guest Lecture: Optimizing rRNA depletion with DOE/RSM*
+* F 3/19: RSM 3: Alternative Designs (10.3.2-10.5)
+* M 3/22: Mixtures (11.1-11.2.1,11.5.0) & Crossover Designs (9.1-9.3.0)
+* W 3/24 *no class*
