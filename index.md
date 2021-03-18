@@ -57,6 +57,6 @@ Experiment Design & Optimization</h2>
 * F 3/12: RSM 2: Optimizing second-order models (10.6-10.7) [[slides]](files/17_RSM2.pdf)
 * M 3/15: The RSM package [[Rmd]](files/18_RSMpackage.Rmd) [[documentation]](https://cran.r-project.org/web/packages/rsm/vignettes/rsm.pdf)
 * W 3/17: *Guest Lecture: Optimizing rRNA depletion with DOE/RSM*
-* F 3/19: RSM 3: Alternative Designs (10.3.2-10.5)
+* F 3/19: RSM 3: Alternative Designs (10.3.2-10.5) [[slides]](files/19_RSM3.pdf)
 * M 3/22: Mixtures (11.1-11.2.1,11.5.0) & Crossover Designs (9.1-9.3.0)
 * W 3/24 *no class*

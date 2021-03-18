@@ -38,8 +38,8 @@
 	\item The CCD is excellent (and in many ways optimal) for RSM.
 	\item Many alternatives have been developed to address one of two CCD shortcomings:
 	\begin{enumerate}
-		\item The CCD requires 5 levels for each factor.
-		\item The CCD requires a lot of runs.
+		\item CCDs require 5 levels for each factor.
+		\item CCDs require a lot of runs.
 	\end{enumerate}
 \end{itemize}
 	
@@ -87,7 +87,7 @@
 \end{columns}
 
 \medskip
-{\footnotesize Note that in the bottom row \Vzero\ is a vector, i.e.\ a set of repeated center points.}
+\onslide<2->{\footnotesize Note that in the bottom row \Vzero\ is a vector, i.e.\ a set of repeated center points.}
 \end{frame}
 
 \begin{frame}{The BBD is a spherical design}
@@ -145,7 +145,7 @@ BBD with $k=3$. Center point is in blue.
 \begin{frame}{Hoke Designs}
 \begin{itemize}
 	\item Hoke (1974) developed smaller, 3-level designs for $k=$ 3 -- 6 factors.
-	\item For each $k$ there are seven variants, $\V{D}_1 \ldots \V{D}_7$. Design $\V{D}_1$ -- $\V{D}_3$ are saturated, and the other are near-saturated.
+	\item For each $k$ there are seven variants, $\V{D}_1 \ldots \V{D}_7$. Designs $\V{D}_1$ -- $\V{D}_3$ are saturated, and the others are near-saturated.
 	\item The most popular designs are $\V{D}_2$ and $\V{D}_6$. For $k=$ 3 factors:
 \end{itemize}
 
@@ -393,6 +393,84 @@ Many designs can be used for RSM. Here are our recommendations in descending ord
 	\item \textbf{Koshal} designs are obsolete; we include them only for a historical perspective.
 \end{enumerate}
 
+\pause
+\bigskip
+...but wait, there's one more!
 \end{frame}
+
+\begin{frame}{Definitive Screening Designs (DSD)}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+	\begin{itemize}
+		\item The DSD combines features of FF screening, foldover, PB, and BB designs.
+		\item For $k$ factors a DSD requires only $2k+1$ runs.
+		\item Continuous factors use 3 levels; some discrete 2-level factors can be added.
+		\item Can estimate FO, TWI, and PQ terms (up to saturation).
+		\begin{itemize}
+			\item Main effects are clear of TWI and PQ terms.
+			\item All PQ terms are estimable.
+			\item Complex aliasing of TWI and PQ terms.
+		\end{itemize}
+	\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}{\footnotesize
+	\begin{center}
+		\textbf{6-factor, minimum run DSD}
+		\begin{tabular}{rrrrrr}
+			\toprule
+			A & B & C & D & E & F \\
+			\midrule
+			\ze & \hi & \hi & \hi & \hi & \hi \\
+			\ze & \lo & \lo & \lo & \lo & \lo \\
+			\\
+			\hi & \ze & \lo & \hi & \hi & \lo \\
+			\lo & \ze & \hi & \lo & \lo & \hi \\
+			\\
+			\hi & \lo & \ze & \lo & \hi & \hi \\
+			\lo & \hi & \ze & \hi & \lo & \lo \\
+			\\
+			\hi & \hi & \lo & \ze & \lo & \hi \\
+			\lo & \lo & \hi & \ze & \hi & \lo \\
+			\\
+			\hi & \hi & \hi & \lo & \ze & \lo \\
+			\lo & \lo & \lo & \hi & \ze & \hi \\
+			\\
+			\hi & \lo & \hi & \hi & \lo & \ze \\
+			\lo & \hi & \lo & \lo & \hi & \ze \\
+			\\
+			\ze & \ze & \ze & \ze & \ze & \ze \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+}
+\end{column}
+\end{columns}
+	
+\end{frame}
+
+\begin{frame}{Constructing a DSD}
+\begin{itemize}
+	\item Jones and Nachtsheim (2011) discovered the DSD for 6 -- 30 factors using a computer search.
+	\item Xiao et al.\ (2012) showed that DSDs for even $k$ can be built with \emph{conference matrices}. Nguyen and Stylianou (2013) developed a new approach for even and odd $k$.
+	\pause
+	\item Similar to a PB design, you can add ``dummy factors'' to increase the number of runs. The dummy columns for the unused factors are dropped. The original paper recommended adding at least two dummy factors.
+\end{itemize}	
+\end{frame}
+
+\begin{frame}{Analyzing a DSD}
+There are many choices for analyzing the results of a DSD. For a standard DSD with $k$ factors and $2k+1$ runs you can
+\begin{itemize}
+	\item Fit an intercept, clear FO terms, and up to $k$ aliased TWI terms.
+	\item Fit an intercept, FO, and PQ model. This model will be saturated.
+	\item Perform subset selection to identify smaller models (like a PB design).
+	\item If $k\ge6$ you can fit a full SO model for any subset of 3 factors\\(or 4 factors if $k\ge18$ or 5 factors if $k\ge24$).
+	\pause
+	\begin{itemize}
+		\item A DSD can be used for both screening and RSM if the final number of factors is small!
+	\end{itemize}
+\end{itemize}	
+\end{frame}
+
 
 \end{document}
