@@ -32,6 +32,9 @@ Experiment Design & Optimization</h2>
       - Factor should be set as "1" or "-1", just like the sample run (which you should replace with your own run 1).
       - Leave blank any runs that you are saving for the second round.
       - Round 1 runs must be submitted to Gradescope by 5pm Central on 3/8.
+  - Case Study 3
+    - [Introduction](files/CaseStudy3_Intro.pdf)
+    - [Trebuchet Simulator](https://jensenlab.shinyapps.io/trebsim)
 
 #### Schedule
 * M 1/25: Introduction and Motivation [[slides]](files/01_Introduction.pptx)

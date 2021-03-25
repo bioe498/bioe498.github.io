@@ -1,0 +1,53 @@
+\documentclass[9pt]{beamer}
+
+\beamertemplatenavigationsymbolsempty
+\renewcommand\mathfamilydefault{cmr}
+
+\usepackage{pajmath}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+\title{Case Study 3: The Trebuchet}
+
+\author{BIOE 498/598 PJ}
+\date{Spring 2021}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Introduction}
+
+\begin{itemize}
+	\item \textbf{Objective:} Aim a trebuchet simulator to hit a specified distance.
+	\item The trebuchet is aimed by adjusting three parameters:
+		\begin{enumerate}
+			\item Fulcrum height
+			\item Counterweight mass
+			\item Sling length
+		\end{enumerate}
+	\item Each team will receive 12 training runs to build a model that predicts the optimal trebuchet settings.
+	\item The average error for 8 testing runs will determine your group's final score.
+	\item The simulator is stochastic --- even if you find the optimal parameter settings, you will not hit the target exactly.
+		\begin{itemize}
+			\item The stochasticity is controlled, i.e.\ each team will receive the same sequence of random deviates.
+		\end{itemize}
+	\item You will have access to a demo simulator to refine your methods. The final simulator will use similar parameter ranges but will not behave identically.
+	\item On \textbf{Monday, April~5}, the final simulator will open for 48~hours. Slides describing your strategy and results are due \textbf{Friday, April~9}.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Rules}
+\begin{enumerate}
+	\item Teams of 2--3 are allowed, but optional.
+	\item No sharing data across teams.
+	\item Your parameter settings must be derived from your model \textbf{for all testing runs}. No tweaking without guidance from the model!
+	\item You can use the demo simulator as many times as you want. Your group only has one chance with the final simulator.
+	\item Grading is based on your process, with bonus points for results.
+	\item Members of the winning team are allowed to claim ``BIOE Trebuchet Champions 2021'' on their CV/resume.
+\end{enumerate}	
+\end{frame}
+
+
+\end{document}
