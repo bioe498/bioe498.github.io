@@ -1,0 +1,356 @@
+---
+title: "Surrogate Optimization:\\newline Space-Filling Designs"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
+output: beamer_presentation
+fontsize: 9pt
+header-includes: 
+  - \usepackage{tikz}
+  - \usepackage{booktabs}
+  - \renewcommand\mathfamilydefault{cmr}
+  - \usetikzlibrary{positioning,shapes.misc,calc,backgrounds,scopes} 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.width=3, fig.height=3, dev='pdf', fig.align = 'center')
+font_scale <- 0.5
+par(cex.lab=font_scale, cex.axis=font_scale, cex.main=font_scale, cex.sub=font_scale)
+```
+
+## From local to global optimization
+
+- Steepest Ascent/RSM finds the optimal operating conditions in a **local** design space.
+- It's possible a better operating condition exists far away.
+- **Global optimization** searches the entire design region.
+
+\bigskip
+\pause
+\begin{center}
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Method} & \textbf{Search} & \textbf{\# of samples} & \textbf{Sampling} \\
+    \midrule
+    Steepest Ascent/RSM & local & 10--100's & very expensive, noisy \\
+    Surrogate Optimization & global & 100--1000's & moderately expensive \\
+    Reinforcement Learning & global & 10,000$+$ & very inexpensive \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+## Surrogate Optimization
+
+- Assume we are trying to optimize a function $f$ that is **expensive** to evaluate.
+- Instead, we use evaluations of $f$ to build a surrogate model $\tilde{f}$ that is **cheap** to evaluate.
+- We optimize $\tilde{f}$ to find good candidates for evaluation by $f$.
+
+\bigskip
+\pause
+
+\tikzset{boxed/.style={
+  thick,
+  draw=black,
+  top color=white,
+  text height=1.5ex,
+  text depth=.25ex
+}}
+
+\begin{center}
+\begin{tikzpicture}[>=latex]
+  \node (start) {};
+  \node (design) [boxed, right=2cm of start] {design $X$};
+  \node (data) [boxed,right=1.5cm of design] {$y$};
+  \node (surrogate) [boxed,right=2cm of data] {surrogate $\tilde{f}$};
+  \node (optimal) [boxed,right=0.5cm of surrogate] {$x^*$};
+  \draw [->] (start) -- (design) node [midway,above] {space-filling};
+  \draw [->] (design) -- (data) node [midway,above] {$f(X)$};
+  \draw [->] (data) -- (surrogate) node [midway,above] {$\mathcal{GP}(X,y)$};
+  \draw [->] (surrogate) -- (optimal);
+  \draw [->] (surrogate.south) -- ++(0,-0.5) -| (design.south) node [near start,below] {sequential design};
+\end{tikzpicture}
+\end{center}
+
+## Why use surrogates?
+
+\begin{center}
+  \includegraphics[width=\textwidth]{figures/rocketbooster.png}
+\end{center}
+
+## Surrogate optimization by many names
+
+- **Computer experiments**, **emulation**, or **metamodeling** based on historical usage.
+- **Kriging** from geostatistics (refers to prediction with GPR).
+- **Nonparametric Bayesian optimization** to impress your manager.
+- **Sequential design** in the DOE field.
+- **Active learning** in the ML field.
+
+## Today: Space-Filling Designs
+
+- Global optimization requires data from every part of the design space.
+- We want to cover as much of the space as possible with the fewest number of points.
+- **Space-Filling Designs** spread samples over a multidimensional space $[0,1]^k$.
+  - Other design spaces can be rescaled to match this hypercube.
+- Later we will use the surrogate to *intelligently* augment the initial design.
+
+## How about evenly-spaced designs (grids)?
+
+\begin{columns}
+\begin{column}{0.6\textwidth}
+
+Evenly-spaced designs have two big drawbacks:
+\medskip
+\begin{enumerate}
+  \onslide<2->{
+    \item Regular spacing can alias patterns in the response surface.
+    \begin{center}
+      \begin{tikzpicture}
+          \draw [->,thick] (-3,-1.2) -- (3,-1.2);
+          \draw [->,thick] (-3,-1.2) -- (-3,1.2);
+          \draw (0,0) circle (2pt) +(-1.571,0) circle (2pt) +(1.571,0) circle (2pt);
+          \onslide<3->{
+            \draw[domain=-2.2:2, smooth, variable=\x, blue] plot ({\x}, {sin(4*\x r)});
+          }
+      \end{tikzpicture}
+    \end{center}
+  }
+  \item<4-> Regular designs have poor \textbf{projection spacing}. This is a problem because of effect sparsity!
+\end{enumerate}
+
+\end{column}
+\begin{column}{0.4\textwidth}
+```{r fig.width=1.5, fig.height=1.5}
+locs <- c(0.2, 0.5, 0.8)
+par(mar = rep(0, 4))
+plot(expand.grid(locs, locs))
+```
+\end{column}
+\end{columns}
+
+## Why not random locations?
+
+People often overestimate the randomness of random processes. Take our "random" string of digits as an example. How many repeated digits did you find in your sequence?
+
+\pause
+```{r}
+lattice::barchart(table(rbinom(100000, 9, 0.1))/100000, xlab="Probability", ylab="# of repeats in 10 digits")
+```
+
+## Random designs are "clumpy"
+
+\begin{columns}
+\begin{column}{0.6\textwidth}
+
+\onslide<2->{
+  We need a \textbf{Space-Filling Design} that
+  \medskip
+  \begin{enumerate}
+    \item Places points semi-randomly to avoid aliasing
+    \item Avoids "clumps" of points
+    \item Projects well onto lower dimensions
+  \end{enumerate}
+}
+
+\end{column}
+\begin{column}{0.4\textwidth}
+```{r fig.width=1.5, fig.height=1.5}
+par(mar = rep(0, 4))
+set.seed(10)
+plot(runif(9), runif(9), xlim=c(0,1), ylim=c(0,1), xlab="$x_1$", ylab="$x_2$")
+```
+
+\end{column}
+\end{columns}
+
+## Latin Hypercube Designs
+
+\begin{columns}
+\begin{column}{0.6\textwidth}
+
+A Latin Hypercube Design (LHD) is a semi-random design that guarantees uniform projection.
+
+\medskip
+\begin{itemize}
+  \item Each dimension is divided into $n$ intervals.
+  \item Points are placed randomly, but only one point is allowed in each interval along each dimension.
+  \item Points can be placed in the center or a random position in each "square".
+  \item LHDs are like a simplified Sudoku puzzle!
+\end{itemize}
+
+\end{column}
+\begin{column}{0.4\textwidth}
+
+\onslide<1->{
+```{r fig.width=1.5, fig.height=1.5}
+par(mar = rep(0, 4))
+set.seed(11)
+x <- 1:9
+y <- sample.int(9, 9)
+plot(x-1/2,y-1/2, xlim=c(0,9), ylim=c(0,9))
+```
+}
+
+\medskip
+\onslide<2>{
+```{r fig.width=1.5, fig.height=1.5}
+par(mar = rep(0, 4))
+set.seed(11)
+x <- 1:9
+y <- sample.int(9, 9)
+plot(x-1/2,y-1/2, xlim=c(0,9), ylim=c(0,9))
+for (i in 1:9) {
+  abline(v=i, col="gray")
+  abline(h=i, col="gray")
+}
+```
+}
+
+\end{column}
+\end{columns}
+
+## Building a LHD
+
+\begin{columns}
+\begin{column}{0.6\textwidth}
+
+\begin{enumerate}
+  \item The interval along the first dimension is simply $1\ldots n$; there is no need to randomize.
+  \item For each subsequent dimension, select a random permutation of $\{1\ldots n\}$
+\end{enumerate}
+
+\bigskip
+\begin{center}
+  \begin{tabular}{ccc}
+    \toprule
+    $x_1$ & $x_2$ \\
+    \midrule
+    1 & 2 \\
+    2 & 8 \\
+    3 & 1 \\
+    4 & 7 \\
+    5 & 5 \\
+    6 & 4 \\
+    7 & 9 \\
+    8 & 3 \\
+    9 & 6 \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\end{column}
+\begin{column}{0.4\textwidth}
+
+```{r fig.width=1.5, fig.height=1.5}
+par(mar = rep(0, 4))
+set.seed(11)
+x <- 1:9
+y <- sample.int(9, 9)
+plot(x-1/2,y-1/2, xlim=c(0,9), ylim=c(0,9))
+for (i in 1:9) {
+  abline(v=i, col="gray")
+  abline(h=i, col="gray")
+}
+```
+
+\end{column}
+\end{columns}
+
+## Beware of randomness (again)
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+
+```{r fig.width=1.5, fig.height=1.5}
+par(mar = rep(0, 4))
+set.seed(11)
+x <- 1:9
+y <- 1:9
+plot(x-1/2,y-1/2, xlim=c(0,9), ylim=c(0,9))
+for (i in 1:9) {
+  abline(v=i, col="gray")
+  abline(h=i, col="gray")
+}
+```
+\bigskip
+The above design is a LHD, but it is not very random. Rarely we can get permutations that do not space-fill.
+
+\end{column}
+\begin{column}{0.5\textwidth}
+\onslide<2->{
+```{r fig.width=1.5, fig.height=1.5}
+par(mar = rep(0, 4))
+set.seed(11)
+x <- 1:9
+y <- c(3,4,8,2,5,7,1,6,9)
+plot(x-1/2,y-1/2, xlim=c(0,9), ylim=c(0,9))
+for (i in 1:9) {
+  abline(v=i, col="gray")
+  abline(h=i, col="gray")
+}
+abline(h=3, col="red")
+abline(h=6, col="red")
+abline(v=3, col="red")
+abline(v=6, col="red")
+```
+\bigskip
+One alternative is an Orthogonal Array LHD.
+}
+\end{column}
+\end{columns}
+
+## Another option: Maximin Designs
+
+What we really want is to maximize the distance between the points in the final design. We can achieve this directly via optimization.
+
+\pause
+The *Euclidean distance* between any two points $x$ and $x'$ is
+\[ d(x,x') = \lVert x-x' \rVert^2 = \sum_{j=1}^k(x_j-x_j')^2 \]
+
+\pause
+The *maximin* design matrix with $n$ samples, called $X_n$ is
+\[ \arg \max_{X_n} \min\{ d(x,x'), \forall x\ne x' \} \]
+
+\pause
+Computationally, we begin with a random set of $n$ points and iteratively move points until a local optimum is found.
+
+## The `maximin` package
+
+The `maximin` package creates sequential space-filling designs.
+\bigskip
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\texttt{X1 <- maximin::maximin(\\$\quad\quad\quad\quad$n=9, p=2, T=100)\\$\quad$}
+\bigskip
+```{r fig.width=1.5, fig.height=1.5}
+par(mar = rep(0, 4))
+set.seed(12)
+X1 <- maximin::maximin(9, 2, 100)
+plot(X1$Xf)
+```
+\end{column}
+\onslide<2->{
+  \begin{column}{0.5\textwidth}
+  \texttt{X1 <- maximin::maximin(\\$\quad\quad\quad\quad$n=9, p=2, T=100,\\$\quad\quad\quad\quad$ Xorig=X1\$Xf)}
+  \bigskip
+  ```{r fig.width=1.5, fig.height=1.5}
+  X2 <- maximin::maximin(5, 2, 100, Xorig=X1$Xf)
+  par(mar = rep(0, 4))
+  plot(X2$Xf[1:9, ])
+  points(X2$Xf[10:14, ], col="red")
+  ```
+  \end{column}
+}
+\end{columns}
+
+\bigskip
+\onslide<1->{
+  \begin{center}
+    \footnotesize{\texttt{n}=number of samples, \texttt{p}=number of dimensions, \texttt{T}=number of iterations for the optimizer.}
+  \end{center}
+}
+
+## Summary
+
+- Surrogate optimization begins with a space-filling design.
+- Grid and random designs are not good.
+- LHD and Maximin designs spread points globally and project well to lower dimensions.
+- **Next time:** Building a surrogate model from an initial space-filling design.

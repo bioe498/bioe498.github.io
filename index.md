@@ -62,4 +62,7 @@ Experiment Design & Optimization</h2>
 * W 3/17: *Guest Lecture: Optimizing rRNA depletion with DOE/RSM*
 * F 3/19: RSM 3: Alternative Designs (10.3.2-10.5) [[slides]](files/19_RSM3.pdf)
 * M 3/22: Mixtures (11.1-11.2.1,11.5.0) [[slides]](files/20_MixtureDesigns.pdf) & Crossover Designs (9.1-9.3.0) [[slides]](files/21_CrossoverDesigns.pdf)
-* W 3/24 *no class*
+* W 3/24: *no class*
+* F 3/26: Surrogates: Space-Filling Designs [[slides]](files/22_SpaceFillingDesigns.pdf) [[Rmd]](files/22_SpaceFillingDesigns.Rmd)
+* M 3/29: Surrogates: Gaussian Process Regression [[slides]](files/23_GaussianProcessRegression.pdf) [[Rmd]](files/23_GaussianProcessRegression.Rmd)
+* W 3/31: Surrogates: Hyperparameter Tuning [[slides]](files/24_GPRHyperparameters.pdf) [[Rmd]](files/24_GPRHyperparameters.Rmd)

@@ -1,0 +1,159 @@
+---
+title: "Surrogate Optimization:\\newline Gaussian Process Regression"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
+output: beamer_presentation
+fontsize: 9pt
+header-includes: 
+  - \usepackage{tikz}
+  - \usepackage{booktabs}
+  - \renewcommand\mathfamilydefault{cmr}
+  - \usetikzlibrary{positioning,shapes.misc,calc,backgrounds,scopes} 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.width=3, fig.height=3, dev='pdf', fig.align = 'center')
+#font_scale <- 0.5
+#par(cex.lab=font_scale, cex.axis=font_scale, cex.main=font_scale, cex.sub=font_scale)
+library(latex2exp)
+```
+
+## Surrogate Optimization
+
+- Assume we are trying to optimize a function $f$ that is **expensive** to evaluate.
+- Instead, we use evaluations of $f$ to build a surrogate model $\tilde{f}$ that is **cheap** to evaluate.
+- We optimize $\tilde{f}$ to find good candidates for evaluation by $f$.
+
+\bigskip
+
+\tikzset{boxed/.style={
+  thick,
+  draw=black,
+  top color=white,
+  text height=1.5ex,
+  text depth=.25ex
+}}
+
+\begin{center}
+\begin{tikzpicture}[>=latex]
+  \node (start) {};
+  \node (design) [boxed, right=2cm of start] {design $X$};
+  \node (data) [boxed,right=1.5cm of design] {$y$};
+  \node (surrogate) [boxed,right=2cm of data] {surrogate $\tilde{f}$};
+  \node (optimal) [boxed,right=0.5cm of surrogate] {$x^*$};
+  \draw [->] (start) -- (design) node [midway,above] {space-filling};
+  \draw [->] (design) -- (data) node [midway,above] {$f(X)$};
+  \draw [->] (data) -- (surrogate) node [midway,above] {$\mathcal{GP}(X,y)$};
+  \draw [->] (surrogate) -- (optimal);
+  \draw [->] (surrogate.south) -- ++(0,-0.5) -| (design.south) node [near start,below] {sequential design};
+\end{tikzpicture}
+\end{center}
+
+## Gaussian Process Regression
+
+- For linear models, we decide *a priori* what shape the response surface will take.
+- Linear regression estimates the parameters $\beta_i$ using noisy data.
+- **Gaussian Process Regression (GPR)** assumes the *covariance* between the data have a particular shape.
+- The covariance function is called the *kernel*.
+
+## Our kernel of choice
+
+- There are many kernels used for GPR.
+- We will use the *inverse exponentiated squared Euclidean distance* kernel:
+  \[ \Sigma(x,x') = \exp\{-\lVert x-x' \rVert^2\}. \]
+- Note that $\Sigma(x,x)=1$ and $\Sigma(x,x')<1$ if $x\ne x'$.
+
+\pause
+```{r}
+library(latex2exp)
+xs <- seq(-3,3,by=0.01)
+K <- function(x1,x2) {
+  exp(-(x1-x2)^2)
+}
+plot(xs, K(xs,0.5), type="l", col="red", xlab=TeX("$x$"), ylab=TeX("$\\Sigma(x,x')$"))
+points(0.5,0, col="red")
+abline(v=0.5, col="red", lty=2)
+```
+## Using the covariance function for interpolation
+
+```{r}
+xs <- seq(-3,3,by=0.01)
+K <- function(x1,x2) {
+  exp(-(x1-x2)^2)
+}
+plot(xs, K(xs,0.5), type="l", col="red", xlab=TeX("$x$"), ylab=TeX("$\\Sigma(x,x')$"))
+lines(xs, K(xs,-1.2), col="blue")
+points(-1.2,0, col="blue")
+points(0.5,0, col="red")
+abline(v=0.5, col="red", lty=2)
+abline(v=-1.2, col="blue", lty=2)
+```
+
+## How do we make predictions with GPR?
+
+- Let's start with a space-filling design $X_n$ and assume we measured the responses $y_n$ at each point in the design.
+- Using our kernel function, we can calculate the covariance among the points in the design set
+\[ \Sigma_n = \Sigma(X_n,X_n) \]
+
+\pause
+- We want to find the response $y$ at a new, unmeasured point $x$. Using some identities for multivariate normal distributions,
+\[ y(x) = \Sigma(x,X_n)\Sigma_n^{-1}y_n. \]
+
+\pause
+- GPR assumes that $y(x)$ is itself normally distributed with variance
+\[ \sigma^2(x) = \Sigma(x,x) - \Sigma(x,X_n)\Sigma_n^{-1}\Sigma(x,X_n)^\top. \]
+
+## Let's try it!
+
+First, let's make a helper function for computing the covariance between two sets of design points.
+
+```{r echo=TRUE}
+Sigma <- function(X1,X2) {
+  X1 <- as.matrix(X1)
+  X2 <- as.matrix(X2)
+  D <- plgp::distance(X1,X2)
+  exp(-D)
+}
+```
+
+## Let's make some training data
+\footnotesize
+```{r echo=TRUE, fig.height=2, fig.width=4}
+par(mar=rep(0,4))
+Xn <- matrix(seq(-3,3,0.8), ncol=1)
+yn <- sin(Xn[ ,1])
+plot(Xn,yn)
+```
+
+## And then interpolate!
+\footnotesize
+```{r echo=TRUE, fig.height=2, fig.width=4}
+X <- seq(-3.25,3.15,0.1)
+y = Sigma(X,Xn) %*% solve(Sigma(Xn,Xn)) %*% yn
+par(mar=rep(0,4))
+plot(Xn,yn)
+points(X,y, col="blue", cex=0.5)
+```
+
+## What about the variance?
+\footnotesize
+```{r echo=TRUE, fig.height=2, fig.width=4}
+s2 <- Sigma(X,X) - Sigma(X,Xn) %*% 
+        solve(Sigma(Xn,Xn)) %*% t(Sigma(X,Xn))
+par(mar=rep(0,4))
+plot(Xn,yn, ylim=c(-1.3,1.3))
+points(X,y, col="blue", cex=0.5)
+lines(X, y + qnorm(0.05, 0, sqrt(diag(s2))), lty=2, col=2)
+lines(X, y + qnorm(0.95, 0, sqrt(diag(s2))), lty=2, col=2)
+```
+
+## Why not use GPR for everything?
+
+- **Data intensive.** Since GPR does not use a parametric model, the entire shape of the response surface must come from data. GPR generally requires more data than a linear model.
+- **Computationally intensive.** Training a GPR requires inverting $\Sigma_n$, an $n\times n$ dense matrix. Practically, this limits GPR to 1,000's or a few 10,000's of points.
+- **Interpolation only.** GPR has no idea what the response should look like beyond the training data. GPR requires a space-filling design that covers the entire search region.
+
+\pause
+\bigskip
+Still, for global search with (relatively) expensive experiments, GPR remains a flexible and powerful method.
+
