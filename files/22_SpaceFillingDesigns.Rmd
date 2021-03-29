@@ -329,14 +329,14 @@ plot(X1$Xf)
 \end{column}
 \onslide<2->{
   \begin{column}{0.5\textwidth}
-  \texttt{X1 <- maximin::maximin(\\$\quad\quad\quad\quad$n=9, p=2, T=100,\\$\quad\quad\quad\quad$ Xorig=X1\$Xf)}
+  \texttt{X1 <- maximin::maximin(\\$\quad\quad\quad\quad$n=5, p=2, T=100,\\$\quad\quad\quad\quad$ Xorig=X1\$Xf)}
   \bigskip
-  ```{r fig.width=1.5, fig.height=1.5}
-  X2 <- maximin::maximin(5, 2, 100, Xorig=X1$Xf)
-  par(mar = rep(0, 4))
-  plot(X2$Xf[1:9, ])
-  points(X2$Xf[10:14, ], col="red")
-  ```
+```{r fig.width=1.5, fig.height=1.5}
+X2 <- maximin::maximin(5, 2, 100, Xorig=X1$Xf)
+par(mar = rep(0, 4))
+plot(X2$Xf[1:9, ])
+points(X2$Xf[10:14, ], col="red")
+```
   \end{column}
 }
 \end{columns}

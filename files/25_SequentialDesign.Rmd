@@ -1,0 +1,42 @@
+---
+title: "Surrogate Optimization:\\newline Sequential Design"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
+output: beamer_presentation
+fontsize: 9pt
+header-includes: 
+  - \usepackage{tikz}
+  - \usepackage{booktabs}
+  - \renewcommand\mathfamilydefault{cmr}
+  - \usetikzlibrary{positioning,shapes.misc,calc,backgrounds,scopes} 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width=3, fig.height=3, dev='pdf', fig.align = 'center')
+#font_scale <- 0.5
+#par(cex.lab=font_scale, cex.axis=font_scale, cex.main=font_scale, cex.sub=font_scale)
+library(latex2exp)
+eps <- sqrt(.Machine$double.eps) 
+```
+
+## Helper functions for optimization
+
+By default, the optimizers in R *minimize* functions, so we negate the mean and SD to find *maxima*.
+
+\bigskip
+\footnotesize
+```{r}
+library(laGP)
+
+neg_mean <- function(x,gp) {
+  -predGP(gp, matrix(x,nrow=1), lite=TRUE)$mean
+}
+
+neg_sd <- function(x,gp) {
+  -sqrt(predGP(gp, matrix(x,nrow=1), lite=TRUE)$s2)
+}
+```
+
+\normalsize
+\bigskip
+The `lite=TRUE` tells `laGP` to not compute the entire covariance matrix, just the `mean` and variance `s2`.
