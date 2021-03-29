@@ -61,8 +61,8 @@ eps <- sqrt(.Machine$double.eps)
 ## Lengthscale
 
 - GPR require the correlation function $C(x,x')$ to quantify how quickly the relationship between points decays.
-- The lengthscale of decay can also be tuned by adding a hyperparameter $\theta$:
-\[ C(x,x') = \exp\left\{-\frac{\lVert x-x' \rVert^2}{\theta} \right\}. \]
+- The lengthscale of decay can also be tuned by adding a hyperparameter $d$:
+\[ C(x,x') = \exp\left\{-\frac{\lVert x-x' \rVert^2}{d} \right\}. \]
 ```{r}
 library(latex2exp)
 xs <- seq(-3,3,by=0.01)
@@ -73,8 +73,8 @@ plot(xs, K(xs,0.5), type="l", col="red", xlab=TeX("$x$"), ylab=TeX("$\\C(x,x')$"
 points(0.5,0, col="black")
 abline(v=0.5, col="black", lty=2)
 lines(xs, K(xs,0.5,theta=2), col="blue")
-text(1,0.4,TeX("$\\theta =1$"),col="red")
-text(-1.5,0.4,TeX("$\\theta =2$"),col="blue")
+text(1,0.4,TeX("$d =1$"),col="red")
+text(-1.5,0.4,TeX("$d =2$"),col="blue")
 ```
 
 ## Putting it all together
@@ -83,7 +83,7 @@ text(-1.5,0.4,TeX("$\\theta =2$"),col="blue")
 \[ \hat{\tau}^2 = \frac{y_n^\top C_n^{-1}y_n}{n}. \]
 
 \pause
-- Since the nugget $g$ and the lengthscale $\theta$ alter $C_n$, all three of the parameters must be estimated simultaneously by optimization.
+- Since the nugget $g$ and the lengthscale $d$ alter $C_n$, all three of the parameters must be estimated simultaneously by optimization.
 - Note that this optimization requires inverting $\Sigma_n$ at each iteration. **Tuning a GPR model can be more expensive than training it!**
 
 \pause
@@ -117,7 +117,7 @@ gp <- newGP(Xn, yn, d=1, g=0.1*var(yn), dK=TRUE)
 ```
 \normalsize
 
-- `d`=$\theta$, which we initially set to 1.
+- We initially set the lengthscale `d` to 1.
 - Our initial guess for the nugget `g` is 10\% of the variance in the response.
 - `dK=TRUE` makes derivatives of the kernel available so we can use MLE for hyperparameter tuning.
 
@@ -130,9 +130,9 @@ mle <- jmleGP(gp, drange=c(0,2), grange=c(0,var(yn)))
 \normalsize
 
 - `param=c("d","g")` asks `mleGP` to tune both the lengthscale and nugget. The scale $\tau^2$ is tuned automatically.
-- `drange` and `grange` are vectors of bounds for $\theta$ and $g$.
+- `drange` and `grange` are vectors of bounds for $d$ and $g$.
   - We want a range large enough to avoid hitting the bounds, but small enough to make the search efficient.
-  - $\theta=2$ is relatively large for our problem since $-3 \le x \le 3$.
+  - $d=2$ is relatively large for our problem since $-3 \le x \le 3$.
   - The nugget $g$ is rarely larger than the variance of the training responses.
 
 \bigskip
@@ -177,21 +177,21 @@ deleteGP(gp)
 ## Extra information: Anisotropy
 
 - It's assumed that the scale $\tau^2$ and nugget $g$ are constant over the entire search space. 
-- The lengthscale $\theta$ may not be. In particular, $\theta$ could be different for each dimension.
-- Imagine optimizing reaction yield based on time, temperature, and substrate. Small changes in temperature may have big effects (small $\theta$), while the yield may be insensitive to changes in time (large $\theta$).
+- The lengthscale $d$ may not be. In particular, $d$ could be different for each dimension.
+- Imagine optimizing reaction yield based on time, temperature, and substrate. Small changes in temperature may have big effects (small $d$), while the yield may be insensitive to changes in time (large $d$).
 - Dimensions with longer lengthscales require fewer data for prediction.
 
 \pause
-- An *isotropic* model assumes parameters are fixed over all dimensions. An *anisotropic* model assumes parameters like $\theta$ vary by dimension. Anisotropic models are also called *separable*.
+- An *isotropic* model assumes parameters are fixed over all dimensions. An *anisotropic* model assumes parameters like $d$ vary by dimension. Anisotropic models are also called *separable*.
 - For anisotropic models we estimate a vector of lengthscales, one for each dimension. The anisotropic correlation function is
-\[ C(x,x') = \exp\left\{- \sum_{k=1}^m\frac{(x_k-x_k')^2}{\theta_k} \right\}. \]
+\[ C(x,x') = \exp\left\{- \sum_{k=1}^m\frac{(x_k-x_k')^2}{d_k} \right\}. \]
 
 \pause
 - `laGP` provides separate functions for anisotropic models: `newGPsep`, `jmleGPsep`, `predGPsep`, `deleteGPsep`.
 
 ## Summary
 
-- For best performance, GPR models must be tuned to find a scale $\tau^2$, nugget $g$, and lengthscale $\theta$ that matches the training data.
+- For best performance, GPR models must be tuned to find a scale $\tau^2$, nugget $g$, and lengthscale $d$ that matches the training data.
 - Tuning is computationally expensive. Often we tune following the initial training and then only update (`updateGP`) as subsequent data are collected.
 - Anisotropic models can also increase performance, but we will focus on isotropic models in this course.
 
