@@ -45,7 +45,7 @@ eps <- sqrt(.Machine$double.eps)
 \[ \Sigma = \tau^2C(x,x') = \tau^2\exp\{-\lVert x-x' \rVert^2 \} \]
 \pause
 - Where do we get $\tau^2$? From the data! The maximum likelihood estimate is
-\[ \hat{\tau}^2 = \frac{y_n^\top C_n^{-1}y_n}{n} \]
+\[ \hat{\tau}^2 = \frac{y_n^\top C_n^{-1}y_n}{n}, \quad C_n \equiv C(X_n,X_n) \]
 - We'll let a software package handle these estimates for us.
 
 ## Nugget
@@ -60,7 +60,7 @@ eps <- sqrt(.Machine$double.eps)
 
 ## Lengthscale
 
-- GPR require the correlation function $C(x,x')$ to quantify how quickly the relationship between points decays.
+- GPR requires the correlation function $C(x,x')$ to quantify how quickly the relationship between points decays.
 - The lengthscale of decay can also be tuned by adding a hyperparameter $d$:
 \[ C(x,x') = \exp\left\{-\frac{\lVert x-x' \rVert^2}{d} \right\}. \]
 ```{r}
@@ -84,7 +84,7 @@ text(-1.5,0.4,TeX("$d =2$"),col="blue")
 
 \pause
 - Since the nugget $g$ and the lengthscale $d$ alter $C_n$, all three of the parameters must be estimated simultaneously by optimization.
-- Note that this optimization requires inverting $\Sigma_n$ at each iteration. **Tuning a GPR model can be more expensive than training it!**
+- Note that this optimization requires inverting $C_n$ at each iteration. **Tuning a GPR model can be more expensive than training it!**
 
 \pause
 - Now is a good time to offload all the computation to a GPR library.
@@ -129,7 +129,7 @@ mle <- jmleGP(gp, drange=c(0,2), grange=c(0,var(yn)))
 ```
 \normalsize
 
-- `param=c("d","g")` asks `mleGP` to tune both the lengthscale and nugget. The scale $\tau^2$ is tuned automatically.
+- `jmleGP` tunes both the lengthscale and nugget. The scale $\tau^2$ is tuned automatically.
 - `drange` and `grange` are vectors of bounds for $d$ and $g$.
   - We want a range large enough to avoid hitting the bounds, but small enough to make the search efficient.
   - $d=2$ is relatively large for our problem since $-3 \le x \le 3$.
