@@ -12,31 +12,260 @@ header-includes:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.width=3, fig.height=3, dev='pdf', fig.align = 'center')
-#font_scale <- 0.5
-#par(cex.lab=font_scale, cex.axis=font_scale, cex.main=font_scale, cex.sub=font_scale)
+knitr::opts_chunk$set(echo = TRUE, dev='pdf', fig.width=3, fig.height=3,
+                      fig.align = 'center')
+knitr::opts_knit$set(global.par=TRUE)
+options(warn = -1)
 library(latex2exp)
 eps <- sqrt(.Machine$double.eps) 
 ```
 
-## Helper functions for optimization
+## Optimizing a surrogate model
 
-By default, the optimizers in R *minimize* functions, so we negate the mean and SD to find *maxima*.
+- Nonlinear optimization requires repeatedly evaluating an *objective function*.
+- If the gradient is available, the solvers use it to find good descent directions.
+- If the gradient is unavailable, solvers may approximate it using additional objective evaluations.
+- Some "gradient-free" algorithms use search methods for objectives with discontinuous or undefined gradients.
+
+\bigskip
+\pause
+
+- The R function `optim` implements many nonlinear optimization algorithms.
+- For surrogate optimization, we use L-BGFS-B, an efficient quasi-Newton method.
+- L-BGFS-B allows *box constraints* to limit the solution space.
+
+## Objective functions for optimization
+
+By default, `optim` *minimize* functions, so we negate our objective to find *maxima*.
+\[ \max_x f(x) \Leftrightarrow \min_x -f(x)  \]
 
 \bigskip
 \footnotesize
 ```{r}
 library(laGP)
 
-neg_mean <- function(x,gp) {
+obj_mean <- function(x,gp) {
   -predGP(gp, matrix(x,nrow=1), lite=TRUE)$mean
-}
-
-neg_sd <- function(x,gp) {
-  -sqrt(predGP(gp, matrix(x,nrow=1), lite=TRUE)$s2)
 }
 ```
 
 \normalsize
 \bigskip
 The `lite=TRUE` tells `laGP` to not compute the entire covariance matrix, just the `mean` and variance `s2`.
+
+```{r include=FALSE}
+plot_f2 <- function(f, x=seq(0,1,0.01), type=c("image","persp"), main="true response", ...) {
+  Xg <- expand.grid(x,x)
+  yg <- f(Xg)
+  if ("image" %in% type) 
+    image(x, x, matrix(yg, ncol=length(x)), 
+          xlab="x1", ylab="x2", main=main,
+          axes=FALSE, ...)
+  if ("persp" %in% type)
+    persp(x, x, matrix(yg, ncol=length(x)), 
+          xlab="x1", ylab="x2",zlab="y", main=main,
+          axes=FALSE, ann=FALSE, ...)
+}
+
+plot_gp2 <- function(gp, attr="mean", ...) {
+  if (attr == "mean") {
+    f <- function(X) {predGP(gp, X, lite=TRUE)$mean}
+    plot_f2(f, main="GP mean", ...)
+  } else if (attr == "sd") {
+    f <- function(X) {sqrt(predGP(gp, X, lite=TRUE)$s2)}
+    plot_f2(f, main="GP SD", ...)
+  }
+}
+
+plot_result <- function(gp, result, ...) {
+  plot_gp2(gp, type="image", ...)
+  arrows(result$Xstart[ ,1], result$Xstart[ ,2],
+         result$X[ ,1], result$X[ ,2], length=0.05)
+  argmin <- which.min(result$y)
+  points(result$X[argmin,1], result$X[argmin,2], col="blue")
+}
+```
+  
+## Our search function
+
+\footnotesize
+```{r}
+gp_search <- function(obj, gp, nstarts, Xn) {
+  Xstart <- maximin::maximin(nstarts, 2, Xorig=Xn)$Xf[nrow(Xn)+(1:nstarts), ]
+  X <- matrix(NA, nrow=nstarts, ncol=2)
+  y <- numeric(nstarts)
+  for (i in 1:nstarts) {
+    out <- optim(Xstart[i, ], obj, 
+                 method="L-BFGS-B", lower=0, upper=1, 
+                 gp=gp)
+    X[i, ] <- out$par
+    y[i] <- out$value
+  }
+  return(list(Xstart=Xstart, X=X, y=y))
+}
+```
+
+## The *true* function $f$
+
+```{r echo=FALSE}
+font_scale <- 0.5
+par(cex.lab=font_scale, cex.axis=font_scale, cex.main=font_scale, cex.sub=font_scale)
+par(mfrow=c(2,2), mar=c(0.1,0.1,1,0.1))
+```
+
+\footnotesize
+```{r}
+f <- function(X, sd=0.01) {
+  X[,1] <- (X[,1] - 0.5)*6 + 1
+  X[,2] <- (X[,2] - 0.5)*6 + 1
+  X[,1] * exp(-X[,1]^2 - X[,2]^2) + rnorm(nrow(X), sd=sd)
+}
+plot_f2(f)
+```
+## An initial design
+
+```{r echo=FALSE}
+set.seed(498598)
+```
+
+\footnotesize
+```{r}
+Xn <- maximin::maximin(n=16, p=2, T=100)$Xf
+yn <- f(Xn)
+gp <- laGP::newGP(Xn,yn,d=0.1,g=0.1*var(yn),dK=TRUE)
+plot_gp2(gp)
+```
+## Searching the surrogate for a maximum
+
+\footnotesize
+```{r}
+result <- gp_search(obj_mean, gp, 10, Xn)
+argmax <- which.max(-result$y)
+Xnew <- matrix(result$X[argmax, ], ncol=2)
+
+plot_result(gp,result)
+points(Xnew[ ,1], Xnew[ ,2], col="blue")
+
+updateGP(gp, Xnew, f(Xnew))
+Xn <- rbind(Xn, Xnew)
+plot_gp2(gp, type="image")
+```
+
+## Iterative design by surrogate optimization
+
+```{r echo=FALSE}
+par(mfrow=c(3,3))
+```
+
+\footnotesize
+```{r echo=FALSE}
+for (i in 1:6) {
+  result <- gp_search(obj_mean, gp, 10, Xn)
+  argmax <- which.max(-result$y)
+  Xnew <- matrix(result$X[argmax, ], ncol=2)
+  plot_gp2(gp, type="image")
+  points(Xnew[ ,1], Xnew[ ,2], col="blue")
+  
+  updateGP(gp, Xnew, f(Xnew))
+  Xn <- rbind(Xn, Xnew)
+}
+```
+
+## What about uncertainty?
+
+```{r echo=FALSE}
+set.seed(498598)
+par(mfrow=c(2,2))
+```
+
+\footnotesize
+```{r}
+Xn <- maximin::maximin(n=16, p=2, T=100)$Xf
+yn <- f(Xn)
+gp <- laGP::newGP(Xn,yn,d=0.1,g=0.1*var(yn),dK=TRUE)
+plot_gp2(gp,"sd")
+```
+
+
+## Searching for locations of maximum uncertainty
+
+\footnotesize
+```{r}
+obj_sd <- function(x,gp) {
+  -sqrt(predGP(gp, matrix(x,nrow=1), lite=TRUE)$s2)
+}
+
+result <- gp_search(obj_sd, gp, 10, Xn)
+argmax <- which.max(-result$y)
+Xnew <- matrix(result$X[argmax, ], ncol=2)
+
+plot_result(gp,result,"sd")
+points(Xnew[ ,1], Xnew[ ,2], col="blue")
+
+updateGP(gp, Xnew, f(Xnew))
+Xn <- rbind(Xn, Xnew)
+plot_gp2(gp,"sd",type="image")
+```
+
+## Iterative model improvement by surrogate optimization
+
+```{r echo=FALSE}
+par(mfrow=c(3,3))
+```
+
+\footnotesize
+```{r echo=FALSE}
+for (i in 1:6) {
+  result <- gp_search(obj_sd, gp, 10, Xn)
+  argmax <- which.max(-result$y)
+  Xnew <- matrix(result$X[argmax, ], ncol=2)
+  plot_gp2(gp,"sd",type="image")
+  points(Xnew[ ,1], Xnew[ ,2], col="blue")
+  
+  updateGP(gp, Xnew, f(Xnew))
+  Xn <- rbind(Xn, Xnew)
+}
+```
+
+## The response surface after minimizing uncertainty
+
+```{r echo=FALSE}
+par(mfrow=c(2,2))
+```
+
+\footnotesize
+```{r echo=FALSE}
+plot_gp2(gp,"mean",type="image")
+plot_f2(f,type="image")
+```
+
+## Exploration vs. exploitation
+
+There is a fundamental tradeoff in global optimization:
+
+- **Exploration** searches areas of high uncertainty to find *new* regions of interest.
+- **Exploitation** refines existing optima by adding points to *known* regions of interest.
+
+\pause
+\bigskip
+Should we explore or exploit?
+
+- **Both.** Good algorithms balance discovery and refinement.
+- The *best* balance is an open problem. Some solutions:
+  - Always explore some (small) percent of the time.
+  - Explore early, exploit later.
+  - Alternate between batches of exploration and exploitation.
+
+## Summary
+
+- We use `optim` to optimize the surrogate function. 
+- Using `optim` directly on the true function would be far too expensive.
+- We can *exploit* by maximizing the predicted GPR mean.
+- We can *explore* by maximizing the predicted GPR standard deviation.
+
+\pause
+
+- **Next time:** Combining exploitation and exploration into a single search criterion.
+
+
+
