@@ -44,7 +44,10 @@ By default, `optim` *minimize* functions, so we negate our objective to find *ma
 ```{r}
 library(laGP)
 
+total_obj_evals <- 0
+
 obj_mean <- function(x,gp) {
+  total_obj_evals <<- total_obj_evals + 1
   -predGP(gp, matrix(x,nrow=1), lite=TRUE)$mean
 }
 ```
@@ -169,6 +172,16 @@ for (i in 1:6) {
   updateGP(gp, Xnew, f(Xnew))
   Xn <- rbind(Xn, Xnew)
 }
+```
+
+## How many functional evaluations did it take?
+
+True function evaluations: $16 + 7 = 23$.
+
+\pause
+Surrogate function evaluations:
+```{r}
+total_obj_evals
 ```
 
 ## What about uncertainty?

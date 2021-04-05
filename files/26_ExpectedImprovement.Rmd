@@ -1,0 +1,375 @@
+---
+title: "Surrogate Optimization:\\newline Expected Improvement"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
+output: beamer_presentation
+fontsize: 9pt
+header-includes: 
+  - \usepackage{tikz}
+  - \usepackage{booktabs}
+  - \renewcommand\mathfamilydefault{cmr}
+  - \usetikzlibrary{positioning,shapes.misc,calc,backgrounds,scopes} 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, dev='pdf', fig.width=3, fig.height=3,
+                      fig.align = 'center')
+knitr::opts_knit$set(global.par=TRUE)
+options(warn = -1)
+library(latex2exp)
+eps <- sqrt(.Machine$double.eps)
+library(laGP)
+```
+
+## Exploration vs. exploitation
+
+There is a fundamental tradeoff in global optimization:
+
+- **Exploration** searches areas of high uncertainty to find *new* regions of interest.
+- **Exploitation** refines existing optima by adding points to *known* regions of interest.
+
+\pause
+\bigskip
+Should we explore or exploit?
+
+- **Both.** Good algorithms balance discovery and refinement.
+- The *best* balance is an open problem. Some solutions:
+  - Always explore some (small) percent of the time.
+  - Explore early, exploit later.
+  - Alternate between batches of exploration and exploitation.
+  - **Today:** Combine exploration and exploitation into a single metric.
+  
+## A 1-D example (Gramacy 2020)
+
+```{r}
+Xn <- c(1, 2, 3, 4, 12)
+yn <- c(0, 1.75, 2, 0.5, -5)
+gp <- newGP(matrix(Xn, ncol=1), yn, d=10, g=1e-8)
+X <- seq(0, 13, length=1000)
+p <- predGP(gp, matrix(X, ncol=1), lite=TRUE)
+```
+
+```{r echo=FALSE}
+ymax <- max(yn)
+par(mar=c(0,0,0,0))
+plot(Xn, yn, pch=19, xlim=c(0,13), ylim=c(-9,4))
+lines(X, p$mean)
+abline(h=ymax, col=3, lty=3)
+```
+
+## What happens when we consider uncertainty?
+
+```{r echo=FALSE}
+plot(Xn, yn, pch=19, xlim=c(0,13), ylim=c(-9,4))
+lines(X, p$mean)
+abline(h=ymax, col=3, lty=3)
+lines(X, p$mean + 2*sqrt(p$s2), col=2, lty=2)
+lines(X, p$mean - 2*sqrt(p$s2), col=2, lty=2)
+```
+
+## Optimizing for objective improvement
+
+A key insight in Bayesian optimization was the switch to *expected improvement* (Schonlau 1997).
+
+\bigskip
+As usual, assume we've measured $n$ responses $y_n$ at locations $X_n$. Define
+\[ y_\mathrm{max} = \max\{y_1,\ldots,y_n\}. \]
+
+\pause
+\bigskip
+The *improvement* in the objective at a new input $x$ is
+\[ I(x) = \max\{0,y(x) - y_\mathrm{max} \} \]
+where the maximization "floors" the improvement at zero. 
+
+\pause
+\bigskip
+The *expected improvement* $\mathrm{EI}(x) = \mathbb{E}\{I(x)\}$ quantifies how much we expect the best objective value to increase after measuring at point $x$.
+
+## Expected Improvement
+
+The model's predictions $y(x)$ are stochastic. How do we estimate the expected improvement
+\[ \mathrm{EI}(x) = \mathbb{E}\{I(x)\} = \mathbb{E}\{\max[0,y(x) - y_\mathrm{max}] \}? \]
+
+\pause
+\bigskip
+We can sample $y(x)$ many times, averaging the improvement $I(x)$ for $T$ samples:
+\[ \mathrm{EI}(x) \approx \frac{1}{T}\sum_{i=1}^T \max\{0,y_i(x) - y_\mathrm{max}\}. \]
+
+\pause
+\bigskip
+Even better, we can leverage that GPR predictions are multivariate normal with mean $\mu(x)$ and variance $\sigma(x)$. Let $z = (\mu(x) - y_\mathrm{max})/\sigma(x)$. Then
+\[ \mathrm{EI}(x) = (\mu(x) - y_\mathrm{max})\mathrm{CDF}(z) + \sigma(x)PDF(z) \]
+using the PDF and CDF of a standard Gaussian distribution.
+
+## Calculating EI
+
+```{r}
+argmax <- which.max(yn)
+ymax <- yn[argmax]
+z <- (p$mean - ymax)/sqrt(p$s2)
+ei <- (p$mean - ymax)*pnorm(z) + sqrt(p$s2)*dnorm(z)
+```
+
+## Calculating EI
+
+```{r echo=FALSE}
+par(mfrow=c(2,1), mar=c(0,0,0,0))
+plot(Xn, yn, pch=19, xlim=c(0,13), ylim=c(-9,4),axes=FALSE, ann=FALSE)
+lines(X, p$mean)
+lines(X, p$mean + 2*sqrt(p$s2), col=2, lty=2)
+lines(X, p$mean - 2*sqrt(p$s2), col=2, lty=2)
+abline(h=ymax, col=3, lty=3)
+plot(X, ei, type="l", col="blue", ylim=c(0,0.15), axes=FALSE, ann=FALSE)
+text(0,0.1, "EI", col="blue")
+```
+
+## Picking the next sample $x$
+
+```{r}
+argmaxEI <- which.max(ei)
+Xn <- c(Xn, X[argmaxEI])
+yn <- c(yn, p$mean[argmaxEI])
+
+updateGP(gp, matrix(X[argmaxEI], ncol=1), p$mean[argmaxEI])
+p <- predGP(gp, matrix(X, ncol=1), lite=TRUE)
+```
+
+\bigskip
+
+```{r echo=FALSE}
+par(mfrow=c(2,1), mar=c(0,0,0,0))
+plot(Xn, yn, pch=19, xlim=c(0,13), ylim=c(-9,4),axes=FALSE, ann=FALSE)
+lines(X, p$mean)
+lines(X, p$mean + 2*sqrt(p$s2), col=2, lty=2)
+lines(X, p$mean - 2*sqrt(p$s2), col=2, lty=2)
+abline(h=ymax, col=3, lty=3)
+```
+
+## Calculating EI (round 2)
+
+```{r}
+argmax <- which.max(yn)
+ymax <- yn[argmax]
+z <- (p$mean - ymax)/sqrt(p$s2)
+ei <- (p$mean - ymax)*pnorm(z) + sqrt(p$s2)*dnorm(z)
+```
+
+## Calculating EI (round 2)
+
+```{r echo=FALSE}
+par(mfrow=c(2,1), mar=c(0,0,0,0))
+plot(Xn, yn, pch=19, xlim=c(0,13), ylim=c(-9,4),axes=FALSE, ann=FALSE)
+lines(X, p$mean)
+lines(X, p$mean + 2*sqrt(p$s2), col=2, lty=2)
+lines(X, p$mean - 2*sqrt(p$s2), col=2, lty=2)
+abline(h=ymax, col=3, lty=3)
+plot(X, ei, type="l", col="blue", ylim=c(0,0.15), axes=FALSE, ann=FALSE)
+text(0,0.1, "EI", col="blue")
+```
+
+## Picking the next sample $x$ (round 2)
+
+```{r}
+argmaxEI <- which.max(ei)
+Xn <- c(Xn, X[argmaxEI])
+yn <- c(yn, p$mean[argmaxEI])
+
+updateGP(gp, matrix(X[argmaxEI], ncol=1), p$mean[argmaxEI])
+p <- predGP(gp, matrix(X, ncol=1), lite=TRUE)
+```
+
+## After the second update
+
+```{r echo=FALSE}
+argmax <- which.max(yn)
+ymax <- yn[argmax]
+z <- (p$mean - ymax)/sqrt(p$s2)
+ei <- (p$mean - ymax)*pnorm(z) + sqrt(p$s2)*dnorm(z)
+
+par(mfrow=c(2,1), mar=c(0,0,0,0))
+plot(Xn, yn, pch=19, xlim=c(0,13), ylim=c(-9,4),axes=FALSE, ann=FALSE)
+lines(X, p$mean)
+lines(X, p$mean + 2*sqrt(p$s2), col=2, lty=2)
+lines(X, p$mean - 2*sqrt(p$s2), col=2, lty=2)
+abline(h=ymax, col=3, lty=3)
+plot(X, ei, type="l", col="blue", ylim=c(0,0.15), axes=FALSE, ann=FALSE)
+text(0,0.1, "EI", col="blue")
+```
+
+## The complete GPR surrogate optimization framework
+
+To maximize the response $y$ of an unknown function $f$ using no more than $N$ function evaluations:
+
+1. Create a space-filling design $X_n$ for $n<N$.
+2. Measure the responses $y_n(X_n)$ and train $\mathcal{GP}(X_n,y_n)$.
+3. Use a nonlinear optimizer (`optim`) to find the argmax $x$ of a metric (mean, SD, EI).
+4. Measure $y(x)$ and update $\mathcal{GP}(X_{n+1},y_{n+1})$.
+5. Go to \#3 and repeat until all $N$ runs are used. 
+6. Search $\mathcal{GP}(X_N,y_N)$ for the global maximum $y^*(x^*)$.
+
+## Does sequential design always work?
+
+- Sequential design methods are **last sample optimal**. 
+- After $N-1$ runs, sequential design finds the optimal location for the last run.
+
+\pause
+- However, sequential design is *greedy*. If $N-2$ of $N$ runs are finished, two rounds of sequential design may not be optimal.
+
+## Limited lookahead in active learning
+
+```{r echo=FALSE}
+f <- function(X, sd=0.01) {
+  X[,1] <- (X[,1] - 0.5)*6 + 1
+  X[,2] <- (X[,2] - 0.5)*6 + 1
+  X[,1] * exp(-X[,1]^2 - X[,2]^2) + rnorm(nrow(X), sd=sd)
+}
+
+plot_f2 <- function(f, x=seq(0,1,0.01), type=c("image","persp"), ...) {
+  Xg <- expand.grid(x,x)
+  yg <- f(Xg)
+  if ("image" %in% type) 
+    image(x, x, matrix(yg, ncol=length(x)), 
+          xlab="x1", ylab="x2",
+          axes=FALSE, ...)
+  if ("persp" %in% type)
+    persp(x, x, matrix(yg, ncol=length(x)), 
+          xlab="x1", ylab="x2",zlab="y",
+          axes=FALSE, ann=FALSE, ...)
+}
+
+plot_gp2 <- function(gp, attr="mean", ...) {
+  if (attr == "mean") {
+    f <- function(X) {predGP(gp, X, lite=TRUE)$mean}
+    plot_f2(f, ...)
+  } else if (attr == "sd") {
+    f <- function(X) {sqrt(predGP(gp, X, lite=TRUE)$s2)}
+    plot_f2(f, ...)
+  }
+}
+```
+
+```{r echo=FALSE}
+set.seed(498)
+Xn <- maximin::maximin(n=16, p=2, T=100)$Xf
+Xn[1, ] <- c(1,1) # move a point to leave a gap
+yn <- f(Xn)
+gp <- laGP::newGP(Xn,yn,d=0.1,g=0.1*var(yn),dK=TRUE)
+
+gp2 <- laGP::newGP(Xn,yn,d=0.1,g=0.1*var(yn),dK=TRUE)
+Xn2 <- Xn
+yn2 <- yn
+```
+
+```{r echo=FALSE, fig.width=4, fig.height=4}
+integrated_sd <- function(gp, x=seq(0,1,0.01)) {
+  Xg <- expand.grid(x,x)
+  mean(sqrt(predGP(gp, Xg, lite=TRUE)$s2))
+}
+
+# Sequential update to minimize variance
+gp_search <- function(obj, gp, nstarts, Xn) {
+  Xstart <- maximin::maximin(nstarts, 2, Xorig=Xn)$Xf[nrow(Xn)+(1:nstarts), ]
+  X <- matrix(NA, nrow=nstarts, ncol=2)
+  y <- numeric(nstarts)
+  for (i in 1:nstarts) {
+    out <- optim(Xstart[i, ], obj, 
+                 method="L-BFGS-B", lower=0, upper=1, 
+                 gp=gp)
+    X[i, ] <- out$par
+    y[i] <- out$value
+  }
+  return(list(Xstart=Xstart, X=X, y=y))
+}
+
+obj_sd <- function(x,gp) {
+  -sqrt(predGP(gp, matrix(x,nrow=1), lite=TRUE)$s2)
+}
+
+IV <- function(gp) signif(integrated_sd(gp), 3)
+
+par(mfrow=c(3,3), mar=c(0,0.1,1,0.1))
+plot_gp2(gp,"sd",type="image", main=paste("ISD =", IV(gp)))
+points(Xn[ ,1], Xn[ ,2])
+
+result <- gp_search(obj_sd, gp, 10, Xn)
+argmax <- which.max(-result$y)
+Xnew <- matrix(result$X[argmax, ], ncol=2)
+
+updateGP(gp, Xnew, predGP(gp, matrix(Xnew,nrow=1), lite=TRUE)$mean)
+Xn <- rbind(Xn, Xnew)
+
+plot_gp2(gp,"sd",type="image", main=paste("ISD =", IV(gp)))
+points(Xn[ ,1], Xn[ ,2])
+
+result <- gp_search(obj_sd, gp, 10, Xn)
+argmax <- which.max(-result$y)
+Xnew <- matrix(result$X[argmax, ], ncol=2)
+
+updateGP(gp, Xnew, predGP(gp, matrix(Xnew,nrow=1), lite=TRUE)$mean)
+Xn <- rbind(Xn, Xnew)
+
+plot_gp2(gp,"sd",type="image", main=paste("ISD =", IV(gp)))
+points(Xn[ ,1], Xn[ ,2])
+```
+
+\pause
+
+```{r echo=FALSE, fig.width=4, fig.height=4}
+# now for GP2
+
+plot_gp2(gp2,"sd",type="image", main=paste("ISD =", IV(gp2)))
+points(Xn2[ ,1], Xn2[ ,2])
+
+Xnew <- matrix(c(0.75,0.65), ncol=2)
+
+updateGP(gp2, Xnew, predGP(gp2, matrix(Xnew,nrow=1), lite=TRUE)$mean)
+Xn <- rbind(Xn2, Xnew)
+
+plot_gp2(gp2,"sd",type="image", main=paste("ISD =", IV(gp2)))
+points(Xn[ ,1], Xn[ ,2])
+
+result <- gp_search(obj_sd, gp2, 10, Xn)
+argmax <- which.max(-result$y)
+Xnew <- matrix(result$X[argmax, ], ncol=2)
+
+updateGP(gp2, Xnew, predGP(gp, matrix(Xnew,nrow=1), lite=TRUE)$mean)
+Xn <- rbind(Xn, Xnew)
+
+plot_gp2(gp2,"sd",type="image", main=paste("ISD =", IV(gp2)))
+points(Xn[ ,1], Xn[ ,2])
+```
+
+## What's wrong with being greedy?
+
+Imagine we have two runs left. There are two strategies:
+
+1. Select both points with our current information $\mathcal{GP}(X_{N-2},y_{N-2})$. This ignores the new information available in $\mathcal{GP}(X_{N-1},y_{N-1})$.
+
+2. Select the first point using current information and select the second point using $\mathcal{GP}(X_{N-1},y_{N-1})$. The first point ignores the existence of the second point.
+
+\pause
+\bigskip
+The "best" solution is often a compromise between two extremes. Given a budget of $N$ runs and an initial design $X_n$, we could
+
+1. Place the remaining $N-n$ runs at once using $\mathcal{GP}(X_n,y_n)$.
+2. Place the remaining $N-n$ runs one at a time.
+
+\pause
+\bigskip
+For example, Let $N=36$ and $n=16$, so we have 20 runs to go. We could
+
+1. Place runs in 5 batches of 4 points, **or**
+2. Place 4 batches of 4 points, followed by 4 one-at-a-time updates.
+
+## Summary
+
+- Surrogate optimization with Gaussian processes finds **global** optima for unknown, expensive functions.
+
+- Balancing *exploration* and *exploitation* is critical for finding the best response.
+
+- Sequential design works well but suffers from limited lookahead.
+
+\bigskip
+\pause
+- **Next time:** How do we optimize when function evaluations are *inexpensive*, but the problem is enormous?
+
