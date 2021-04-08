@@ -35,6 +35,10 @@ Experiment Design & Optimization</h2>
   - Case Study 3
     - [Introduction](files/CaseStudy3_Intro.pdf)
     - [Trebuchet Simulator](https://jensenlab.shinyapps.io/trebsim)
+  - Case Study 4
+    - [Assignment](files/CaseStudy4.pdf)
+    - [AlphaGo: The Movie](https://www.youtube.com/watch?v=WXuK6gekU1Y)
+    - Submit answers on Gradescope by **Friday, 4/23 by 5pm Central**.
 
 #### Schedule
 * M 1/25: Introduction and Motivation [[slides]](files/01_Introduction.pptx)
