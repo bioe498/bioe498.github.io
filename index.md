@@ -73,3 +73,4 @@ Experiment Design & Optimization</h2>
 * F 4/2: Surrogates: Sequential Design [[slides]](files/25_SequentialDesign.pdf) [[Rmd]](files/25_SequentialDesign.Rmd)
 * M 4/5: Surrogates: Expected Improvement [[slides]](files/26_ExpectedImprovement.pdf) [[Rmd]](files/26_ExpectedImprovement.Rmd)
 * W 4/7: RL and MDPs [[slides]](files/27_MDPs.pdf)
+* F 4/9: Value Functions [[slides]](files/28_ValueFunctions.pdf)
