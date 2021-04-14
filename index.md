@@ -75,3 +75,4 @@ Experiment Design & Optimization</h2>
 * W 4/7: RL and MDPs [[slides]](files/27_MDPs.pdf)
 * F 4/9: Value Functions [[slides]](files/28_ValueFunctions.pdf)
 * M 4/12: Rollout [[slides]](files/29_Rollout.pdf)
+* W 4/14: Discounting, TD learning, and Q-factors [[slides]](files/30_DiscountingQFactors.pdf)

@@ -1,0 +1,210 @@
+\documentclass[9pt]{beamer}
+
+\beamertemplatenavigationsymbolsempty
+\renewcommand\mathfamilydefault{cmr}
+
+\usepackage{pajmath}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes.misc,calc,backgrounds,scopes} 
+\usetikzlibrary{datavisualization}
+\usetikzlibrary{datavisualization.formats.functions}
+\tikzset{boxed/.style={
+  thick,
+  draw=black,
+  top color=white,
+  text height=1.5ex,
+  text depth=.25ex
+}}
+
+
+\newcommand\lo{$-1$}
+\newcommand\hi{$\phan1$}
+\newcommand\ze{$\phan0$}
+\newcommand\Ze{$\phan\Vzero$}
+\newcommand\pskip{\pause\bigskip}
+\newcommand\lspace{\addtolength{\itemsep}{0.5\baselineskip}}
+\newcommand\red[1]{{\color{red}#1}}
+
+\title{Reinforcement Learning:\\Discounting, TD-learning, and $Q$-factors}
+\author{BIOE 498/598 PJ}
+\date{Spring 2021}
+
+\begin{document}
+\frame{\titlepage}
+
+
+\begin{frame}{Review}
+
+\begin{itemize}\lspace
+	\item \textbf{Rollout} is an online method that reduces simulation by focusing on local starts.
+	\item A single pass with a random base policy provides good, but not necessarily optimal, behavior.
+	\item Iteration and exploration are required to find optimal policies.
+	\item<2-> \textbf{Today:} Model-free learning with discounted rewards and $Q$-factors.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Discount factors}
+	Let's extend our RL theory to incorporate \emph{discounting} --- reducing the present value of rewards from the future.
+	
+	\bigskip
+	Discounting applies a horizon to the problem. The agent cares less and less about future states.
+	
+	\pause
+	\begin{align*}
+		\text{Undiscounted:}&\quad \max_{a} \mathbb{E}\left\{ r_i + V(s_{i+1}) \right\} \\
+		\text{Discounted:}&\quad \max_{a} \mathbb{E}\left\{ r_i + \gamma V(s_{i+1}) \right\}
+	\end{align*}
+	
+	\pause
+	The \emph{discount factor} $\gamma \in [0,1]$ determines the length of the horizon.
+	\medskip
+	\begin{itemize}\lspace
+		\item $\gamma=0$ makes the algorithms greedy; only the immediate reward $r_i$ influences the agent.
+		\item $\gamma=1$ equally weights all rewards to the end of the trajectory.
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Discounting in Gridworld}
+\begin{itemize}
+	\item For Gridworld we used a penalty (negative reward) to encourage the agent to finish the maze quickly.
+	\item Instead of penalizing each action, we could discount and offer a terminal reward.
+\end{itemize}
+
+\pause
+Penalized stepping with $r_i=-1$, $r_T=0$:
+\begin{align*}
+	\text{reward} &= r_0 + r_1 + \cdots + r_{T-1} + r_T \\
+		&= \sum_{i=0}^{T-1} r_i + 0 \\
+		&= -T	
+\end{align*}
+\pause
+Discounting with $r_i=0$, $r_T=1$, $\gamma < 1$:
+\begin{align*}
+	\text{reward} &= r_0 + \gamma(r_1 + \gamma(r_2 + \gamma(\cdots \gamma(r_{T-1} + \gamma (r_T))))) \\
+		&= r_0 + \gamma r_1 + \gamma^2 r_2 + \cdots \gamma^{T-1} r_{T-1} + \gamma^T r_T \\
+		&= \gamma^T
+\end{align*}
+
+\pause
+In both cases, the maximum reward is achieved by minimizing the number of steps $T$.
+
+\end{frame}
+
+\begin{frame}{When to discount?}
+
+Almost all algorithms are written with a discount factor
+	\[ \max_{a} \mathbb{E}\left\{ r_i + \gamma V(s_{i+1}) \right\}. \]
+	
+\begin{itemize}
+	\item If you don't want to discount future rewards, set $\gamma=1$.
+	\item If you want to compare your algorithm to a greedy algorithm, set $\gamma=0$.
+	\item If you want the agent to terminate the process quickly, set $\gamma<1$.
+\end{itemize}
+
+\pskip
+Discounting is also the key to solving non-episodic (infinite horizon) problems. While the MDP never terminates, the discounted rewards become so small that the agent stops caring after a finite number of steps.
+
+\end{frame}
+
+\begin{frame}{Model-free learning}
+
+\begin{itemize}\lspace
+	\item Monte Carlo methods like rollout require a \emph{model} to simulate ahead when estimating value functions.
+	\item \emph{Model-free} algorithms learn directly from experience. Their only method of sampling is to interact with the environment.
+	\item Model-free algorithms try to maximize the information that can be extracted from every trajectory.
+\end{itemize}
+	
+\end{frame}
+
+\begin{frame}{Temporal difference learning}
+
+\begin{itemize}\lspace
+	\item Model-free algorithms learn directly from experience.
+	\item Each trajectory is ``expensive'' relative to a simulated trajectory.
+	\item Ideally, we would update our estimates of the value function from every trajectory; however, a single trajectory is a noisy estimate of value.
+	\item \textbf{Temporal difference (TD) learning} balances new experiences with previous results when updating $V(s)$.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{The TD-learning algorithm}
+
+\begin{enumerate}\lspace
+	\item Initialize our value estimates $V(s)$ for all states~$s$.
+	\item<2-> Experience a new trajectory $s_0,a_0,r_0$, $s_1,a_1,r_1$ $\ldots$, $s_T,r_T$.
+	\item<3-> For each state~$s_i$ in the trajectory, calculate the \emph{TD target}
+		\[ \hat{V}(s_i) = r_i + \gamma V(s_{i+1}) \]
+		using the experienced reward $r_i$ and the previous estimate for $V(s_{i+1})$.
+	\item<4-> Incrementally update the value of state~$s_i$ using a learning rate $\alpha$:
+		\[ V(s_i) = V(s_i) + \alpha\left[ \hat{V}(s_i) - V(s_i) \right]. \]
+	\item<5-> Go to step \#2 and repeat.
+\end{enumerate}
+
+\bigskip
+\onslide<6->{
+	TD-learning is a \emph{bootstrap} method since $V(s)$ is updated using $V(s_i)$ and $V(s_{i+1})$ from the previous iteration. New information only enters through $r_i$ when estimating the TD target~$\hat{V}(s_i)$.
+}
+	
+\end{frame}
+
+\begin{frame}{$Q$-factors}
+
+Learning $V(s)$ is not the end. We still need to find a policy that solves
+	\[ \max_{a} \mathbb{E}\left\{ r_i + \gamma V(s_{i+1}) \right\}. \]
+
+This requires knowing $s_{i+1}$ given $s_i$ and $a$, or at least the probability distribution for ending up in each state.
+
+\pskip
+\textbf{Example:} In chess, the state $s_i$ is the arrangement of all the pieces on the board.
+\begin{itemize}
+	\item We select $a$ based on the reward~$r_i$ (which is usually zero) and the future value $V(s_{i+1})$.
+	\item However, $s_{i+1}$ is the state \emph{after our opponent's turn!} We have no idea what move our opponent will make.
+\end{itemize}
+
+\pskip
+For many problems it is easier to learn the value of each state/action pair, called a $Q$-factor or $Q(s,a)$.
+
+\end{frame}
+
+\begin{frame}{Learning $Q$-factors}
+
+Using $Q$-factors, the policy problem at state~$s$
+	\[ \max_{a} \mathbb{E}\left\{ r_i + \gamma V(s_{i+1}) \right\} \]
+becomes
+	\[ \max_{a} \mathbb{E}\left\{ Q(s_i,a) \right\}. \]
+
+\pskip
+\begin{itemize}
+	\item \textbf{Pro:} We do not need a model or a way to predict $s_{i+1}$.
+	\item \textbf{Con:} We need to learn a $Q$-factor for every state/action pair.
+\end{itemize}
+
+\pskip
+We can learn $Q$-factors using a TD approach given a trajectory $s_0,a_0,r_0$, $s_1,a_1,r_1$ $\ldots$, $s_T,r_T$:
+\begin{align*}
+	\hat{Q}(s_i,a_i) &= r_i + \gamma Q(s_{i+1},a_{i+1}) & \text{target} \\
+	Q(s_i,a_i) &= Q(s_i,a_i) + \alpha\left[ \hat{Q}(s_i,a_i) - Q(s_i,a_i) \right] & \text{update}
+\end{align*}
+\pause
+This approach is also called \emph{SARSA}.
+
+\end{frame}
+
+\begin{frame}{Summary}
+
+\begin{itemize}\lspace
+	\item Discount factors shorten the horizon of RL problems, causing the agent to focus on rewards in the near future.
+	\item Temporal Difference (TD) learning incrementally updates value functions using a new experience.
+	\item Learning $Q$-factors eliminates the need to predict the next state given an action; however, the number of $Q$-factors is much greater than the number of states.
+	\item<2-> \textbf{Next time:} Tic-Tac-Go!
+\end{itemize}
+	
+\end{frame}
+
+
+\end{document}
