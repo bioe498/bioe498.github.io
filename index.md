@@ -32,13 +32,14 @@ Experiment Design & Optimization</h2>
       - Factor should be set as "1" or "-1", just like the sample run (which you should replace with your own run 1).
       - Leave blank any runs that you are saving for the second round.
       - Round 1 runs must be submitted to Gradescope by 5pm Central on 3/8.
+      - **Round 2 runs must be submitted to Gradescope by 5pm Central on Friday 4/23.**
   - Case Study 3
     - [Introduction](files/CaseStudy3_Intro.pdf)
     - [Trebuchet Simulator](https://jensenlab.shinyapps.io/trebsim)
   - Case Study 4
     - [Assignment](files/CaseStudy4.pdf)
     - [AlphaGo: The Movie](https://www.youtube.com/watch?v=WXuK6gekU1Y)
-    - Submit answers on Gradescope by **Friday, 4/23 by 5pm Central**.
+    - Submit answers on Gradescope by **Monday, 4/26 by 5pm Central**.
 
 #### Schedule
 * M 1/25: Introduction and Motivation [[slides]](files/01_Introduction.pptx)
@@ -76,3 +77,12 @@ Experiment Design & Optimization</h2>
 * F 4/9: Value Functions [[slides]](files/28_ValueFunctions.pdf)
 * M 4/12: Rollout [[slides]](files/29_Rollout.pdf)
 * W 4/14: Discounting, TD learning, and Q-factors [[slides]](files/30_DiscountingQFactors.pdf)
+* F 4/16: *no class*
+* M 4/19: Q-learning
+* W 4/21:
+* F 4/23:
+* M 4/26:
+* W 4/28:
+* F 4/30: Review
+* M 5/3: **Exam 2**
+* W 5/5: Tic-Tac-Go tournament
