@@ -78,7 +78,7 @@ Experiment Design & Optimization</h2>
 * M 4/12: Rollout [[slides]](files/29_Rollout.pdf)
 * W 4/14: Discounting, TD learning, and Q-factors [[slides]](files/30_DiscountingQFactors.pdf)
 * F 4/16: *no class*
-* M 4/19: Q-learning
+* M 4/19: Q-learning [[slides]](files/31_QLearning.pdf)
 * W 4/21:
 * F 4/23:
 * M 4/26:
