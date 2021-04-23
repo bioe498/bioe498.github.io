@@ -195,5 +195,52 @@ Neural network training \emph{should} get stuck in local optima, but it doesn't.
 
 \end{frame}
 
+\begin{frame}{Deep $Q$-learning}
+
+\begin{enumerate}
+	\item Construct a neural network $\widetilde{Q}(s,a;\VW)$ with random weights $\VW$.
+	\item<2-> Generate a trajectory $s_0,a_0,r_0,\,\ldots,\,s_T,r_T$.
+	\item<3-> For each $(s_i,a_i)$ pair, calculate the $Q$-factor target
+		\[ \hat{Q}(s_i,a_i) = r_i + \max_a \widetilde{Q}(s_{i+1},a). \]
+	\item<4-> Compute the loss
+		\[ L(\VW) = \left( \hat{Q}(s_i,a_i) - \widetilde{Q}(s_i,a_i;\VW) \right)^2. \]
+	\item<5-> Backpropagate the gradient through the neural network and update the weights based on the loss:
+		\[ \VW \leftarrow \VW - \alpha \V{g}(\VW). \]
+	\item<6-> Go to \#2 and repeat.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Deep $Q$-learning with terminal rewards}
+
+For games with only a terminal reward ($r_i = 0$ for $i\ne T$), we need to be careful in the near-terminal state:
+\begin{align*} 
+	\hat{Q}(s_{T-1},a_{T-1}) &= r_{T-1} + \max_a \widetilde{Q}(s_T,a) \\
+	&= 0 + \widetilde{Q}(s_T,\cdot) \\
+	&= r_T
+\end{align*} 
+
+\pause
+\bigskip
+This reward will eventually be bootstrapped back through the $Q$-factors. However, we can speed up learning by setting
+\[ \hat{Q}(s_i,a_i) \approx r_T. \]
+
+This rewards any state/action pair from games with a win and penalizes and state/action pair seen in losing games.
+	
+\end{frame}
+
+
+\begin{frame}{Summary}
+
+\begin{itemize}\addtolength{\itemsep}{0.5\baselineskip}
+	\item Learning $Q$-factors is a dominant method for model-free RL.
+	\item $Q$-factor estimates are updated by SARSA, $Q$-learning, or other algorithms.
+	\item $Q$-factors can be tabulated for every state/action pair, or approximated with a parameterized function.
+	\item Deep RL uses deep neural networks for $Q$-factor approximation.
+	\item<2-> \textbf{Next time:} A ``deeper'' look at AlphaGo.
+\end{itemize}
+	
+\end{frame}
+
+
 
 \end{document}

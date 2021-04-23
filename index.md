@@ -83,7 +83,7 @@ Experiment Design & Optimization</h2>
 * F 4/16: *no class*
 * M 4/19: Q-learning [[slides]](files/31_QLearning.pdf)
 * W 4/21: Neural Networks [[slides]](files/32_NeuralNetworks.pdf)
-* F 4/23: Training Neural Networks
+* F 4/23: Training Neural Networks [[slides]](files/33_NeuralNetworkTraining.pdf)
 * M 4/26:
 * W 4/28:
 * F 4/30: Review
