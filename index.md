@@ -86,6 +86,6 @@ Experiment Design & Optimization</h2>
 * F 4/23: Training Neural Networks [[slides]](files/33_NeuralNetworkTraining.pdf)
 * M 4/26: Policy Gradients [[slides]](files/34_PolicyGradients.pdf)
 * W 4/28: AlphaGo [[notes]](files/35_AlphaGo.pdf)
-* F 4/30: Review
+* F 4/30: Review [[topics]](files/Exam2Topics.pdf)
 * M 5/3: **Exam 2**
 * W 5/5: Tic-Tac-Go tournament
