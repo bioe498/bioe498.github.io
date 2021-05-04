@@ -32,7 +32,8 @@ Experiment Design & Optimization</h2>
       - Factor should be set as "1" or "-1", just like the sample run (which you should replace with your own run 1).
       - Leave blank any runs that you are saving for the second round.
       - Round 1 runs must be submitted to Gradescope by 5pm Central on 3/8.
-      - **Round 2 runs must be submitted to Gradescope by 5pm Central on Friday 4/23.**
+      - Round 2 runs must be submitted to Gradescope by 5pm Central on Friday 4/23.
+      - Final four runs and slides describing your methods must be submitted to Gradescope by **Friday, 5/14 by 5pm Central**.
   - Case Study 3
     - [Introduction](files/CaseStudy3_Intro.pdf)
     - [Trebuchet Simulator](https://jensenlab.shinyapps.io/trebsim)
@@ -43,6 +44,11 @@ Experiment Design & Optimization</h2>
   - Case Study 5
     - [Assignment](files/CaseStudy5.pdf)
     - Submit answers on Gradescope by **Friday, 5/14 by 5pm Central**. No late work will be accepted.
+  - BIOE 598 PJ additional assignment
+    - Students enrolled in BIOE 598 PJ are required to complete an additional assignment for graduate-level credit.
+    - Describe an experimental design that applies techniques from this course to your own research or capstone project. Identify the factors, describe the type of design, how the design will be implemented, and how the data will be analyzed. The goal is to connect a topic in this class to your future work.
+    - One option is to structure your response as if it were part of a research plan for a grant application or an internal memo to your supervisor.
+    - Your response must be limited to one page. Submit your response on Gradescope by **Friday, 5/14 by 5pm Central**.
 
 #### Schedule
 * M 1/25: Introduction and Motivation [[slides]](files/01_Introduction.pptx)
