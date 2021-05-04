@@ -40,7 +40,7 @@ Experiment Design & Optimization</h2>
   - Case Study 4
     - [Assignment](files/CaseStudy4.pdf)
     - [AlphaGo: The Movie](https://www.youtube.com/watch?v=WXuK6gekU1Y)
-    - Submit answers on Gradescope by **Monday, 4/26 by 5pm Central**.
+    - Submit answers on Gradescope by Monday, 4/26 by 5pm Central.
   - Case Study 5
     - [Assignment](files/CaseStudy5.pdf)
     - Submit answers on Gradescope by **Friday, 5/14 by 5pm Central**. No late work will be accepted.
