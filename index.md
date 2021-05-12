@@ -44,6 +44,7 @@ Experiment Design & Optimization</h2>
   - Case Study 5
     - [Assignment](files/CaseStudy5.pdf)
     - Submit answers on Gradescope by **Friday, 5/14 by 5pm Central**. No late work will be accepted.
+    - Tic-Tac-Go Simulator Code: [TicTacGo.R](files/TicTacGo.R)
   - BIOE 598 PJ additional assignment
     - Students enrolled in BIOE 598 PJ are required to complete an additional assignment for graduate-level credit.
     - Describe an experimental design that applies techniques from this course to your own research or capstone project. Identify the factors, describe the type of design, how the design will be implemented, and how the data will be analyzed. The goal is to connect a topic in this class to your future work.
