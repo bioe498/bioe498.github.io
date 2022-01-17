@@ -1,0 +1,124 @@
+---
+title: "Analysis of Variance"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
+output: beamer_presentation
+fontsize: 10pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+## The sum of squares
+
+Our analysis is based on the *sum of squares*, or SS. In particular, the total SS is the combination of the SS explained by our model and the SS that is residual (or unexplained).
+
+\newcommand\sst{SS_\mathrm{total}}
+\newcommand\ssx{SS_\mathrm{explained}}
+\newcommand\ssr{SS_\mathrm{residual}}
+
+\[ \sst = \ssx + \ssr \]
+
+\newcommand\y{\mathbf{y}}
+\newcommand\mean{\mathrm{mean}}
+\newcommand\pred{\mathrm{predicted}}
+
+\pause
+How do we calculate each one for a model $\y = \mathbf{X}\mathbf{\beta}$?
+
+\pause
+\[ \sst = \sum_i (y_i - \mean(\y))^2 \]
+\pause
+\[ \ssr = \sum_i (y_i - \pred(y_i))^2 \]
+\pause
+\[ \ssx = \sst - \ssr \]
+
+## Does our model do anything?
+Let's analyze the data from the stuffed monkey throwing experiment.
+\footnotesize
+```{r echo=FALSE}
+attach(read.csv("MonkeyThrow.csv"))
+model <- lm(distance ~ hand + hat + boots)
+summary(model)
+```
+
+## For our throwing data
+
+```{r}
+ss <- function(x) sum(x^2)
+sst <- ss(distance - mean(distance))
+ssr <- ss(residuals(model))
+ssx <- sst - ssr
+c(sst, ssr, ssx)
+```
+
+## Degrees of freedom
+
+The amount of variation we expect to see depends on the number of independent parameters in the model. These are the *degrees of freedom*, and we need to normalize the SS by them.
+
+For analyzing variation, the number of parameters does not include the intercept.
+
+- For $\sst$, DF = (# data points) - 1
+- For $\ssx$, DF = # of parameters
+- For $\ssr$, DF = (# data points) - (# parameters) - 1
+
+## The $F$-statistic
+
+The value of our model is explained by the ratio between the explained variance and the residual (unexplained) variance *after adjusting for the DF*.
+
+\[ F = \frac{\ssx / \mathrm{DF}(\ssx)}{\ssr / \mathrm{DF}(\ssr)} \]
+
+\pause
+For our throwing example
+
+\[ F = \frac{16.625 /3}{5.875 / (8-3-1)} = 3.773 \]
+
+\pause
+**How big should the $F$-statistic be?** The $F$-statistic follows the $F$-distribution. We can use this distribution to convert the $F$-statistic into a $p$-value.
+
+## 
+
+```{r}
+summary(model)
+```
+
+## Testing single factors
+
+We previously compared the entire model against the residuals to see if the model added value. We can apply the same procedure to a single variable.
+
+This is called the *analysis of variance*, or ANOVA.
+
+## ANOVA on handedness
+
+Let's find the explained variance for a model with only handedness:
+\small
+```{r}
+model_hand <- lm(distance ~ hand)
+sst - ss(residuals(model_hand))
+```
+\normalsize
+Now let's compare this to the residuals of the entire model:
+
+\pause
+\[ F = \frac{10.125 /1}{5.875 / (8-3-1)} = 6.894 \]
+
+## ANOVA on a linear model
+
+We can repeat this procedure for every variable, or we can use R's built-in ANOVA command.
+```{r}
+anova(model)
+```
+
+## Conclusions
+
+- $p$-values on effect sizes tell us if the effect size in nonzero.
+- A significant effect size does not mean the effect matters.
+- ANOVA can tell us which variables explain a significant fraction of the variance in our data.
+- Significance is realtive to the unexplained variance in the model.
+
+
+
+

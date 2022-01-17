@@ -1,0 +1,188 @@
+\documentclass{beamer}
+
+\usepackage{lads}
+\setbeamertemplate{navigation symbols}{}
+
+\title{Mixture Designs}
+\date{}
+\author{BIOE 498/598 PJ}
+
+
+\newcommand\half{${\textstyle \frac12}$}
+\newcommand\third{${\textstyle \frac13}$}
+\newcommand\twothird{${\textstyle \frac23}$}
+\newcommand\tq{$\quad$}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}
+\frametitle{Mixtures}
+
+Some materials or reagents are \textbf{mixtures}, or combinations of different proportions of a fixed number of ingredients.
+
+Examples of mixtures include:
+\begin{itemize}
+	\item Polymers
+	\item Metal alloys
+	\item Fabric blends
+	\item Cell culture media
+\end{itemize}
+ 
+Studying mixtures requires special designs and models.
+\end{frame}
+
+\begin{frame}
+\frametitle{Defining Mixtures}
+ 
+A mixture has $k$ components, each with proportion $x_i$, where
+\[ 0.0 \le x_i \le 1.0 \]
+and
+\[ \sum_{i=1}^k x_i = 1.0 \]
+
+\pause
+For example, a three-ingredient mixture ($k=3$) is defined by
+\begin{align*}
+  0.0 \le x_1 &\le 1.0 \\
+  0.0 \le x_2 &\le 1.0 \\
+  0.0 \le x_3 &\le 1.0 \\
+  x_1 + x_2 + x_3 &= 1.0
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Why not factorial designs?}
+
+The summation constraint $\sum_i x_i=1$ prevents us from using factorial designs. Let's imagine a factorial design for a three-ingredient mixture with levels $- = 0.0$ and $+ = 1.0$. The runs are
+
+\begin{center}
+\footnotesize
+\begin{tabular}{ccc|ccc|c}
+	1 & 2 & 3 & $x_1$ & $x_2$ & $x_3$ & $\sum_i x_i$ \\
+	\hline
+	 $-$ & $-$ & $-$ & 0.0 & 0.0 & 0.0 & 0.0 \\
+ 	+ & $-$ & $-$ & 1.0 & 0.0 & 0.0 & 1.0 \\
+ 	$-$ & + & $-$ & 0.0 & 1.0 & 0.0 & 1.0 \\
+ 	$-$ & $-$ & + & 0.0 & 0.0 & 1.0 & 1.0 \\
+ 	+ & + & $-$ & 1.0 & 1.0 & 0.0 & 2.0 \\
+ 	+ & $-$ & + & 1.0 & 0.0 & 1.0 & 2.0 \\
+ 	$-$ & + & + & 0.0 & 1.0 & 1.0 & 2.0 \\
+ 	+ & + & + & 1.0 & 1.0 & 1.0 & 3.0
+\end{tabular}
+\normalsize
+\end{center}
+ 
+Only three of the eight runs satisfy the summation constraint!
+\end{frame}
+
+\begin{frame}
+\frametitle{Models for Mixture Experiments}
+
+The standard first-order model for a factorial experiment with three factors is
+\[ y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \epsilon \]
+This model is not appropriate for mixture experiments because of the summation constraint.
+
+\medskip
+Instead, we can use two alternative models:
+\begin{enumerate}
+	\item The slack variable model
+	\item The Scheff\'{e} model
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{The slack variable model}	
+
+Let's start with the standard FO model
+\[ y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \epsilon \]
+By the summation constraint, $x_3 = 1 - x_1 - x_2$. Substituting, we see that
+\begin{align*}
+ y &= \beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_3(1 - x_1 - x_2) + \epsilon \\
+  &= (\beta_0 + \beta_3) + (\beta_1 - \beta_3)x_1 + (\beta_2 - \beta_3)x_2 + \epsilon \\
+  &= \beta_0' + \beta_1'x_1 + \beta_2'x_2 + \epsilon
+\end{align*}
+
+\pause
+The effect of factor $x_3$ is folded into the intercept and the other effects. When using a slack variable model we choose $x_3$ to be the least important factor, but the effects remain confounded.
+\end{frame}
+
+\begin{frame}
+\frametitle{The Scheff\'{e} model}
+
+The Scheff\'{e} model takes a different approach. Rather than substitute for $x_3$, we substitute for the intercept (the 1 multiplied by $\beta_0$) using the constraint $x_1 + x_2 + x_3 = 1$:
+\begin{align*}
+ y &= \beta_0(1) + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \epsilon \\
+  &= \beta_0(x_1+x_2+x_3) + \beta_1x_1 + \beta_2x_2 + \beta_3x_3 + \epsilon \\
+  &= (\beta_0 + \beta_1)x_1 + (\beta_0 + \beta_2)x_2 + (\beta_0 + \beta_3)x_3 + \epsilon \\
+  &= \beta_1^*x_1 + \beta_2^*x_2 + \beta_3^*x_3 + \epsilon
+\end{align*}
+
+\pause
+The effects in a Scheff\'{e} model are clean, but they have a special interpretation. The coefficient $\beta_i^*$ is the expected response for a pure mixture with $x_i=1.0$ and all other ingredients set to zero.
+\end{frame}
+
+\begin{frame}
+\frametitle{The Simplex-Lattice Design (SLD)}
+
+A Simplex-Lattice Design SLD$\{k,m\}$ studies mixtures with $k$ ingredients set at $m+1$ equally-spaced levels. The design uses all combinations of the ingredient levels.
+
+\small
+\medskip
+\pause
+\textbf{SLD$\{3,1\}$: Levels 0, 1}
+\begin{center}(1,0,0) \tq (0,1,0) \tq (0,0,1)\end{center}
+
+\medskip
+\pause
+\textbf{SLD$\{3,2\}$: Levels 0, \half, 1}
+\begin{center}
+(\half,\half,0) \tq (\half,0,\half) \tq (0,\half,\half) \tq + SLD$\{3,1\}$
+\end{center}
+
+\medskip
+\pause
+\textbf{SLD$\{3,3\}$: Levels 0, \third, \twothird, 1}
+\begin{center}
+(\third,\twothird,0) (\twothird,\third,0) \tq
+(\third,0,\twothird) (\twothird,0,\third) \tq
+(0,\third,\twothird) (0,\twothird,\third) \tq
+(\third,\third,\third)  + SLD$\{3,1\}$
+\end{center}
+\normalsize
+
+\pause
+\medskip
+\includegraphics{SLD.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Simplex-Centroid Design (SCD)}
+
+A downside of the SLD$\{k,m\}$ design is there are no interior points until $m\ge3$. An alternative is the SCD$\{k\}$ design which includes
+\begin{itemize}
+	\item All $k$ pure mixtures: (1,0,$\ldots$,0)
+	\item All binary combinations at \half: (\half,\half,0,$\ldots$,0)
+	\item All trinary combinations at \third: (\third,\third,\third,0,$\ldots$,0)
+	\item $\vdots$
+	\item The single $k$-nary mixture: ($\frac1k$,$\frac1k$,\ldots,$\frac1k$)
+\end{itemize}
+
+\pause
+\medskip
+\includegraphics{SCD.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{Choosing the SLD or SCD}
+
+\begin{itemize}
+	\item The SLD$\{k,m\}$ model allows fitting an $m^\text{th}$ order model ($1=$ first order, $2=$ quadratic). The SCD$\{k\}$ can fit a $k$-order model with up to a $k$-way interaction term.
+	\item In a SCD model, no single ingredient is run at a proportion $\ge$\half.
+	\item Given the same number of runs, the SLD has better coverage of the boundary of the simplex while the SCD has better coverage of the interior.
+\end{itemize}	
+\end{frame}
+
+
+\end{document}

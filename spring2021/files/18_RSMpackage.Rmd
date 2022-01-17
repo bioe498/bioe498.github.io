@@ -1,0 +1,88 @@
+---
+title: "The RSM Package"
+output: html_notebook
+---
+
+```{r}
+library(rsm)
+library(daewr)
+```
+
+## Setting up a CCD with `ccd`
+
+![CCD Summary](figures/ccd_summary.png)
+
+```{r}
+ccd(y ~ x1 + x2, n0=c(5,0), 
+    alpha="rotatable", randomize=FALSE, oneblock=TRUE)
+```
+A CCD can be split into blocks. The most common split is two blocks:
+
+* Block 1: Factorial points + center points
+* Block 2: Axial points + center points
+
+```{r}
+ccd(y ~ x1 + x2, n0=c(4,4), 
+    alpha="rotatable", randomize=FALSE, oneblock=FALSE)
+```
+For uniform precision, the total number of center points must equal or exceed the recommend number. In practice, the center points are split equally, with a few extra center points added to both blocks.
+
+It is also possible to split a CCD into three blocks. All the axial points remain in one block, and the factorial core is split into two. Center points are added to each block.
+
+## Example: Optimizing the yield of a chemical reaction
+
+Time varies from 80 - 90 minutes (-1 to 1)
+Temp varies from 170 - 180 C (-1 to 1)
+
+The coded variable $$x$$ can be calculated using the original variable $$\xi$$ and the original values at +1 ($$\xi_{+1}$$) and -1 ($$\xi_{-1}$$).
+
+$$ x = \frac{\xi - \mathrm{mean}(\xi_{+1},\xi_{-1})}{(\xi_{+1} - \xi_{-1})/2} $$
+
+```{r}
+react <- ccd(Yield ~ x1 + x2,
+             n0 = c(3,3),
+             randomize=FALSE,
+             alpha="rotatable",
+             coding = list(x1 ~ (Time - 85)/5,
+                           x2 ~ (Temp - 175)/5))
+react
+```
+```{r}
+varfcn(react, ~ SO(x1,x2))
+```
+
+```{r}
+varfcn(react, ~ SO(x1,x2), contour=TRUE)
+```
+
+Let's add the measured yield data.
+
+```{r}
+react$Yield <- c(80.5, 82.0, 81.5, 83.5, 83.9, 84.3, 84.0,
+                 75.6, 78.4, 77.0, 78.5, 79.7, 79.8, 79.5)
+react
+```
+
+Fitting a FO+TWI model using the first 7 runs (FF + 3 CPs)
+
+```{r}
+react_first <- react[1:7, ]
+FOreact <- rsm(Yield ~ FO(x1,x2) + TWI(x1,x2), data=react_first)
+summary(FOreact)
+```
+
+```{r}
+SOreact <- rsm(Yield ~ Block + SO(x1,x2), data=react)
+summary(SOreact)
+xs(SOreact)
+```
+
+## Visualizing the results
+
+```{r}
+contour(SOreact, x1 ~ x2, image=TRUE)
+```
+
+```{r}
+persp(SOreact, x1 ~ x2, contour=TRUE, zlab="Yield")
+```

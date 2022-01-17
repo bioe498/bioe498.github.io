@@ -1,0 +1,195 @@
+---
+title: "Transformations"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
+output: beamer_presentation
+fontsize: 10pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+options(digits=2)
+coefs <- function(model) round(model$coefficients, 2)
+library(magrittr)
+```
+
+## Earnings vs. height?
+
+```{r}
+earnings <- na.omit(foreign::read.dta("heights.dta"))
+earnings <- earnings[earnings$earn > 0, ]
+with(earnings, plot(height, earn))
+```
+
+## log(Earnings) vs height?
+
+```{r}
+with(earnings, plot(height, log(earn)))
+```
+
+## Logarithmic transformation of the response
+
+```{r, echo=TRUE}
+lm(log(earn) ~ height, earnings) %>% coefs()
+```
+
+\pause
+This changes from an additive model to a multiplicative one:
+$$ \log(y) = \beta_0 + \beta_1 x_1 + \cdots + \epsilon $$
+$$\downarrow$$
+$$ y = B_0\cdot B_1e^{x_1}\cdots E $$
+
+## What is the best response transformation?
+
+A general family of nonlinear transformations are described by the Box-Cox transformation:
+$$ T(y) = \begin{cases}(y^\lambda - 1)/\lambda, \quad \lambda \ne 0 \\ \log(y), \quad \lambda=0 \end{cases} $$
+\pause
+
+- $\lambda=2$ suggests $y \rightarrow y^2$
+- $\lambda=1$ suggests no transformation
+- $\lambda=1/2$ suggests $y \rightarrow \sqrt{y}$
+- $\lambda=-1$ suggests $y \rightarrow 1/y$
+
+## Where do we get $\lambda$?
+
+```{r, echo=TRUE}
+MASS::boxcox(earn ~ height, data=earnings)
+```
+
+## Shouldn't we always transform the response?
+
+- Transforming the response will often improve the predictive power of the model.
+- Models with transformed responses are more difficult to interpret.
+
+\pause
+
+- In general, \textbf{there is always a tradeoff between prediction and interpretation}.
+- Recommendation: perform the Box-Cox analysis, but only transform if
+  - you only want the model for prediction, \emph{or}
+  - the Box-Cox suggests a common transformation (log, square root, inverse, square, etc.).
+
+
+## Linear Transformations: Scaling Predictor Variables
+
+$$ \log(\mathrm{earnings[\$]}) = 5.78 + 0.06\cdot\mathrm{height[in]} + \mathrm{error} $$
+$$ \log(\mathrm{earnings[\$]}) = 5.78 + 0.72\cdot\mathrm{height[ft]} + \mathrm{error} $$
+$$ \log(\mathrm{earnings[\$]}) = 5.78 + 0.00234\cdot\mathrm{height[mm]} + \mathrm{error} $$
+
+
+\pause
+Scaling in General:
+
+$$ y = \beta_0 + \beta_1(k x) + \epsilon $$
+$$ \updownarrow $$
+$$ y = \beta_0 + (k\beta_1)x + \epsilon $$
+
+## Are childhood exams influenced by maternal IQ?
+
+```{r echo=TRUE}
+child <- foreign::read.dta("kidiq.dta")
+with(child, plot(mom_iq, kid_score))
+```
+
+## Are childhood exams influenced by maternal IQ?
+```{r echo=TRUE}
+model <- lm(kid_score ~ mom_iq, data=child)
+summary(model)
+```
+
+## Mean Centering
+
+Our linear model is
+$$ \mathrm{kid\_score} = \beta_0 + \beta_1\mathrm{mom\_iq} $$
+
+The effect size $\beta_1$ is the change in child score for every unit increase in mother IQ. **The intercept $\beta_0$ is uninterpretable** (the score of a child with a mother of IQ=0).
+
+\pause
+Let's \emph{mean center} the variable mom_iq:
+$$ \mathrm{c\_mom\_iq} = \mathrm{mom\_iq} - \mathrm{mean}[\mathrm{mom\_iq}] $$
+
+## Mean Centering (continued)
+
+Our new model is
+$$ \mathrm{kid\_score} = \beta_0 + \beta_1\mathrm{c\_mom\_iq} $$
+Now both coefficients are interpretable:
+
+- $\beta_1$ remains the increase in child score given a unit increase in mother's IQ.
+- $\beta_0$ is the predicted child score for a child with mother of average IQ.
+
+## Standardization by $Z$-score
+
+We can also center mom_iq and rescale it by the standard deviation:
+$$ \mathrm{z\_mom\_iq} = \frac{\mathrm{mom\_iq} - \mathrm{mean}[\mathrm{mom\_iq}]}{\mathrm{stdev}[\mathrm{mom\_iq}]} $$
+
+\pause
+In the model
+$$ \mathrm{kid\_score} = \beta_0 + \beta_1\mathrm{z\_mom\_iq} $$
+the interpretation of $\beta_0$ is the same (predicted score for child with average mom_iq), but $\beta_1$ is the change in child score based on an increase of **one standard devation** in mother's IQ.
+
+```{r}
+zscore <- function(x) (x - mean(x)) / sd(x)
+zscore2 <- function(x) (x - mean(x)) / (2*sd(x))
+child <- within(child, {
+  c_mom_hs=mom_hs - mean(mom_hs);
+  c_mom_iq=mom_iq - mean(mom_iq);
+  z_mom_hs=zscore(mom_hs); 
+  z_mom_iq=zscore(mom_iq); 
+  z2_mom_hs=zscore2(mom_hs); 
+  z2_mom_iq=zscore2(mom_iq)})
+```
+
+## Why rescale by the standard deviation?
+
+Let's add a second factor: if the mother completed high school.
+
+No scaling:
+```{r, echo = TRUE}
+lm(kid_score ~ mom_hs + c_mom_iq, child) %>% coefs()
+```
+
+\pause
+Z-scoring (1 stdev):
+```{r, echo = TRUE}
+lm(kid_score ~ z_mom_hs + z_mom_iq, child) %>% coefs()
+```
+
+## What is the best scaling factor?
+
+```{r, echo = TRUE}
+lm(kid_score ~ mom_hs + c_mom_iq, child) %>% coefs()
+```
+Z-scoring (1 stdev):
+```{r, echo = TRUE}
+lm(kid_score ~ z_mom_hs + z_mom_iq, child) %>% coefs()
+```
+\pause
+Scaling by 2 stdev:
+```{r, echo = TRUE}
+lm(kid_score ~ z2_mom_hs + z2_mom_iq, child) %>% coefs()
+```
+
+## Why two standard deviations?
+
+Assume a binary factor takes the value 1 with probability $p$. Then the standard deviation of this factor is
+$$ \sqrt{p(1-p)} $$
+
+\pause
+Without any additional knowledge, we assume that $p=0.5$. Then the standard deviation of the factor is $\sqrt{0.5^2} = 0.5$.
+
+\pause
+\medskip
+When this binary factor switches from 0 to 1, it is moving two standard deviations. To keep things on the same scale, the continuous variables should be rescaled so a unit change also corresponds to two standard deviations.
+
+## Our recommendations
+
+- Leave binary factors unscaled.
+- Mean center and scale continuous factors by 1 stdev. \emph{unless} the intercept is more interpretable when all factors are zero (e.g. drug dosing).
+- Alternatively, use *coded factors* for continuous variables that are set at only at a few discrete values.
+
+
+- If your model contains both binary and continuous factors that must be compared:
+  - Center and scale continuous factors by 2 stdev, \emph{except} if the variable uses a scale widely accepted by your audience.
+  - You can always build a rescaled model behind-the-scenes and present the conclusions with unscaled factors.
+
+
+

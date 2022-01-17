@@ -1,0 +1,161 @@
+---
+title: "Response Surface Methodology II"
+author: "BIOE 498/598"
+date: "3/8/2020"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## The Central Composite Design (CCD)
+
+```{r fig.align="center", out.width="67%"}
+knitr::include_graphics("figures/ccd.png")
+```
+
+1. A $2^k$ factorial or a Resolution V $2^{k-p}$ fractional design allow estimation of the FO and TWI terms.
+2. The axial points estimate the pure quadratic (PQ) terms.
+3. Replicated center points estimate the model's precision.
+
+## Coding the CCD
+
+You are optimizing protein expression levels in CHO cells by varying the serum concentration, casamino acid concentration, salt concentration, and the concentration of the induction molecule (IPTG).
+
+You want to vary [IPTG] linearly over the range of 0.05 to 0.2 mM. What are the levels you would use in a CCD design?
+
+\[ \alpha = \sqrt[4]{F} \]
+\[ \text{A} = \text{center}(\text{A}) + \frac{\text{range}(\text{A})}{2\alpha}[\text{code}] \]
+
+## Cement Workability Experiment
+
+```{r fig.align="center", out.width="90%"}
+knitr::include_graphics("figures/cement.png")
+```
+
+## Correct number of center points (Box and Hunter 1957)
+
+\begin{tabular}{lcccccccccccc}
+  factors ($k$) & 2 & 3 & 4 & 5 & $5-1$ & 6 & \\
+  \hline
+  factorial points & 4 & 8 & 16 & 32 & 16 & 64 \\
+  axial points & 4 & 6 & 8 & 10 & 10 & 12 \\
+  center points & 5 & 6 & 7 & 10 & 6 & 15 \\
+  $\alpha$ & 1.414 & 1.682 & 2.000 & 2.378 & 2.000 & 2.828
+\end{tabular}
+
+\begin{tabular}{lcccccccccccc}
+  factors ($k$) & $6-1$ & 7 & $7-1$ & 8 & $8-1$ & $8-2$ \\
+  \hline
+  factorial points & 32 & 128 & 64 & 256 & 128 & 64 \\
+  axial points & 12 & 14 & 14 & 16 & 16 & 16 \\
+  center points & 9 & 21 & 14 & 28 & 20 & 13 \\
+  $\alpha$ & 2.378 & 3.364 & 2.828 & 4.000 & 3.364 & 2.828
+\end{tabular}
+
+## Two-stage RSM with a CCD
+
+1. Run the factorial design and ~1/2 of the center points.
+2. Fit a FO and TWI model
+\[ y = \beta_0 + \sum_{i=1}^k \beta_ix_i + \sum_{i=1}^k\sum_{j=1}^i\beta_{ij}x_ix_j \]
+3. If the fit is ``good enough", stop. Otherwise, you need a quadratic model.
+4. Run the axial points and the rest of the center points.
+5. Fit the full quadratic model with a blocking factor
+\[ y = \beta_0 + \text{FO}(x_1,\ldots,x_k) + \text{TWI}(x_1,\ldots,x_k) + \sum_{i=1}^k\beta_{ii}x_i^2 + \beta_\text{block}\text{block} \]
+6. Optimize
+
+## Box-Behnken Design
+
+\begin{columns}
+  \begin{column}{0.48\textwidth}
+- A CCD is the optimal RSM design (uniform precision, rotatable, can estimate curvature).
+
+- However, it requires five levels per factor ($-\alpha$, $-1$, 0, 1, $\alpha$).
+
+- Five levels can be prohibitive if each level requires a separate prototype or large changes to processes.
+
+- The Box-Behnken Design requires only three levels per factor ($-1$, 0, 1).
+  \end{column}
+  \begin{column}{0.48\textwidth}
+  \pause
+```{r fig.align="center", out.width="70%"}
+knitr::include_graphics("figures/bbd.png")
+```
+  \end{column}
+\end{columns}
+
+## Box-Behnken Design --- disadvantages
+
+1. The BBD runs cannot be split into two blocks.
+```{r fig.align="center", out.width="90%"}
+knitr::include_graphics("figures/bbd_cube.png")
+```
+If you are sure your experiment requires quadratic terms, this is not a disadvantage.
+
+## Box-Behnken Design --- disadvantages
+
+2. The BBD is not rotatable and barely misses uniform precision.
+```{r fig.align="center", out.width="90%"}
+knitr::include_graphics("figures/bbd_var.png")
+```
+
+## Small Composite Designs --- if runs *really* matter
+
+A true CCD contains a $2^k$ factorial or resolution V $2^{k-p}$ fractional design.
+
+A Small Composite Design (SCD) replaces these with a resolution III $2^{k-p}$ design.
+
+```{r fig.align="center", out.width="40%"}
+knitr::include_graphics("figures/scd.png")
+```
+
+\pause
+The axial and center points make up for the lost factorial points and allow estimation of the FO and TWI terms.
+
+You can also use a PB design or a custom fractional design for even fewer runs.
+
+## Small Composite Designs --- disadvantages
+
+2. The SCD is not rotatable and has uniform precision only to radius 0.8.
+```{r fig.align="center", out.width="90%"}
+knitr::include_graphics("figures/bbd_var.png")
+```
+Estimates can be terrible beyond radius 1.
+
+## RSM design example 1: QSAR
+
+We want to perform a Quantitative Structure Activity Relation (QSAR) analysis on hydroxyphenylureas.
+```{r fig.align="center", out.width="60%"}
+knitr::include_graphics("figures/hydroxy.png")
+```
+The response is oxygen free radical scavenging quantified by the binding constant.
+Factors are:
+
+  - Hydration energy (HE)
+  - Molecular dipole moment (DM$_z$)
+  - Symmetry index (S0K)
+
+## RSM design example 1: QSAR
+
+```{r fig.align="center", out.width="80%"}
+knitr::include_graphics("figures/hydroxy_table.png")
+```
+
+\pause
+structures $\rightarrow$ physical parameters $\rightarrow$ response \newline
+\phantom{long} $\rightarrow$ optimal parameters $\rightarrow$ optimal structures
+
+## RSM design example 2: Tetracycline metabolism
+
+We want to build a kinetic model of tetracycline metabolism with four parameters.
+```{r fig.align="center", out.width="40%"}
+knitr::include_graphics("figures/tet_met.png")
+```
+
+\[ y = \gamma_1(x) = \gamma_0[e^{-k_1(x-t_0)} - e^{-k_2(x-t_0)}] \]
+
+\pause
+The input is the time ($x$) since the addition of the drug; however, we make the design optimal for the parameters.
+
+We will come back to this example after break.

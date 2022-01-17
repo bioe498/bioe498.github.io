@@ -1,0 +1,230 @@
+\documentclass[10pt]{beamer}
+
+\beamertemplatenavigationsymbolsempty
+
+\usepackage{colortbl}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{intersections}
+\usetikzlibrary{datavisualization}
+\usetikzlibrary{datavisualization.formats.functions}
+
+\newcommand\lo{\ensuremath{\boldsymbol{-}}}
+\newcommand\hi{\ensuremath{\boldsymbol{+}}}
+\newcommand\sst{SS_\mathrm{total}}
+\newcommand\ssx{SS_\mathrm{explained}}
+\newcommand\ssr{SS_\mathrm{residual}}
+
+\newcommand\y{\mathbf{y}}
+\newcommand\mean{\mathrm{mean}}
+\newcommand\pred{\mathrm{predicted}}
+
+\title{Factorial Designs}
+\author{BIOE 498/598 PJ}
+\date{Spring 2021}
+
+
+\begin{document}
+%\SweaveOpts{concordance=TRUE}
+
+\frame{\titlepage}
+
+
+\begin{frame}{The sum of squares}
+
+\begin{tikzpicture}
+\begin{scope}
+	\draw [->,>=latex] (0,0) -- (3,0);
+	\draw [->,>=latex] (0,0) -- (0,3);
+	
+	\draw [name path=mean,domain=0:3,red] plot (\x, {1.35});
+	
+	\foreach \pt/\i in {(0.5,0.2)/1, (1.9,0.9)/3, (2.2,2.7)/4, (1.0,1.6)/2} {
+		\node [draw,circle,minimum size=3pt,inner sep=0pt] (nd\i) at \pt {};
+		\path [name path=path\i] let \p1 = \pt in (\x1,0) -- (\x1,3);
+		\draw [name intersections={of={path\i} and mean},->,gray] (nd\i) -- (intersection-1);
+	}
+	\node [above right,gray] at (nd1) {$t_1$};
+	\node [right,gray] at (nd2) {$t_2$};
+	\node [above left,gray] at (nd3) {$t_3$};
+	\node [below left,gray] at (nd4) {$t_4$};
+	\node at (1.5,3.5) {$SS_\mathrm{total} = \sum_i t_i^2$};
+\end{scope}
+
+\begin{scope}[shift={(4cm,0)}]
+	\draw [->,>=latex] (0,0) -- (3,0);
+	\draw [->,>=latex] (0,0) -- (0,3);
+	
+	\draw [name path=model,domain=0:3,blue] plot (\x, {0.0027 + 0.9624*\x});
+	\draw [name path=mean,domain=0:3,red] plot (\x, {1.35});
+	
+	\foreach \pt/\i in {(0.5,0.2)/1, (1.0,1.6)/2, (1.9,0.9)/3, (2.2,2.7)/4} {
+		\node [draw, circle, minimum size=3pt, inner sep=0pt] (nd\i) at \pt {};
+		\path [name path=path\i] let \p1 = \pt in (\x1,0) -- (\x1,3);
+		\draw [
+			name intersections={of=model and path\i, name={mdint\i}},
+			name intersections={of=mean and path\i, name={mnint\i}},
+			gray,<->
+		] (mdint\i-1) -- (mnint\i-1);
+	}
+	
+	\node [above,gray] at (mnint1-1) {$e_1$};
+	\node [below,gray] at (mdint2-1) {$e_2$};
+	\node [above,gray] at (mdint3-1) {$e_3$};
+	\node [below,gray] at (mnint4-1) {$e_4$};
+	
+	\node at (1.5,3.5) {$SS_\mathrm{explained} = \sum_i e_i^2$};
+\end{scope}
+
+\begin{scope}[shift={(8cm,0)}]
+	\draw [->,>=latex] (0,0) -- (3,0);
+	\draw [->,>=latex] (0,0) -- (0,3);
+	
+	\draw [name path=model,domain=0:3,blue] plot (\x, {0.0027 + 0.9624*\x});
+	
+	\foreach \pt/\i in {(0.5,0.2)/1, (1.9,0.9)/3, (2.2,2.7)/4, (1.0,1.6)/2} {
+		\node [draw,circle,minimum size=3pt,inner sep=0pt] (nd\i) at \pt {};
+		\path [name path=path\i] let \p1 = \pt in (\x1,0) -- (\x1,3);
+		\draw [name intersections={of={path\i} and model},->,gray] (nd\i) -- (intersection-1);
+	}
+	\node [above right,gray] at (nd1) {$r_1$};
+	\node [below left,gray] at (nd2) {$r_2$};
+	\node [above right,gray] at (nd3) {$r_3$};
+	\node [below left,gray] at (nd4) {$r_4$};
+	\node at (1.5,3.5) {$SS_\mathrm{residual} = \sum_i r_i^2$};
+\end{scope}
+
+\draw [red] (2.75,-1) -- ++(0.5,0) node[right,red] {$\mathrm{mean}(y)$} ++(2,0);
+\draw [blue] (5.75,-1) -- ++(0.5,0) node[right,blue] {$y = \beta_0 + \beta_1x$};
+\end{tikzpicture}
+
+\pause
+\[ \sst = \ssx + \ssr \]
+
+\end{frame}
+
+\begin{frame}{The sum of squares}
+
+Our analysis is based on the \emph{sum of squares}, or SS. In particular, the total SS is the combination of the SS explained by our model and the SS that is residual (or unexplained).
+
+\[ \sst = \ssx + \ssr \]
+
+\pause
+How do we calculate each one for a model $\y = \mathbf{X}\mathbf{\beta}$?
+
+\pause
+\[ \sst = \sum_i (y_i - \mean(\y))^2 \]
+\pause
+\[ \ssr = \sum_i (y_i - \pred(y_i))^2 \]
+\pause
+\[ \ssx = \sst - \ssr \]
+
+\end{frame}
+
+\begin{frame}[fragile]{Does our model do anything?}
+
+Let's analyze the data from the stuffed monkey throwing experiment.
+\footnotesize
+<<echo=FALSE>>=
+attach(read.csv("MonkeyThrow.csv"))
+model <- lm(distance ~ hand + hat + boots)
+summary(model)
+@
+
+\end{frame}
+
+\begin{frame}[fragile]{For our throwing data}
+
+<<>>=
+ss <- function(x) sum(x^2)
+sst <- ss(distance - mean(distance))
+ssr <- ss(residuals(model))
+ssx <- sst - ssr
+c(sst, ssr, ssx)
+@
+
+\end{frame}
+
+\begin{frame}[fragile]{Degrees of freedom}
+
+The amount of variation we expect to see depends on the number of independent parameters in the model. These are the \emph{degrees of freedom}, and we need to normalize the SS by them.
+
+For analyzing variation, the number of parameters does not include the intercept.
+
+\begin{itemize}
+  \item For $\sst$, DF = (\# data points) - 1
+  \item For $\ssx$, DF = \# of parameters
+  \item For $\ssr$, DF = (\# data points) - (\# parameters) - 1
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{The $F$-statistic}
+
+The value of our model is explained by the ratio between the explained variance and the residual (unexplained) variance \emph{after adjusting for the DF}.
+
+\[ F = \frac{\ssx / \mathrm{DF}(\ssx)}{\ssr / \mathrm{DF}(\ssr)} \]
+
+\pause
+For our throwing example
+
+\[ F = \frac{16.625 /3}{5.875 / (8-3-1)} = 3.773 \]
+
+\pause
+\textbf{How big should the $F$-statistic be?} The $F$-statistic follows the $F$-distribution. We can use this distribution to convert the $F$-statistic into a $p$-value.
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+<<>>=
+summary(model)
+@
+
+\end{frame}
+
+\begin{frame}{Testing single factors}
+
+We previously compared the entire model against the residuals to see if the model added value. We can apply the same procedure to a single variable.
+
+This is called the \emph{analysis of variance}, or ANOVA.
+
+\end{frame}
+
+\begin{frame}[fragile]{ANOVA on handedness}
+
+Let's find the explained variance for a model with only handedness:
+\small
+<<>>=
+model_hand <- lm(distance ~ hand)
+sst - ss(residuals(model_hand))
+@
+\normalsize
+Now let's compare this to the residuals of the entire model:
+
+\pause
+\[ F = \frac{10.125 /1}{5.875 / (8-3-1)} = 6.894 \]
+
+\end{frame}
+
+\begin{frame}[fragile]{ANOVA on a linear model}
+
+We can repeat this procedure for every variable, or we can use R's built-in ANOVA command.
+<<>>=
+anova(model)
+@
+
+\end{frame}
+
+\begin{frame}{Conclusions}
+
+\begin{itemize}
+  \item $p$-values on effect sizes tell us if the effect size in nonzero.
+  \item A significant effect size does not mean the effect matters.
+  \item ANOVA can tell us which variables explain a significant fraction of the variance in our data.
+  \item Significance is realtive to the unexplained variance in the model.
+\end{itemize}
+
+\end{frame}
+
+\end{document}

@@ -1,0 +1,67 @@
+---
+title: "Summary Statistics 1"
+author: "BIOE 498/598 PJ"
+date: "Spring 2021"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Loading our Birth-day-of-month Data
+
+```{r cars}
+days <- as.numeric(readLines("birthdays.txt"))
+hist(days, n=31, col="blue", xlab="birth day of month (BDotM)",
+     main=sprintf("Population: Mean=%2.2f, Std Dev=%1.2f", mean(days), sd(days)))
+```
+
+## Aside: Is this what we expected?
+
+We sampled 30 students. How many do we expect to observe on any day? (Assuming no end-of-month effects.)
+```{r echo=TRUE}
+lambda = 30 / 31
+```
+
+Assuming the underlying process is Poisson, what is the expected frequency?
+```{r echo=TRUE}
+round(dpois(0:3, lambda), digits=2)
+```
+
+Let's count of the observed frequencies.
+```{r echo=TRUE}
+table(tabulate(days)) / 30
+```
+
+
+## Estimating the mean BDotM
+
+```{r echo=TRUE}
+s = sample(days, 5, replace=TRUE)
+s
+mean(s)
+```
+
+## Repeated sampling to estimate the mean BDotM
+
+```{r}
+par(mfrow=c(2,2))
+for (n in c(10, 100, 1000, 10000)) {
+  ss <- replicate(n, mean(sample(days, 5, replace=TRUE)))
+  hist(ss, n=30, xlim=c(1,31), xlab="Mean BDotM based on 5 observations", main=paste(n, "samples"))
+}
+```
+
+## Sampling distribution depends on the \# of observations
+
+```{r}
+par(mfrow=c(2,2))
+n <- 10000
+for (k in c(5, 10, 15, 20)) {
+  ss <- replicate(n, mean(sample(days, k, replace=TRUE)))
+  hist(ss, n=30, xlim=c(1,31), 
+       xlab=paste("Mean BDotM based on", k, "observations"), 
+       main=sprintf("%i observations/sample, Std Dev=%1.2f", k, sd(ss)))
+}
+```

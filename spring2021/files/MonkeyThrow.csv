@@ -1,0 +1,9 @@
+﻿run,hand,hat,boots,distance
+5,left,yes,yes,4.5
+6,right,yes,yes,6
+2,left,no,yes,7
+7,right,no,yes,9.5
+1,left,yes,no,5
+8,right,yes,no,6.5
+4,left,no,no,4
+3,right,no,no,7.5
