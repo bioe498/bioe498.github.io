@@ -21,7 +21,7 @@ Experiment Design & Optimization</h2>
   - [RStudio](https://rstudio.com/products/rstudio/): Open Source Desktop Edition
 * **Assignments**
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
-  -
+
 #### Schedule
 * W 1/19: Introduction
 * F 1/21: The R Programming Language
