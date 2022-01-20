@@ -23,5 +23,5 @@ Experiment Design & Optimization</h2>
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
 
 #### Schedule
-* W 1/19: Introduction [[slides](files/01_introduction.pptx)]
+* W 1/19: Introduction [[slides](files/01_Introduction.pptx)]
 * F 1/21: The R Programming Language
