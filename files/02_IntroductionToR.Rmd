@@ -1,0 +1,199 @@
+---
+title: "Introduction to R"
+author: "BIOE 498/598 PJ"
+date: "1/21/2022"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Everything is a vector
+
+Vectors are built with the `c()` function (for "combine")
+```{r}
+a <- c(10, 20, 30, 40)
+a
+```
+
+Vectors are 1-indexed (like Matlab, Fortran, or Julia)
+```{r}
+a[1]
+a[2:4]
+```
+
+## Some R artifacts
+
+For historical reasons, R assigns objects to variables using `<-` (said "gets")
+```{r}
+a <- c(10, 20, 30, 40)
+```
+
+However, the equals sign also works
+```{r}
+a = c(11, 22, 33, 44)
+```
+
+Also, periods are allowed in variables names
+```{r}
+a.var.name <- 7
+is.na(a.var.name)
+```
+It's best to avoid this and use underscores (`_`) instead
+
+## Vector Types
+
+Numeric
+```{r}
+r <- rnorm(4)
+r
+```
+
+Logical (`TRUE` and `FALSE` can be abbreviated `T` and `F`)
+```{r}
+r < 0.0
+```
+
+Character
+```{r}
+c <- c("this", "is", "a", "character")
+```
+
+## Notes about characters
+
+Everything is a vector of "strings"; there are no individual "letters"
+```{r}
+s <- "a string"
+length(s)
+s[1]
+s[2]
+```
+
+## Notes about characters (continued)
+
+```{r}
+nchar("a string")
+c <- c("this", "is", "a", "character")
+length(c)
+nchar(c)
+```
+
+## Everything in a vector is the same type
+
+R will convert objects into the same type
+```{r}
+c(1, 2, "three")
+```
+
+For mixed types, use a `list`
+```{r}
+list(1, 2, "three")
+```
+
+## Factors are special vectors
+
+Factors look like regular vectors
+```{r}
+x1 <- as.factor(c("wt", "ko", "wt"))
+x1
+```
+
+\pause
+But they are stored as integers and a "key" of levels
+```{r}
+as.integer(x1)
+levels(x1)
+```
+
+## Functions
+
+Most functions are *vectorized* and operate elementwise
+```{r}
+a <- runif(4)
+a
+10*a + 1
+sqrt(a) + cos(a)
+```
+
+**You can always ask for help: `?sqrt`.**
+
+## Data Frames
+
+Data frames hold tables of data.
+
+```{r}
+data <- read.csv("MonkeyThrow.csv")
+data
+```
+
+## Size of Data Frames
+
+```{r}
+nrow(data)
+ncol(data)
+```
+
+The `length` of a data frame is the number of *columns*.
+```{r}
+length(data)
+```
+
+## What are data frames?
+
+```{r}
+head(data, n=5) # just the first 5 rows
+```
+
+ - Each column in a data frame is a vector (and must be the same type).
+ - Each row contains data of different types
+
+## What types ("classes") of data are in our data frame?
+
+```{r}
+lapply(data, class)  # applies `class` to each column
+```
+
+## Working with columns
+
+```{r}
+data$hat
+```
+
+```{r}
+log10(data$distance)
+```
+
+## Making new columns
+
+```{r}
+data$log_dist <- log10(data$distance)
+data
+```
+
+## Nevermind, let's delete that column
+
+```{r}
+data$log_dist <- NULL
+data
+```
+
+## Visualizing data
+
+```{r}
+plot(data$run, data$distance)
+```
+
+## We can do better
+```{r}
+plot(data$run, data$distance, xlab="run number", 
+     ylab="distance", cex=2, pch=20)
+```
+
+## Libraries
+\footnotesize
+Many of the functions we use are in libraries. We need to load the library first.
+```{r, fig.height=2.5, fig.width=5}
+library("doetools") # include `farplot` function
+farplot(data, response="distance", factors=c("hand", "hat", "boots"))
+```
