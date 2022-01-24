@@ -1,0 +1,23 @@
+---
+title: "Pilot Plant Investigation"
+output: html_notebook
+---
+
+```{r}
+pilot_design <- data.frame(
+  run = 1:8,
+  T = rep(c(-1,1), times=4),
+  C = rep(c(-1,1), each=2, times=2),
+  K = rep(c(-1,1), each=4),
+  yield = c(60,72,54,68,52,83,45,80)
+)
+
+pilot_planning <- within(pilot_design, {
+  T <- 170 + 10*T
+  C <- 30 + 10*C
+  K <- ifelse(K==-1, "A", "B")
+})
+
+write.csv(pilot_design, file="PilotPlantDesign.csv", row.names=FALSE)
+write.csv(pilot_planning, file="PilotPlantPlanning.csv", row.names=FALSE)
+```
