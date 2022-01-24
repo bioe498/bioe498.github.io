@@ -25,6 +25,6 @@ Experiment Design & Optimization</h2>
 #### Schedule
 * W 1/19: Introduction [[slides](files/01_Introduction.pptx)]
 * F 1/21: The R Programming Language [[slides](files/02_IntroductionToR.pdf)] [[Rmd](files/02_IntroductionToR.Rmd)]
-* M 1/24: Factorial Designs 1: Main Effects [[notes](03_FactorialDesigns.pdf)]
+* M 1/24: Factorial Designs 1: Main Effects [[notes](files/03_FactorialDesigns.pdf)]
 * W 1/26: Factorial Designs 2: Interactions
 * F 1/28: Factorial Effects with Linear Models
