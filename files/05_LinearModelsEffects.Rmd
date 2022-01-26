@@ -1,0 +1,248 @@
+---
+title: "Calculating Effects with Linear Models"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: beamer_presentation
+fontsize: 9pt
+header-includes: 
+  - \usepackage{tikz}
+  - \usepackage{booktabs}
+  - \usepackage{siunitx}
+  - \renewcommand\mathfamilydefault{cmr}
+  - \usetikzlibrary{positioning,shapes.misc,calc,backgrounds,scopes} 
+  - \newcommand\factor[1]{{\ensuremath{\boldsymbol{\text{#1}}}}}
+  - \newcommand\fT{\factor{T}}
+  - \newcommand\fC{\factor{C}}
+  - \newcommand\fK{\factor{K}}
+  - \newcommand\fTC{\factor{TC}}
+  - \newcommand\fTK{\factor{TK}}
+  - \newcommand\fCK{\factor{CK}}
+  - \newcommand\fTCK{\factor{TCK}}
+  - \newcommand\hi{\ensuremath{\boldsymbol{+}}}
+  - \newcommand\lo{\ensuremath{\boldsymbol{-}}}
+  - \newcommand\ME{\ensuremath{\mathit{ME}}}
+  - \newcommand\INT{\ensuremath{\mathit{Int}}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## An additive model of effects and interactions
+
+For our reactor example with factors $\fT$, $\fC$, and $\fK$:
+\begin{align*}
+\text{yield} = \beta_0 &+ \beta_\fT \fT + \beta_\fC \fC + \beta_\fK \fK \\
+            &+ \beta_{\fTC}\fTC + \beta_{\fTK}\fTK + \beta_{\fCK}\fCK \\
+            &+ \beta_{\fTCK}\fTCK
+\end{align*}
+where each regression coefficient $\beta_i$ is half of the $i$th effect:
+\[ \beta_\fT = \frac{\ME(\fT)}{2}, \ldots, \beta_{\fTCK} = \frac{\INT(\fTCK)}{2} \]
+and the intercept $\beta_0$ is the mean of all the responses.
+
+## For the reactor example
+
+\begin{columns}
+\begin{column}{0.35\textwidth}
+  \begin{center}
+    \begin{tabular}{rS[table-format=3.2]S[table-format=3.2]}
+      \toprule
+      \textbf{Effect} & \textbf{Size} & $\boldsymbol{\beta}$ \\
+      \midrule
+      intercept & 64.25 & 64.25 \\
+      $\fT$ & 23 & 11.5 \\
+      $\fC$ & -5 & -2.5 \\
+      $\fK$ & 1.5 & .75 \\
+      $\fTC$ & 1.5 & .75 \\
+      $\fTK$ & 10 & 5 \\
+      $\fCK$ & 0  & 0 \\
+      $\fTCK$ & .5 & .25 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{column}
+
+\begin{column}{0.6\textwidth}
+  \begin{align*}
+    \text{yield} = 64.25 &+ 11.5\, \fT - 2.5 \fC + 0.75\, \fK \\
+             &+ 0.75\, \fTC + 5\, \fTK + 0\, \fCK \\
+             &+ 0.25\, \fTCK
+  \end{align*}
+\end{column}
+\end{columns}
+
+\pause
+\bigskip
+What is the yield for the treatment $\fT=\hi$, $\fC=\lo$, $\fK=\hi$?
+\pause
+\begin{align*}
+  \text{yield} &= 64.25 + 11.5(1) -2.5(-1) + 0.75(+1) \\
+    &\qquad + 0.75(1)(-1) + 5(1)(1) + 0(-1)(1) \\
+    &\qquad + 0.25(1)(-1)(1) \\
+    &= 64.25 + 11.5 + 2.5 + 0.75 - 0.75 + 5 + 0 - 0.25 \\
+    &= 83
+\end{align*}
+
+## Why are the coefficients half of the effect sizes?
+
+Imagine the simplest model with one factor $\fT$.
+\[ y = \beta_0 + \beta_\fT \fT \]
+\pause
+Remember the definiton of the main effect of $\fT$:
+\[ \ME(\fT) = \bar{y}(\fT\hi) - \bar{y}(\fT\lo) \]
+\pause
+From our model
+\begin{align*}
+  \bar{y}(\fT\hi) &= \beta_0 + \beta_\fT (+1) \\
+                  &= \beta_0 + \beta_\fT \\
+                  \\
+  \bar{y}(\fT\lo) &= \beta_0 + \beta_\fT (-1) \\
+                  &= \beta_0 - \beta_\fT
+\end{align*}
+\pause
+So according to the model,
+\begin{align*}
+  \ME(\fT) &= \bar{y}(\fT\hi) - \bar{y}(\fT\lo) \\
+           &= (\beta_0 + \beta_\fT) - (\beta_0 - \beta_\fT) \\
+           &= 2\beta_\fT
+\end{align*}
+
+## Advantages of estimating effects with linear models
+
+- Easier calculation
+
+- Statistical significance for coefficients (coming soon!)
+
+- Predictions for untested treatments
+
+- Extrapolation beyond the design space (for quantitative factors)
+
+## Step 1: Load the data
+
+```{r}
+pilot_data <- read.csv("PilotPlantDesign.csv")
+pilot_data
+```
+
+## Step 2: Look at the data
+
+We can visualize factorial designs with a factor-and-response plot, or farplot.
+
+First, we need to install the `doetools` package. If you haven't already, install the `devtools` package:
+```{r eval=FALSE}
+install.packages("devtools")
+```
+You only need to run this once this semester.
+
+Now you can use `devtools` to install `doetools`:
+```{r eval=FALSE}
+devtools::install_github("jensenlab/doetools")
+```
+You should re-install this package before every assignment in case we add anything to the package during the semester.
+
+## Now, let's visualize the data
+
+```{r fig.width=4, fig.height=3}
+library(doetools)
+farplot(pilot_data, response="yield", factors=c("T", "C", "K"))
+```
+
+## Step 3: Fit a linear model
+
+```{r}
+model <- lm(yield ~ T * C * K, data=pilot_data)
+show_effects(model)
+```
+
+## Fitting linear models with `lm`
+
+The standard call to `lm` is
+```{r eval=FALSE}
+model <- lm(<formula>, data=<dataframe>)
+```
+where `<formula>` takes the form
+```{r eval=FALSE}
+response ~ effects
+```
+
+\bigskip
+\pause
+Formulas don't include the coefficients, only the effects. For example the model
+\[ \text{yield} = \beta_0 + \beta_\fT \fT + \beta_\fK \fK + \beta_\fTK \fTK \]
+would be specified
+```{r eval=FALSE}
+yield ~ 1 + T + K + T:K
+```
+\pause
+or, since R assumes the model has an intercept, we can omit the `1`.
+```{r eval=FALSE}
+yield ~ T + K + T:K
+```
+
+## More about formulas
+
+The `*` operator is a shortcut for adding main effects and interactions.
+```{r eval=FALSE}
+yield ~ T + K + T:K
+```
+is equivalent to
+```{r eval=FALSE}
+yield ~ T*K
+```
+
+\pause
+Our complete model
+```{r eval=FALSE}
+yield ~ T + C + K + T:C + T:K + C:K + T:C:K
+```
+can be written
+```{r eval=FALSE}
+yield ~ T*C*K
+```
+
+\bigskip
+\pause
+**The effects in the formula must match column names in the data frame.** R looks up the effects in the data frame to construct the *model matrix*.
+
+## Why do we prefer coded factors?
+
+```{r}
+pilot_planning <- read.csv("PilotPlantPlanning.csv")
+pilot_planning
+model_uncoded <- lm(yield ~ T*C*K, data=pilot_planning)
+```
+
+## Comparing coded vs. uncoded models
+::: columns
+:::: column
+```{r}
+show_effects(model) # coded
+```
+::::
+:::: column
+```{r}
+show_effects(model_uncoded)
+```
+::::
+:::
+
+\pause
+::: columns
+:::: column
+```{r echo=FALSE}
+pilot_planning$T_fahr <- pilot_planning$T*9/5 + 32
+model_fahr <- lm(yield ~ T_fahr*C*K, data=pilot_planning)
+```
+::::
+:::: column
+\bigskip
+```{r}
+show_effects(model_fahr)
+```
+::::
+:::
+
+
+
+
