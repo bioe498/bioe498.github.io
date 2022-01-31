@@ -1,0 +1,194 @@
+---
+title: "Active Effects"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: beamer_presentation
+fontsize: 9pt
+header-includes: 
+  - \usepackage{tikz}
+  - \usepackage{booktabs}
+  - \usepackage{siunitx}
+  - \renewcommand\mathfamilydefault{cmr}
+  - \usetikzlibrary{positioning,shapes.misc,calc,backgrounds,scopes} 
+  - \newcommand\factor[1]{{\ensuremath{\boldsymbol{\text{#1}}}}}
+  - \newcommand\fT{\factor{T}}
+  - \newcommand\fC{\factor{C}}
+  - \newcommand\fK{\factor{K}}
+  - \newcommand\fTC{\factor{TC}}
+  - \newcommand\fTK{\factor{TK}}
+  - \newcommand\fCK{\factor{CK}}
+  - \newcommand\fTCK{\factor{TCK}}
+  - \newcommand\hi{\ensuremath{\boldsymbol{+}}}
+  - \newcommand\lo{\ensuremath{\boldsymbol{-}}}
+  - \newcommand\ME{\ensuremath{\mathit{ME}}}
+  - \newcommand\INT{\ensuremath{\mathit{Int}}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Active effects
+
+- An **active effect** has an effect size that is large enough to be **practically significant**.
+
+- An **inactive effect** (or **inert effect**) does not have a practically significant effect size.
+
+\pause
+How do we assess practical significance?
+
+1. Any effect that causes a meaningful change based on our knowledge of the system or process.
+    - A 3% increase in yield for a commodity chemical process might be significant financially.
+    - A 3% decrease in tumor size after treatment might be insignificant to the patient.
+  
+2. Lacking insight about the system or process, we can estimate practical significance by *comparing* effect sizes in the same experiment.
+
+## Bioprocess conversion case study
+
+Goal: Improve bioprocess conversion of switchgrass to biofuel
+
+- Four process factors
+  - $\factor{S}$: Bacterial strain (strain A or B)
+  - $\factor{T}$: Temperature (30 $^\circ$C or 37 $^\circ$)
+  - $\factor{M}$: Mineral supplement (no or yes)
+  - $\factor{R}$: Stirring rate (fast or slow)
+  
+- Response: Percent conversion of carbon
+  
+- $2^4$ factorial study = 16 runs
+
+- Unreplicated design
+
+- Randomized run order
+
+## Step 1: Load the data
+
+```{r}
+pds <- read.csv("ProcessDevelopmentStudy.csv")
+head(pds)
+```
+
+## Step 2: Look at the data
+
+First, let's check if the response is correlated with run order.
+```{r fig.width=4, fig.height=3}
+plot(pds$run, pds$conversion)
+```
+
+## Step 2: Look at the data
+
+```{r fig.width=4, fig.height=3}
+library(doetools)
+farplot(pds, response="conversion", factors=c("S","T","R","M"))
+```
+
+## Step 3: Fit a linear model
+
+```{r}
+model <- lm(conversion ~ S*T*R*M, data=pds)
+show_effects(model, scaling=2)
+```
+
+## Ordering the effects by magnitude
+
+```{r}
+show_effects(model, order="abs", scaling=2, intercept=FALSE)
+```
+
+## Visualizing effect sizes
+
+```{r fig.width=5, fig.height=3}
+effect_dotplot(model, scaling=2, binwidth=0.5)
+```
+
+## Permutation tests
+
+```{r}
+red <- c(8,3,9,6)
+black <- c(7,4,5,2)
+test <- mean(red) - mean(black)
+test
+```
+
+```{r include=FALSE}
+set.seed(498598)
+```
+
+\bigskip
+\pause
+```{r}
+cards <- c(red, black)
+N <- 200
+nulls <- numeric(N)
+for (i in 1:N) {
+  idxs <- sample(1:8, 4)
+  nulls[i] <- mean(cards[idxs]) - mean(cards[-idxs])
+}
+```
+
+## Permutation test results
+
+```{r fig.height=4}
+hist(nulls, n=sqrt(N))
+abline(v=test, col="red", lwd=2)
+```
+
+Calculating a $p$-value from the null distribution.
+```{r}
+1 - sum(nulls <= test) / length(nulls)
+```
+
+
+## Why can we compare effect sizes in the same model?
+
+- A *permutation test* creates a null distribution by randomly re-assigning data to groups.
+
+- Each contrast in a factorial experiment is a permutation of the responses, so the *inactive* effect sizes create a null distribution.
+
+
+## A larger ($2^5$) unreplicated study
+
+```{r}
+tumor <- read.csv("TumorInhibition.csv")
+head(tumor)
+```
+## Step 2: Look at the data
+```{r fig.width=5, fig.height=3}
+farplot(tumor, response="inhibition", factors=c("A","B","C","D","E"))
+```
+
+## Step 3: Fit a linear model
+
+```{r}
+model <- lm(inhibition ~ A*B*C*D*E, data=tumor)
+show_effects(model, scaling=2, intercept=FALSE, order="abs", n=18)
+```
+
+## Visualizing effect sizes
+
+```{r fig.width=5, fig.height=3}
+effect_dotplot(model, scaling=2, binwidth=0.5)
+```
+
+## Half-normal plots
+
+- With enough effects, the inactive factors will approximate a normal distribution.
+
+- A *half-normal plot* displays the effect sizes and their associated probabilities.
+
+- Inactive effects fall along a straight line, while active effects deviate.
+
+- The half-normal plot uses the effect *magnitudes* since the sign depends **only** on how the \lo\ and \hi\ levels were assigned.
+
+## Selecting active effects with a half-normal plot
+
+```{r include=FALSE}
+library(daewr)
+```
+
+```{r results=FALSE, fig.width=6, fig.height=4}
+daewr::halfnorm(get_effects(model))
+```
+
+\pause
+Active effects: factors \factor{B}, \factor{D}, & \factor{E} and interactions \factor{BD} & \factor{DE}.
