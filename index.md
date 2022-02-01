@@ -29,5 +29,6 @@ Experiment Design & Optimization</h2>
 * W 1/26: Factorial Designs 2: Interactions [continued]
 * F 1/28: Factorial Effects with Linear Models [[slides](files/05_LinearModelsEffects.pdf)][[Rmd](files/05_LinearModelsEffects.Rmd)]
 * M 1/31: Identifying Active Effects [[slides](files/06_ActiveEffects.pdf)] [[Rmd](files/06_ActiveEffects.Rmd)]
-* W 2/2: Fractional Factorial Designs 1
-* F 2/4: Fractional Factorial Designs 2
+* W 2/2: *no class*
+* F 2/4: Fractional Factorial Designs 1
+* M 2/7: Fractional Factorial Designs 2
