@@ -31,4 +31,5 @@ Experiment Design & Optimization</h2>
 * M 1/31: Identifying Active Effects [[slides](files/06_ActiveEffects.pdf)] [[Rmd](files/06_ActiveEffects.Rmd)]
 * W 2/2: *no class*
 * F 2/4: Fractional Factorial Designs 1 [[slides](files/07_FractionalFactorial.pdf)] [[Rmd](files/07_FractionalFactorial.Rmd)]
-* M 2/7: Fractional Factorial Designs 2 [[slides](files/08_LowerFractional.pdf)] [[Rmd](files/08_LowerFractional.Rmd)]
+* M 2/7: *no class*
+* W 2/9: Fractional Factorial Designs 2 [[slides](files/08_LowerFractional.pdf)] [[Rmd](files/08_LowerFractional.Rmd)]
