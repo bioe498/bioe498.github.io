@@ -1,0 +1,206 @@
+---
+title: "Alternative Fractional Factorial Designs"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: beamer_presentation
+fontsize: 9pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+library(doetools)
+```
+
+## How low can we go?
+
+\newcommand\lo{\ensuremath{\boldsymbol{-}}}
+\newcommand\hi{\ensuremath{\boldsymbol{+}}}
+\newcommand\iii{\ensuremath{\mathrm{III}}}
+\newcommand\iv{\ensuremath{\mathrm{IV}}}
+
+```{r include=FALSE}
+designs <- tibble::tribble(
+  ~factors, ~fraction, ~resolution,
+  2, 0, NA,
+  3, 0, NA,
+  3, 1, 3,
+  4, 0, NA,
+  4, 1, 4,
+  5, 0, NA,
+  5, 1, 5,
+  5, 2, 3,
+  6, 0, NA,
+  6, 1, 6,
+  6, 2, 4,
+  6, 3, 3,
+  7, 0, NA,
+  7, 1, 7,
+  7, 2, 4,
+  7, 3, 4,
+  7, 4, 3,
+  8, 0, NA,
+  8, 1, 8,
+  8, 2, 5,
+  8, 3, 4,
+  8, 4, 4,
+  9, 0, NA,
+  9, 1, 9,
+  9, 2, 6,
+  9, 3, 4,
+  9, 4, 4,
+  9, 5, 3,
+  10, 0, NA,
+  10, 1, 10,
+  10, 2, 7,
+  10, 3, 5,
+  10, 4, 4,
+  10, 5, 4,
+  10, 6, 3
+)
+
+designs %<>%
+  dplyr::group_by(factors, resolution) %>%
+  dplyr::summarise(fraction = max(fraction)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(runs = 2^(factors - fraction)) %>%
+  dplyr::filter(resolution <= 5 | is.na(resolution)) %>%
+  dplyr::mutate(resolution = ifelse(is.na(resolution), "full", as.character(resolution))) %>%
+  dplyr::mutate(resolution = factor(resolution, levels=c("full", "5", "4", "3")))
+```
+
+The efficiency of fractional factorial designs offsets the exponential increase in runs for factorial designs.
+
+```{r out.width='75%', fig.align='center', echo=FALSE}
+ggplot2::qplot(data=designs, 
+               x=factors, y=runs, 
+               color=resolution, 
+               geom=c("line", "point")) +
+  ggplot2::theme_classic(base_size=36)
+```
+
+## How low can we go? (zoomed in)
+
+```{r out.width='85%', fig.align='center', echo=FALSE}
+ggplot2::qplot(data=designs %>% dplyr::filter(runs < 150), 
+               x=factors, y=runs, 
+               color=resolution, 
+               geom=c("line", "point"),
+               ylim=c(0,150)) +
+  ggplot2::theme_classic(base_size=36)
+```
+
+##
+\begin{columns}
+
+\begin{column}{0.8\textwidth}
+\begin{center}
+\includegraphics{figures/frf2-resolution.png}
+\end{center}
+\end{column}
+
+\begin{column}{0.2\textwidth}
+{\footnotesize Gromping, 2014\\ \emph{J.\ Stat.\ Software}}
+\end{column}
+
+\end{columns}
+
+## Foldover Designs
+
+\begin{columns}
+
+\begin{column}{0.5\textwidth}
+Imagine a $2^{6-3}_\iii$ design with 
+\[ D=AB, \quad E=AC,\quad F=BC \]
+\begin{align*}
+  I &=ABD=ACE=BCF=DEF \\
+  &=BCDE=ACDF=ABEF
+\end{align*}
+
+After analysis, we find that both $B$ and $D$ are significant.
+
+\medskip
+Since $D=AB$, the significance of $D$ might be due to $B$ and $AB$.
+
+\medskip
+We can \emph{augment} the design by doubling the runs \emph{with $D$ flipped}. This clears $D$ and its interactions.
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\begin{tabular}{ccccccc}
+Run & $A$ & $B$ & $C$ & $D$ & $E$ & $F$ \\
+\hline
+1 & \lo & \lo & \lo & \hi & \hi & \hi \\
+2 & \hi & \lo & \lo & \lo & \lo & \hi \\
+3 & \lo & \hi & \lo & \lo & \hi & \lo \\
+4 & \hi & \hi & \lo & \hi & \lo & \lo \\
+5 & \lo & \lo & \hi & \hi & \lo & \lo \\
+6 & \hi & \lo & \hi & \lo & \hi & \lo \\
+7 & \lo & \hi & \hi & \lo & \lo & \hi \\
+8 & \hi & \hi & \hi & \hi & \hi & \hi \\
+\hline
+\end{tabular}
+
+\pause
+\begin{tabular}{ccccccc}
+ 9 & \lo & \lo & \lo & \lo & \hi & \hi \\
+10 & \hi & \lo & \lo & \hi & \lo & \hi \\
+11 & \lo & \hi & \lo & \hi & \hi & \lo \\
+12 & \hi & \hi & \lo & \lo & \lo & \lo \\
+13 & \lo & \lo & \hi & \lo & \lo & \lo \\
+14 & \hi & \lo & \hi & \hi & \hi & \lo \\
+15 & \lo & \hi & \hi & \hi & \lo & \hi \\
+16 & \hi & \hi & \hi & \lo & \hi & \hi \\
+\hline
+\phantom{Run} &  \\
+\end{tabular}
+\end{column}
+
+\end{columns}
+
+## Mirror image designs
+
+If we combine a Resolution \iii\ design with its mirror image (all factors flipped), we have a Resolution \iv\ design with all main effects clear.
+
+\medskip
+If we add a blocking factor we can perform the experimental batches sequentially.
+
+\medskip
+As with foldover designs, mirror image designs are only necessary if more than one main effect is significant.
+
+## Blocked Designs
+
+- Sometimes logistics force us to group runs into "blocks".
+
+- Examples
+  - Mice need to be housed in separate cages.
+  - The experimenter cannot do all runs in a single day/batch.
+  - Two experimenters need to split up the runs.
+  - A single container of reagent doesn't cover the experiment.
+
+\pause
+- A "blocking factor" is added to these experiment to capture inter-block differences.
+
+- Blocks are added to designs and analyzed like any other factor.
+
+- Most block $\times$ factor interactions are ignored.
+
+## Blocking our Pilot Plant Experiment
+
+```{r fig.width=5, fig.height=3}
+pilot <- read.csv("PilotPlantBlocked.csv")
+farplot(pilot, "yield", c("T","C","K","block"))
+```
+
+## Building our normal model
+
+```{r}
+model <- lm(yield ~ T*K*C, data=pilot); show_effects(model)
+```
+
+\pause
+
+```{r}
+model <- lm(yield ~ T*K*C + block, data=pilot); show_effects(model)
+```
+
