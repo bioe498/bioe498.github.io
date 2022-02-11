@@ -23,6 +23,8 @@ Experiment Design & Optimization</h2>
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
   - [Homework 1](files/Homework1.pdf) due **Monday, 2/21 by 5pm**.
     - [GeneEditing.csv](files/GeneEditing.csv)
+  - [Homework 2](files/Homework2.pdf) due **Monday, 2/28 by 5pm**.
+    - [Slide Formatting Guide](files/SlideFormat.pdf)
 
 #### Schedule
 * W 1/19: Introduction [[slides](files/01_Introduction.pptx)]
