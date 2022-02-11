@@ -38,3 +38,6 @@ Experiment Design & Optimization</h2>
 * M 2/7: *no class*
 * W 2/9: Fractional Factorial Designs 2 [[slides](files/08_LowerFractional.pdf)] [[Rmd](files/08_LowerFractional.Rmd)]
 * F 2/11: Fractional Factorial Designs 3 [[slides](files/09_AlternativeFractional.pdf)] [[Rmd](files/09_AlternativeFractional.Rmd)]
+* M 2/14: Replication
+* W 2/16: Designs to Study Dispersion
+* F 2/18: Nominal-the-Best Optimization
