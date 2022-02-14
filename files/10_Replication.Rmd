@@ -1,0 +1,94 @@
+---
+title: "Replication"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: beamer_presentation
+fontsize: 9pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(doetools)
+library(daewr)
+#source("show_model.R")
+```
+
+## Why replication?
+
+1. Reduce noise effects.
+
+2. Estimate confidence intervals for effect sizes.
+
+3. Analyze dispersion effects.
+
+## Does noise matter?
+
+```{r}
+data <- read.csv("LeafSpring.csv")
+data1 <- data[ 1:16, ]
+data2 <- data[17:32, ]
+data3 <- data[33:48, ]
+```
+
+## Effect sizes differ for each replicate
+
+```{r include=FALSE}
+show_eff <- function(d) {show_effects(lm(height ~ B*C*D*E*Q, data=d), ordered="abs", intercept=FALSE, n=10)}
+```
+
+::: columns
+:::: column
+Replicate 1
+```{r echo=FALSE}
+show_eff(data1)
+```
+::::
+:::: column
+Replicate 2
+```{r echo=FALSE}
+show_eff(data2)
+```
+::::
+:::
+
+## Duplicates vs. Replicates
+
+- We use replicates to estimate **confidence intervals** for effect sizes.
+
+- More replicates = narrower confidence intervals
+
+- Treating duplicates as replicates artificially narrows the confidence intervals for two reasons.
+  1. Inflating the degrees of freedom fakes additional statistical power
+  2. Duplicates typically have less variation than replicates
+  
+\pause
+- Statistical significance $\ne$ Practical significance
+
+## Sample variance across replicates
+
+If a run is replicated $r$ times with responses $y_1$, $y_2$, $\ldots$, $y_r$ and mean $\bar{y}$,
+
+\[ \text{sample variance} = s^2 = \frac{\sum_i^n (y_i - \bar{y})^2}{r-1} \]
+
+\pause
+For a factorial design with $N$ *unreplicated* runs ($N=2^k$ for a full factorial or $N=2^{k-p}$ for a fractional factorial),
+
+\[ \text{standard error of effects} = SE(\beta_i) = \sqrt{\frac{\text{mean}(s^2)}{rN}} \]
+
+## Linear models find the "best fit" effect sizes
+
+```{r}
+model <- lm(height ~ B*C*D*E*Q, data=data)
+show_model(model, n_coefs=17, show_fit=FALSE)
+```
+## Half-normal & dot plots --- significance based only on effect size
+
+```{r warning=FALSE, message=FALSE, echo=FALSE}
+effect_dotplot(model)
+```
+
+```{r echo=FALSE, fig.width=5, fig.height=3, warning=FALSE, message=FALSE}
+daewr::halfnorm(na.omit(get_effects(model)))
+```
+
+
