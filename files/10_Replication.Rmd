@@ -68,7 +68,7 @@ show_eff(data2)
 
 If a run is replicated $r$ times with responses $y_1$, $y_2$, $\ldots$, $y_r$ and mean $\bar{y}$,
 
-\[ \text{sample variance} = s^2 = \frac{\sum_i^n (y_i - \bar{y})^2}{r-1} \]
+\[ \text{sample variance} = s^2 = \frac{\sum_i^r (y_i - \bar{y})^2}{r-1} \]
 
 \pause
 For a factorial design with $N$ *unreplicated* runs ($N=2^k$ for a full factorial or $N=2^{k-p}$ for a fractional factorial),
