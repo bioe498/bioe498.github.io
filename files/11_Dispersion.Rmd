@@ -1,0 +1,174 @@
+---
+title: "Dispersion"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: beamer_presentation
+fontsize: 9pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+library(doetools)
+library(daewr)
+library(magrittr)
+#source("show_model.R")
+```
+
+## Why replication?
+
+1. Reduce noise effects.
+
+2. Estimate confidence intervals for effect sizes.
+
+3. Analyze dispersion effects.
+
+```{r include=FALSE}
+data <- read.csv("LeafSpring.csv")
+data %<>% dplyr::arrange(B, C, D, E, Q) %>% as.data.frame()
+```
+
+## Sample variance across replicates
+
+If a run is replicated $r$ times with responses $y_1$, $y_2$, $\ldots$, $y_r$ and mean $\bar{y}$,
+
+\[ \text{sample variance} = s^2 = \frac{\sum_i^r (y_i - \bar{y})^2}{r-1} \]
+
+\pause
+For a factorial design with $N$ *unreplicated* runs ($N=2^k$ for a full factorial or $N=2^{k-p}$ for a fractional factorial),
+
+\[ \text{standard error of effects} = SE(\beta_i) = \sqrt{\frac{\text{mean}(s^2)}{rN}} \]
+
+## Visualizing the data
+```{r fig.width=5, fig.height=3}
+farplot(data, factors=c("B","C","D","E","Q"), response="height")
+```
+
+## Linear models find the "best fit" effect sizes
+
+```{r}
+model <- lm(height ~ B*C*D*E*Q, data=data)
+show_model(model, n_coefs=17, show_fit=FALSE)
+```
+
+## Half-normal & dot plots --- significance based only on effect size
+
+```{r warning=FALSE, message=FALSE, echo=FALSE}
+effect_dotplot(model)
+```
+
+```{r echo=FALSE, fig.width=5, fig.height=3, warning=FALSE, message=FALSE}
+daewr::halfnorm(na.omit(get_effects(model)))
+```
+## Location vs. Dispersion
+
+- Sometimes we want to study the variation in the response, not the response itself.
+
+- **Location** describes the central tendency of a response
+  - Mean, median, mode
+  - All of our models so far use response = location
+  
+\pause
+- **Dispersion** describes the spread of a response
+  - Range, inter-quartile range (IQR), variance, standard deviation
+  
+\pause
+- Location can be studied with unreplicated or replicated designs
+- Studying dispersion always requires replicates
+
+## Studying dispersion
+
+- The variance $\sigma^2$ is the natural statistic for studying dispersion with linear models fit by least-squares
+
+- However, the sample variance $s^2$ is not a good response for studying $\sigma^2$
+  - $s^2$ is left-censored ($s^2 \ge 0$)
+  - $s^2$ follows a $\chi^2$ distribution, not a normal distribution
+  
+\pause
+- Both problems are fixed by modeling $\ln s^2$ instead of $s^2$
+
+\pause
+- Moreover, maximizing $-\ln s^2$ minimizes the variance, so we can keep the same maximization-based framework used for location models
+
+## Calculating $\ln s^2$
+
+```{r include=FALSE, eval=FALSE}
+add_dispersion <- function(data, factors, response, df=TRUE) {
+  data %<>% 
+    dplyr::group_by(.dots={{factors}}) %>%
+    dplyr::summarize(location__ = mean(.data[[response]]), lns2 = log(var(.data[[response]]))) %>%
+    dplyr::ungroup()
+  data[[response]] <- data$location__
+  data$location__ <- NULL
+  if (df) {
+    as.data.frame(data)
+  } else {
+    df  # return a tibble
+  }
+}
+```
+
+```{r}
+disp <- add_dispersion(data, factors=c("B","C","D","E","Q"), 
+                       response="height")
+```
+::: {.columns}
+:::: {.column width="40%"}
+```{r}
+head(data, n=16)
+```
+::::
+:::: {.column width="60%"}
+```{r}
+disp
+```
+::::
+:::
+
+## Visualizing the **dispersion**
+```{r fig.width=5, fig.height=3}
+farplot(disp, factors=c("B","C","D","E","Q"), response="lns2")
+```
+
+## Visualizing the **data**
+```{r fig.width=5, fig.height=3}
+farplot(data, factors=c("B","C","D","E","Q"), response="height")
+```
+
+## Building the model
+
+```{r}
+disp_model <- lm(-lns2 ~ B+C+D+E+Q + 
+                         B:Q + C:Q + D:Q + E:Q + B:C + B:D + B:E, 
+                 data=disp)
+```
+
+::: {.columns}
+:::: {.column width="40%"}
+Confounding in the $2^{5-1}$ design with I=BCDE:
+
+- main effects clear
+- BQ
+- CQ
+- DQ
+- EQ
+- BC=DE
+- BD=CE
+- BE=CD
+::::
+:::: {.column width="60%"}
+```{r}
+show_effects(disp_model, ordered="abs")
+```
+::::
+:::
+
+## Factors affecting **location** (spring height)
+```{r fig.width=5, fig.height=4, warning=FALSE, message=FALSE}
+daewr::halfnorm(na.omit(get_effects(model)))
+```
+
+## Factors affecting **dispersion** ($\ln s^2$)
+
+```{r fig.width=5, fig.height=4, warning=FALSE, message=FALSE}
+daewr::halfnorm(get_effects(disp_model))
+```
