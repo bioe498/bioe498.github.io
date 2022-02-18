@@ -1,0 +1,208 @@
+---
+title: "Nominal-the-Best Optimization"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: beamer_presentation
+fontsize: 9pt
+header-includes:
+  - \newcommand\Vx{\boldsymbol{\mathrm{x}}}
+  - \newcommand\EE{\mathbb{E}}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+library(doetools)
+library(daewr)
+library(magrittr)
+#source("show_model.R")
+
+data <- read.csv("LeafSpring.csv")
+data %<>% dplyr::arrange(B, C, D, E, Q) %>% as.data.frame()
+model <- lm(height ~ B*C*D*E*Q, data=data)
+disp <- add_dispersion(data, factors=c("B","C","D","E","Q"), 
+                       response="height")
+```
+
+## Location vs. Dispersion
+
+- Sometimes we want to study the variation in the response, not the response itself.
+
+- **Location** describes the central tendency of a response
+  - Mean, median, mode
+  - All of our models so far use response = location
+  
+\pause
+- **Dispersion** describes the spread of a response
+  - Range, inter-quartile range (IQR), variance, standard deviation
+  
+- Location can be studied with unreplicated or replicated designs
+- Studying dispersion always requires replicates
+
+## Studying dispersion
+
+- The variance $\sigma^2$ is the natural statistic for studying dispersion with linear models fit by least-squares
+
+- However, the sample variance $s^2$ is not a good response for studying $\sigma^2$
+  - $s^2$ is left-censored ($s^2 \ge 0$)
+  - $s^2$ follows a $\chi^2$ distribution, not a normal distribution
+  
+- Both problems are fixed by modeling $\ln s^2$ instead of $s^2$
+
+- Moreover, maximizing $-\ln s^2$ minimizes the variance, so we can keep the same maximization-based framework used for location models
+
+
+
+## Visualizing the **dispersion**
+```{r fig.width=5, fig.height=3}
+farplot(disp, factors=c("B","C","D","E","Q"), response="lns2")
+```
+
+## Visualizing the **data**
+```{r fig.width=5, fig.height=3}
+farplot(data, factors=c("B","C","D","E","Q"), response="height")
+```
+
+## Building the model
+
+```{r}
+disp_model <- lm(-lns2 ~ B+C+D+E+Q + 
+                         B:Q + C:Q + D:Q + E:Q + B:C + B:D + B:E, 
+                 data=disp)
+```
+
+::: {.columns}
+:::: {.column width="40%"}
+Confounding in the $2^{5-1}$ design with I=BCDE:
+
+- main effects clear
+- BQ
+- CQ
+- DQ
+- EQ
+- BC=DE
+- BD=CE
+- BE=CD
+::::
+:::: {.column width="60%"}
+```{r}
+show_effects(disp_model, ordered="abs")
+```
+::::
+:::
+
+## Factors affecting **location** (spring height)
+```{r fig.width=5, fig.height=4, warning=FALSE, message=FALSE}
+daewr::halfnorm(na.omit(get_effects(model)))
+```
+
+## Factors affecting **dispersion** ($\ln s^2$)
+
+```{r fig.width=5, fig.height=4, warning=FALSE, message=FALSE}
+daewr::halfnorm(get_effects(disp_model))
+```
+
+## Final Models
+
+\begin{align*}
+ \text{height} = 7.64 +0.11 B &+ 0.09 C - 0.13 Q - 0.08 CQ \\
+-\ln s^2 = 4.93 - 0.95 B & 
+\end{align*}
+
+\pause
+- We want to minimize process variance (maximize $-\ln s^2$), but what about height?
+- Often we have a *nominal value* for a response and need to balance reducing variance with keeping the response near the nominal value.
+
+\pause
+- In this case, we set $B=-$ and adjust the nominal value with $C$ and $Q$.
+- $C$ and $Q$ are called *adjustment factors* since the appear in the model for location but not dispersion.
+
+## Nominal-the-Best Optimization
+
+1. Use the dispersion model to reduce variation.
+2. Use adjustment factors to move the location near the nominal value.
+3. If the location is too far off, repeat but reduce the variation less than before.
+
+\pause
+### Why it works
+
+Given a nominal value $t$ for a response $y$, our goal (using quadratic loss) is
+
+\begin{align*} 
+  \min \mathbb{E}(y - t)^2 &= \mathbb{E}[(y-\mathbb{E}(y)) + (\mathbb{E}(y)-t)]^2 \\
+                             &= \text{Var}(y) + (\mathbb{E}(y) - t)^2
+\end{align*}
+
+## Robust Parameter Design
+
+- Factors can be split into two groups
+  - **Control factors** can be changed easily
+  - **Noise factors** are difficult or impossible to change
+  
+\pause
+- Robust Parameter Design finds settings for control factors that mitigate variation from noise factors.
+
+- Mitigation is achieved through *noise* $\times$ *control* interactions.
+
+## Example: Manufacturing boxed cake mixes
+
+- Control factors: Ingredients in the box $A, \ldots, D$.
+- Noise factors: Controlled by the customer
+  - $E$: Egg (small or large)
+  - $M$: Milk (skim or 2%)
+  - $T$: Oven temperature (340$^\circ$--360$^\circ$F)
+  
+\pause
+Controlling for egg size variation ($E$) using baking soda ($B$)
+
+\pause
+Recall the definition of Int($EB$):
+\[ \text{Int}(EB) = \frac{\text{ME}(E|B+) - \text{ME}(E|B-)}{2} \]
+
+
+## Mitigating noise trades optimality for robustness
+
+Partial model for egg size $E$ and baking soda $B$:
+
+\[ \text{taste} = \ldots + 0.2B - 0.7E + 0.4EB + \ldots \]
+
+
+\pause
+When $B=+$
+
+  - $E+\Rightarrow\text{taste}=-0.1$
+  - $E-\Rightarrow\text{taste}=0.5$
+
+When $B=-$
+
+  - $E+\Rightarrow\text{taste}=-1.3$
+  - $E-\Rightarrow\text{taste}=0.9$
+  
+\pause
+What should we do?
+
+- The optimal cake has low baking soda and instructions to use a small egg (taste=0.9).
+- If the customer uses a large egg, the taste drops a lot (-1.3).
+- Using high baking soda gives a suboptimal taste (0.5 with small egg).
+- Customers incorrectly using a large egg will not change taste as much (-0.1).
+
+## Designs to optimize robustness
+
+- Noise mitigation relies on interactions between control and noise factors.
+\pause
+
+- Typically, a Resolution V design is needed.
+- The noise$\times$control interactions are most important, so a clever choice of generator can work with Resolution IV.
+
+\pause
+In the leaf spring experiment, the generator $E=BCD$ produced a $2^{5-1}_\mathrm{IV}$ design with:
+
+- main effects clear
+- BQ
+- CQ
+- DQ
+- EQ
+- BC=DE
+- BD=CE
+- BE=CD
+
+All the interactions with the noise factor $Q$ (quench oil temperature) are clear.

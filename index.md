@@ -40,9 +40,9 @@ Experiment Design & Optimization</h2>
 * F 2/11: Fractional Factorial Designs 3 [[slides](files/09_AlternativeFractional.pdf)] [[Rmd](files/09_AlternativeFractional.Rmd)]
 * M 2/14: Replication [[slides](files/10_Replication.pdf)] [[Rmd](files/10_Replication.Rmd)]
 * W 2/16: Designs to Study Dispersion [[slides](files/11_Dispersion.pdf)] [[Rmd](files/11_Dispersion.Rmd)]
-* F 2/18: Nominal-the-Best Optimization
+* F 2/18: Nominal-the-Best Optimization [[slides](files/12_NominalTheBest.pdf)] [[Rmd](files/12_NominalTheBest.Rmd)]
 * M 2/21: Screening Designs I
 * W 2/23: Screening Designs II
 * F 2/25: Screening Designs III
 * M 2/28: Exam Review
-* W 2/30: **Exam 1**
+* W 3/2: **Exam 1**
