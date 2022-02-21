@@ -21,7 +21,7 @@ Experiment Design & Optimization</h2>
   - [RStudio](https://rstudio.com/products/rstudio/): Open Source Desktop Edition
 * **Assignments**
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
-  - [Homework 1](files/Homework1.pdf) due **Monday, 2/21 by 5pm**.
+  - [Homework 1](files/Homework1.pdf) due **<font color="red">Monday, 2/28 by 5pm</font>**.
     - [GeneEditing.csv](files/GeneEditing.csv)
   - [Homework 2](files/Homework2.pdf) due **Monday, 2/28 by 5pm**.
     - [Slide Formatting Guide](files/SlideFormat.pdf)

@@ -114,7 +114,7 @@ daewr::halfnorm(get_effects(disp_model))
 
 \pause
 - In this case, we set $B=-$ and adjust the nominal value with $C$ and $Q$.
-- $C$ and $Q$ are called *adjustment factors* since the appear in the model for location but not dispersion.
+- $C$ and $Q$ are called *adjustment factors* since they appear in the model for location but not dispersion.
 
 ## Nominal-the-Best Optimization
 
