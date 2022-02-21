@@ -1,0 +1,60 @@
+---
+title: "R Cheat Sheet"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For help, type `?command` to see the documentation for `command`.
+
+## Base R
+
+```{r eval=FALSE}
+lm(response ~ A*B*C*D, data)
+plot(xdata, ydata)
+```
+
+## Package `doetools`
+
+### Installing
+```{r eval=FALSE}
+install.packages("devtools")
+devtools::install_github("jensenlab/doetools")
+```
+
+### Commands
+
+```{r eval=FALSE}
+get_effects(model)
+show_effects(model, ordered="abs")
+show_model(model)
+farplot(data, factors, response)
+add_dispersion(data, factors, response)
+effect_dotplot(model)
+```
+
+## Package `daewr`
+
+### Installing
+
+```{r eval=FALSE}
+install.packages("daewr")
+library("daewr")
+```
+
+### Half-normal plots
+
+```{r eval=FALSE}
+halfnorm(get_effects(model))
+```
+
+If you can an error about `if (logC)`, you probably have `NA` effects in your model. Remove them with `na.omit`.
+
+```{r eval=FALSE}
+halfnorm(na.omit(get_effects(model)))
+```
+

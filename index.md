@@ -19,6 +19,7 @@ Experiment Design & Optimization</h2>
   - [*Reinforcement Learning: An Introduction*](http://incompleteideas.net/book/the-book.html) by Sutton and Barto
 * **R Resources**
   - [RStudio](https://rstudio.com/products/rstudio/): Open Source Desktop Edition
+  - [R Cheat Sheet](files/RCheatSheet.html)
 * **Assignments**
   - [Homework Submission Guide](files/BIOE_498_Homework_Submission_Guide.pdf)
   - [Homework 1](files/Homework1.pdf) due **<font color="red">Monday, 2/28 by 5pm</font>**.
