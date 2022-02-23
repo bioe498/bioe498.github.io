@@ -1,0 +1,176 @@
+---
+title: "Screening Designs II"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: beamer_presentation
+fontsize: 9pt
+---
+
+```{r setup, include=FALSE}
+library(magrittr)
+library(daewr)
+```
+
+## Why do we use screening designs?
+
+\newcommand\lo{\ensuremath{\boldsymbol{-}}}
+\newcommand\hi{\ensuremath{\boldsymbol{+}}}
+\newcommand\iii{\ensuremath{\mathrm{III}}}
+\newcommand\iv{\ensuremath{\mathrm{IV}}}
+\newcommand\vv{\ensuremath{\mathrm{V}}}
+
+* Optimization is expensive---many runs/factor at $>2$ levels
+* Too many factors waste resources
+* Too few factors lead to suboptimal results
+
+* **Solution:** A *screening design* tests a large number of factors
+* Only active factors are carried forward for optimization
+
+## Types of screening designs
+
+* Resolution \iii\ Fractional Factorial Design
+  * Pro: Mirror image can clear main effects
+  * Con: Run size always a power of 2
+
+* PB Design
+  * Pro: Run size in multiples of 4
+  * Con: Complex aliasing
+
+* Definitive Screening Designs
+  * Hybrid screening/optimization design. We'll discuss later!
+
+
+## Plackett-Burman Designs
+
+* Discovered in 1946 while working in the British Ministry of Supply
+* Orthogonal designs, so main effects can be estimated independently
+* Run sizes in **multiples of 4**
+
+* Both PB designs and FF designs are *Orthogonal Arrays*
+  * PB = FF when $N=2^k$
+
+* PB designs have *complex aliasing*. Every ME is partially confounded with all TWIs.
+
+## Creating a PB design (up to 23 factors)
+
+1. Start with the first run from the following table.
+
+\medskip
+\begin{center}
+\begin{tabular}{cl}
+Runs & Factor Levels \\
+\hline
+12 & \hi\,\hi\,\lo\,\hi\,\hi\,\hi\,\lo\,\lo\,\lo\,\hi\,\lo \\
+20 & \hi\,\hi\,\lo\,\lo\,\hi\,\hi\,\hi\,\hi\,\lo\,\hi\,\lo\,\hi\,\lo\,\lo\,\lo\,\lo\,\hi\,\hi\,\lo \\
+24 & \hi\,\hi\,\hi\,\hi\,\hi\,\lo\,\hi\,\lo\,\hi\,\hi\,\lo\,\lo\,\hi\,\hi\,\lo\,\lo\,\hi\,\lo\,\hi\,\lo\,\lo\,\lo\,\lo 
+\end{tabular}
+\end{center}
+\medskip
+
+2. Cycle the factor levels by one to get run #2. Repeat for 11, 19, or 23 runs.
+
+3. Set the final run to all low (\lo).
+
+4. If the number of factors $k$ is less than the number of runs, select the first $k$ columns.
+
+## Analyzing PB designs
+
+```{r include=FALSE}
+library(doetools)
+```
+
+```{r fig.width=5, fig.height=3}
+data <- read.csv("PBLife.csv")
+farplot(data, factors=c("A","B","C","D","E","F","G"), response="life")
+```
+
+## Analyzing effects with a linear model
+
+```{r}
+model_me <- lm(life ~ A+B+C+D+E+F+G, data=data)
+model_int <- lm(life ~ A+B+C+D+E+F+G+c8+c9+c10+c11, data=data)
+```
+
+::: columns
+:::: column
+
+```{r}
+show_effects(model_me, 
+             ordered="abs")
+```
+
+::::
+:::: column
+```{r}
+show_effects(model_int, 
+             ordered="abs")
+```
+::::
+:::
+
+## Finding active effects with a half-normal plot
+
+```{r fig.width=5, fig.height=3}
+halfnorm(get_effects(model_int))
+```
+
+## All-subsets regression
+
+* Effect sparsity predicts that few effects will be active.
+* If we knew the subset of active effects, we could build a model using all the PB runs.
+
+\pause
+* Since we don't know active effects *a prior*, we can build models for all possible subsets.
+* We expect that models with the active effects will have the best fit ($R^2$, AIC, BIC, ...).
+
+\bigskip
+\pause
+```{r warning=FALSE}
+library(leaps)
+data$y <- data$life
+regsubs <- regsubsets(
+  y ~ (.)^2, 
+  data=data[ ,c("A","B","C","D","E","F","G", "y")], 
+  method="exhaustive", nvmax=5, nbest=4)
+```
+
+## Results of all-subsets regression
+
+```{r fig.width=7, fig.height=6}
+plot(regsubs, scale="r2")
+```
+
+## A Bayesian approach
+
+We can also calculate the probability that an effect is active given the data using Bayes' rule:
+
+\[ p(\beta|D) \propto p(D|\beta)p(\beta). \]
+
+\pause
+* $p(\beta|D)$ is the probability that effect $\beta$ is active given our data $D=(X,y)$.
+  * It is called the *posterior probability* since it is calculated *after* we observe $D$.
+  
+\pause
+* $p(D|\beta)$ is the likelihood of observing $D$ given that effect $\beta$ is active.
+  * Likelihood is calculated based on the size of the residuals of a model that includes an active $\beta$.
+  
+\pause
+* $p(\beta)$ is our prior belief about the probability that $\beta$ is active.
+  * Priors need to be specified by the modeler.
+  * Common priors are based on effect sparsity, effect hierarchy, and effect heredity. This is a strength of the Bayesian approach!
+
+## Bayesian model selection in R
+
+```{r}
+X = as.matrix(data[ ,c("A","B","C","D","E","F","G")])
+y = data$life
+prob <- BsMD::BsProb(X, y, blk=0, mFac=5, mInt=3)
+```
+
+```{r include=FALSE}
+prob_sum <- summary(prob)
+```
+
+```{r echo=FALSE}
+prob_sum$probabilities
+```

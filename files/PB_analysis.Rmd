@@ -1,0 +1,47 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(doetools)
+```
+
+```{r}
+data <- read.csv("PBLife.csv")
+farplot(data, factors=c("A","B","C","D","E","F","G"), response="life")
+```
+
+```{r}
+model_me <- lm(life ~ A+B+C+D+E+F+G, data=data)
+show_effects(model_me, ordered="abs")
+```
+
+```{r}
+model_int <- lm(life ~ A+B+C+D+E+F+G+c8+c9+c10+c11, data=data)
+show_effects(model_int, ordered="abs")
+```
+
+```{r}
+daewr::halfnorm(get_effects(model_int))
+```
+```{r}
+library(leaps)
+data$y <- data$life
+regsubs <- regsubsets(y ~ (.)^2, data=data[ ,c("A","B","C","D","E","F","G", "y")], method="exhaustive", nvmax=5, nbest=4)
+plot(regsubs, scale="r2")
+```
+
+```{r}
+X = as.matrix(data[ ,c("A","B","C","D","E","F","G")])
+y = data$life
+prob <- BsMD::BsProb(X, y, blk=0, mFac=5, mInt=3)
+```
+
+```{r include=FALSE}
+prob_sum <- summary(prob)
+```
+
+```{r echo=FALSE}
+prob_sum$probabilities
+```

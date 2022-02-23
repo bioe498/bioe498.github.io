@@ -43,7 +43,7 @@ Experiment Design & Optimization</h2>
 * W 2/16: Designs to Study Dispersion [[slides](files/11_Dispersion.pdf)] [[Rmd](files/11_Dispersion.Rmd)]
 * F 2/18: Nominal-the-Best Optimization [[slides](files/12_NominalTheBest.pdf)] [[Rmd](files/12_NominalTheBest.Rmd)]
 * M 2/21: Screening Designs I [[slides](files/13_ScreeningDesigns.pdf)] [[Rmd](files/13_ScreeningDesigns.Rmd)]
-* W 2/23: Screening Designs II
+* W 2/23: Screening Designs II [[slides](files/14_ScreeningDesigns2.pdf)] [[Rmd](files/14_ScreeningDesigns2.Rmd)]
 * F 2/25: Screening Designs III
 * M 2/28: Exam Review
 * W 3/2: **Exam 1**
