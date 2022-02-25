@@ -25,7 +25,7 @@ Experiment Design & Optimization</h2>
   - [Homework 1](files/Homework1.pdf) due **<font color="red">Monday, 2/28 by 5pm</font>**.
     - [GeneEditing.csv](files/GeneEditing.csv)
   - [Homework 2](files/Homework2.pdf) due **Monday, 2/28 by 5pm**.
-    - [Slide Formatting Guide](files/SlideFormat.pdf)
+    - [Slide Formatting Guide](files/SlideFormat.pdf) [Rmd](files/SlideFormat.Rmd)
 
 #### Schedule
 * W 1/19: Introduction [[slides](files/01_Introduction.pptx)]
