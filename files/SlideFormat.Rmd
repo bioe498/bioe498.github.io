@@ -1,0 +1,63 @@
+---
+title: "Slide Formatting Guide"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Title Slide
+
+* Assignment Name
+
+* Names/e-mail addresses for all group members
+
+## Introduction and Research Questions
+
+* What motivated you to study this system?
+
+* Define the factors and the response.
+
+* What questions are you trying to answer (big picture)?
+
+## Description of the Data
+
+* Input factors, units, and ranges
+
+* Response units and range
+
+* Number of observations and replicates; if there were duplicates, say how many were averaged.
+
+  
+## Methods
+
+* What approach did you take?
+  * **Example:** *We build a statistical model that predicts $X$ using $Y$ and $Z$.*
+
+* Avoid jargon and technical terms. Simply explain the overall approach.
+
+## Results
+
+* Results are factual based on the data and/or model.
+
+* Write the results in words, including the effect sizes.
+  * **Example:** *Applying fertilizer in January increased yields 1.1-fold over treating in April*
+
+* Only describe the practically and statistically significant results. This avoids you needing to say ``significantly'' for every result.
+  * **Exception:** Mention any effect that you expected to be significant but wasn't.
+  * **Example:** *No change in yield between broadcast and plowed fertilizer applications.*
+
+## Conclusions
+
+* Conclusions are subjective based on your interpretation of the results and/or judgment.
+  * **Example:** *Treating in January increased yield by 10\%, but this benefit needs to be compared to the costs of accessing the fields early.*
+
+* If asked, include next steps or follow-up experiments/analyses.
+  * **Example:** *We estimate another 8 runs are needed to determine if time of application and method of application interact.*
+  
+## Supplementary slides
+
+* The all data, code, and plots used in the analysis.
