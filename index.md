@@ -45,5 +45,5 @@ Experiment Design & Optimization</h2>
 * M 2/21: Screening Designs I [[slides](files/13_ScreeningDesigns.pdf)] [[Rmd](files/13_ScreeningDesigns.Rmd)]
 * W 2/23: Screening Designs II [[slides](files/14_ScreeningDesigns2.pdf)] [[Rmd](files/14_ScreeningDesigns2.Rmd)]
 * F 2/25: Screening Designs III
-* M 2/28: Exam Review
+* M 2/28: Exam Review [[Exam 1 topics](files/Exam1Review.pdf)]
 * W 3/2: **Exam 1**

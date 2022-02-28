@@ -1,0 +1,96 @@
+---
+title: "Exam 1 Topics"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Factorial designs
+
+* Vocabulary
+  * OFAT design
+  * Factorial design
+  * Qualitative factor
+  * Quantitative factor
+  * Treatment
+  * Run
+  * Replicate
+  * Duplicate
+  * Design matrix
+  * Planning matrix
+  
+* Main effects: definition and calculation
+* Interactions: definition and calculation
+* Given a set of effects, find the optimal factor levels
+* Hidden replication in factorial designs
+
+## Linear models
+
+* Writing a linear model to predict a response
+* Comparing effect sizes and regression coefficients
+* Interpreting farplots
+
+## Active effects
+
+* Practical vs. statistical significance
+* Interpreting effect dotplots
+* Interpreting halfnormal plots
+
+## Fractional factorial designs
+
+* Effect principles
+  * Effect sparsity
+  * Effect hierarchy
+  * Effect heredity
+* Notations ($2^{k-p}$)
+* Confounding
+* Base designs
+* Generators, Defining relations, and generator algebra
+* Calculating confounding for effects (alias structure)
+* Degrees of freedom and number of estimable effects in linear models
+* Design guidelines
+  * Resolution
+  * Aberration
+  * Clarity
+* Foldover designs
+* Mirror image designs
+* Blocking
+
+## Replication
+
+* Reasons for replicating designs
+* Sample variance
+* Standard error of effects
+* Location vs. dispersion
+* $\ln s^2$ as an estimate of dispersion
+* Nominal-the-best optimization
+  * Nominal values
+  * Adjustment factors
+* Robust parameter design
+  * Control factors
+  * Noise factors
+  * Importance of interactions
+  
+## Screening designs
+
+* Reasons for factor screening
+* Resolution $\mathrm{III}$ designs
+  * Pros and cons
+* PB designs
+  * Pros and cons
+  * Definition of complex aliasing
+  * Relationship to fractional factorial designs
+  * Creating PB designs by cyclic rearrangement
+  * Assigning factors to columns
+  * Interpreting linear models of PB designs
+  * All-subsets regression
+
+## Topics *not* covered
+
+* Definitive screening designs
+* Bayesian model selection
+* The R programming language
