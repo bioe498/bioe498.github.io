@@ -47,3 +47,5 @@ Experiment Design & Optimization</h2>
 * F 2/25: Screening Designs III
 * M 2/28: Exam Review [[Exam 1 topics](files/Exam1Review.pdf)]
 * W 3/2: **Exam 1**
+  - [Exam Corrections](files/Exam1_Corrections.pdf) due 3/11 before 5pm.
+* F 3/4: Steepest Ascent [[slides](files/15_SteepestAscent.pdf)]
