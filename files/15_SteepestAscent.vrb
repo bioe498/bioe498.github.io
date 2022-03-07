@@ -1,0 +1,33 @@
+\frametitle{First-order response surfaces}
+
+Consider the first-order linear model (without interactions)
+\[ y = 20 + 3.6x_1 - 1.8x_2 \]
+
+\begin{columns}
+
+\begin{column}{0.5\textwidth}<2->
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+
+{\centering \includegraphics[width=\textwidth]{figure/unnamed-chunk-1-1}
+
+}
+
+
+\end{knitrout}
+
+\end{column}
+
+\begin{column}{0.5\textwidth}<3->
+We want to move ``uphill'' to improve the response using the \textbf{method of steepest ascent}.
+
+\bigskip
+If our goal was to minimize the response, we use \emph{steepest descent} by
+\begin{enumerate}
+  \item Moving opposite of the uphill direction, or
+  \item Multiplying the response by $-1$.
+\end{enumerate}
+\end{column}
+
+\end{columns}
+

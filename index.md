@@ -49,3 +49,6 @@ Experiment Design & Optimization</h2>
 * W 3/2: **Exam 1**
   - [Exam Corrections](files/Exam1_Corrections.pdf) due 3/11 before 5pm.
 * F 3/4: Steepest Ascent [[slides](files/15_SteepestAscent.pdf)]
+* M 3/7: RSM I: CCDs [[slides](files/16_RSM1.pdf)]
+* W 3/9: RSM II
+* F 3/11: RSM III
