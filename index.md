@@ -53,3 +53,6 @@ Experiment Design & Optimization</h2>
 * W 3/9: RSM II: CCDs [[slides](files/17_RSM2.pdf)]
 * F 3/11: RSM III: Optimization [[slides](files/18_RSM3.pdf)]
 * M 3/14 - F 3/18: *Spring Break*
+* M 3/21: RSM IV: Alternative Designs [[slides](files/19_RSM4.pdf)]
+* W 3/23: RSM V: The *rsm* Package
+* F 3/25: RSM VI: Applications

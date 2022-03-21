@@ -1,0 +1,620 @@
+\documentclass[9pt]{beamer}
+
+\beamertemplatenavigationsymbolsempty
+\renewcommand\mathfamilydefault{cmr}
+
+\usepackage{pajmath}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes.misc,calc,backgrounds,scopes} 
+\usetikzlibrary{datavisualization}
+\usetikzlibrary{datavisualization.formats.functions}
+\tikzset{boxed/.style={
+  thick,
+  draw=black,
+  top color=white,
+  text height=1.5ex,
+  text depth=.25ex
+}}
+
+
+\newcommand\lo{$-1$}
+\newcommand\hi{$\phan1$}
+\newcommand\ze{$\phan0$}
+\newcommand\Ze{$\phan\Vzero$}
+
+\title{Response Surface Methodology:\\Alternative Designs}
+\author{BIOE 498/598 PJ}
+\date{Spring 2022}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Surrogate Optimization}
+
+\begin{center}
+\begin{tikzpicture}[>=latex]
+  \node (start) {};
+  \node (data) [boxed, right=2cm of start] {design $X$};
+  \node (response) [boxed,right=1.85cm of data] {response $y$};
+  \node (optimal) [boxed,above=0.5cm of response] {$x^*$};
+  \draw [->] (start) -- (data) node [midway,above] (initial) {initial design};
+  \draw [->] (data) -- (response) node [midway,above] {experiment};
+  \draw [->] (response) -- (optimal);
+  \node (surrogate) [boxed,right=1.5cm of response] {surrogate $\tilde{f}$};
+  \draw [->] (response) -- (surrogate) node [midway,above] (modeling) {modeling};
+  \draw [->] (surrogate.south) -- ++(0,-0.5) -| (data.south) node [near start,below] (search) {model-guided search};
+  \node [blue,align=center,above=0.5em of initial] {factorial design\\CCD/BBD\\Latin hypercube\\maximin};
+  \node [blue,align=center,above=0.5em of modeling] {linear\\quadratic\\Gaussian process\\neural network};
+  \node [blue,align=center,below=0.5em of search] {steepest ascent\\direct solution\\L-BFGS\\expected improvement\\rollout};
+\end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+\newcommand<>\uncoverunderbrace[2]{%
+  \onslide#3 \underbrace{ \onslide<1->%
+  #1%
+  \onslide#3 }_{#2} \onslide<1->%
+}
+
+\begin{frame}{The Central Composite Design (CCD)}
+
+\begin{itemize}
+	\item A factorial or FF design can estimate FO and TWI terms.
+	\item Estimating curvature requires points beyond the factorial corners.
+	\item One popular option is the \textbf{Central Composite Design}.
+\end{itemize}
+
+\bigskip
+\begin{center}
+	\begin{tikzpicture}
+		\def\a{1.414}
+		\def\u{1}
+		\def\cw{4pt}
+		
+		\begin{scope}[scale=0.5]
+			\draw [help lines] (\u,\u) -- (-\u,\u) -- (-\u,-\u) -- (\u,-\u) -- cycle;
+			\fill (-\a,0) circle (\cw) (\a,0) circle (\cw) (0,-\a) circle (\cw) (0,\a) circle (\cw);
+			\fill (\u,\u) circle (\cw) (-\u,\u) circle (\cw) (-\u,-\u) circle (\cw) (\u,-\u) circle (\cw);
+			\fill (0,0) circle (\cw);
+			\draw [help lines] (-\a,0) -- (\a,0) (0,-\a) -- (0,\a);
+			\node at (0,-2) {CCD};
+		\end{scope}
+		\node at (1.5,0) {$=$};
+		\begin{scope}[shift={(3,0)},scale=0.5]
+			\draw [help lines] (\u,\u) -- (-\u,\u) -- (-\u,-\u) -- (\u,-\u) -- cycle;
+			\fill (\u,\u) circle (\cw) (-\u,\u) circle (\cw) (-\u,-\u) circle (\cw) (\u,-\u) circle (\cw);
+			\node at (0,-2) {factorial core};
+		\end{scope}
+		\node at (4.5,0) {$+$};
+		\begin{scope}[shift={(6,0)},scale=0.5]
+			\draw [help lines] (\u,\u) -- (-\u,\u) -- (-\u,-\u) -- (\u,-\u) -- cycle;
+			\fill (0,0) circle (\cw);
+			\node at (0,-2) {center points};
+		\end{scope}
+		\node at (7.5,0) {$+$};
+		\begin{scope}[shift={(9,0)},scale=0.5]
+			\draw [help lines] (\u,\u) -- (-\u,\u) -- (-\u,-\u) -- (\u,-\u) -- cycle;
+			\fill (-\a,0) circle (\cw) (\a,0) circle (\cw) (0,-\a) circle (\cw) (0,\a) circle (\cw);
+			\draw [help lines] (-\a,0) -- (\a,0) (0,-\a) -- (0,\a);
+			\node at (0,-2) {axial points};
+		\end{scope}
+	\end{tikzpicture}
+\end{center}
+
+\begin{center}
+	\begin{tikzpicture}
+		\def\a{2}
+		\def\u{1}
+		\def\cw{4pt}
+		\node at (1.5,0) {$=$};
+		\begin{scope}[shift={(3,0)},scale=0.5]
+			\draw [help lines] 
+				(\u,\u,-\u) -- (-\u,\u,-\u) -- (-\u,-\u,-\u) -- (\u,-\u,-\u) -- (\u,\u,-\u)
+				(\u,\u,\u) -- (-\u,\u,\u) -- (-\u,-\u,\u) -- (\u,-\u,\u) -- (\u,\u,\u)
+				(\u,\u,-\u) -- (\u,\u,\u)
+				(-\u,\u,-\u) -- (-\u,\u,\u)
+				(-\u,-\u,-\u) -- (-\u,-\u,\u)
+				(\u,-\u,-\u) -- (\u,-\u,\u);
+			\fill (\u,\u,\u) circle (\cw) (-\u,\u,\u) circle (\cw) (-\u,-\u,\u) circle (\cw) (\u,-\u,\u) circle (\cw)
+				  (\u,\u,-\u) circle (\cw) (-\u,\u,-\u) circle (\cw) (-\u,-\u,-\u) circle (\cw) (\u,-\u,-\u) circle (\cw);
+			\node at (0,-2) {factorial core};
+		\end{scope}
+		\node at (4.5,0) {$+$};
+		\begin{scope}[shift={(6,0)},scale=0.5]
+			\draw [help lines] 
+				(\u,\u,-\u) -- (-\u,\u,-\u) -- (-\u,-\u,-\u) -- (\u,-\u,-\u) -- (\u,\u,-\u)
+				(\u,\u,\u) -- (-\u,\u,\u) -- (-\u,-\u,\u) -- (\u,-\u,\u) -- (\u,\u,\u)
+				(\u,\u,-\u) -- (\u,\u,\u)
+				(-\u,\u,-\u) -- (-\u,\u,\u)
+				(-\u,-\u,-\u) -- (-\u,-\u,\u)
+				(\u,-\u,-\u) -- (\u,-\u,\u);
+			\fill (0,0,0) circle (\cw);
+			\node at (0,-2) {center points};
+		\end{scope}
+		\node at (7.5,0) {$+$};
+		\begin{scope}[shift={(9,0)},scale=0.5]
+			\draw [help lines] 
+				(\u,\u,-\u) -- (-\u,\u,-\u) -- (-\u,-\u,-\u) -- (\u,-\u,-\u) -- (\u,\u,-\u)
+				(\u,\u,\u) -- (-\u,\u,\u) -- (-\u,-\u,\u) -- (\u,-\u,\u) -- (\u,\u,\u)
+				(\u,\u,-\u) -- (\u,\u,\u)
+				(-\u,\u,-\u) -- (-\u,\u,\u)
+				(-\u,-\u,-\u) -- (-\u,-\u,\u)
+				(\u,-\u,-\u) -- (\u,-\u,\u);
+			\draw [help lines,dashed] (-\a,0,0) -- (\a,0,0) (0,-\a,0) -- (0,\a,0) (0,0,-\a) -- (0,0,\a);
+			\fill (-\a,0,0) circle (\cw) (\a,0,0) circle (\cw) 
+				  (0,-\a,0) circle (\cw) (0,\a,0) circle (\cw)
+				  (0,0,-\a) circle (\cw) (0,0,\a) circle (\cw);
+			\node at (0,-2.5) {axial points};
+		\end{scope}
+	\end{tikzpicture}
+\end{center}
+	
+\end{frame}
+
+\begin{frame}{Why alternatives to the CCD?}
+
+\begin{itemize}
+	\item The CCD is excellent (and in many ways optimal) for RSM.
+	\item Many alternatives have been developed to address one of two CCD shortcomings:
+	\begin{enumerate}
+		\item CCDs require 5 levels for each factor.
+		\item CCDs require a lot of runs.
+	\end{enumerate}
+\end{itemize}
+	
+\end{frame}
+
+\begin{frame}{Rotatable, uniform precision CCDs}
+	\begin{tabular}{lcccccccccccc}
+	  factors ($k$) & 2 & 3 & 4 & 5 & $5-1$ & 6 \\
+	  \hline
+	  factorial points & 4 & 8 & 16 & 32 & 16 & 64 \\
+	  axial points & 4 & 6 & 8 & 10 & 10 & 12 \\
+	  center points & 5 & 6 & 7 & 10 & 6 & 15 \\
+	  axial distance ($\alpha$) & 1.414 & 1.682 & 2.000 & 2.378 & 2.000 & 2.828
+	\end{tabular}
+
+	\bigskip\bigskip
+	\begin{tabular}{lcccccccccccc}
+	  factors ($k$) & $6-1$ & 7 & $7-1$ & 8 & $8-1$ & $8-2$ \\
+	  \hline
+	  factorial points & 32 & 128 & 64 & 256 & 128 & 64 \\
+	  axial points & 12 & 14 & 14 & 16 & 16 & 16 \\
+	  center points & 9 & 21 & 14 & 28 & 20 & 13 \\
+	  axial distance ($\alpha$) & 2.378 & 3.364 & 2.828 & 4.000 & 3.364 & 2.828
+	\end{tabular}
+\end{frame}
+
+\begin{frame}{Box-Behnken Designs (BBD)}
+
+\begin{columns}
+\begin{column}{0.7\textwidth}
+	\begin{itemize}
+		\item 3-level design with performance close to a CCD.
+		\item Similar number of runs to a CCD.
+		\item Built from $2^2$ factorials for each pair of factors.
+		\item<3-> Nearly rotatable (rotatable for $k=$ 4 or 7).
+		\item<3-> 3--5 center runs are recommended. (At least one center run is required for $k=$ 4 or 7).
+	\end{itemize}
+\end{column}
+\begin{column}{0.3\textwidth}
+	\onslide<2->{
+		\begin{tabular}{ccc}
+			\toprule
+			$x_1$ & $x_2$ & $x_3$ \\
+			\midrule
+			\lo & \lo & \ze \\
+			\lo & \hi & \ze \\
+			\hi & \lo & \ze \\
+			\hi & \hi & \ze \\
+			\\
+			\lo & \ze & \lo \\
+			\lo & \ze & \hi \\
+			\hi & \ze & \lo \\
+			\hi & \ze & \hi \\
+			\\
+			\ze & \lo & \lo \\
+			\ze & \lo & \hi \\
+			\ze & \hi & \lo \\
+			\ze & \hi & \hi \\
+			\\		
+			\Ze & \Ze & \Ze \\
+			\bottomrule
+		\end{tabular}
+	}
+\end{column}
+	
+\end{columns}
+
+\medskip
+\onslide<2->{\footnotesize Note that in the bottom row \Vzero\ is a vector, i.e.\ a set of repeated center points.}
+\end{frame}
+
+\begin{frame}{The BBD is a spherical design}
+
+\begin{columns}
+\begin{column}{0.7\textwidth}
+	\begin{itemize}
+		\item All points in a BBD are on the edges, not the corners, of the design space.
+		\item For $k=3$, all points are $\sqrt{2}$ away from the design center.
+		\item<2-> The BBD is not good at predicting responses near the corners (\emph{extremes}) of the design space.
+		\item<2-> Since the BBD is spherical and rotatable, ``ample'' center points should be used (Myers~2009).
+	\end{itemize}
+\end{column}
+\begin{column}{0.3\textwidth}
+	\begin{tikzpicture}
+	\def\u{2}
+	\def\cw{3pt}
+	\begin{scope}[shift={(3,0)},scale=0.5]
+		\draw [help lines] 
+			(\u,\u,-\u) -- (-\u,\u,-\u) (\u,-\u,-\u) -- (\u,\u,-\u)
+			(\u,\u,\u) -- (-\u,\u,\u) -- (-\u,-\u,\u) -- (\u,-\u,\u) -- (\u,\u,\u)
+			(\u,\u,-\u) -- (\u,\u,\u)
+			(-\u,\u,-\u) -- (-\u,\u,\u)
+			(\u,-\u,-\u) -- (\u,-\u,\u);
+		\draw [help lines,dashed]
+			(-\u,-\u,-\u) -- (\u,-\u,-\u)
+			(-\u,\u,-\u) -- (-\u,-\u,-\u)
+			(-\u,-\u,-\u) -- (-\u,-\u,\u);
+		\fill (\u,\u,0) circle (\cw) 
+			  (-\u,\u,0) circle (\cw) 
+			  (-\u,-\u,0) circle (\cw) 
+			  (\u,-\u,0) circle (\cw)
+
+			  (0,\u,\u) circle (\cw) 
+			  (0,-\u,\u) circle (\cw) 
+			  (0,-\u,-\u) circle (\cw) 
+			  (0,\u,-\u) circle (\cw)
+			  
+			  (\u,0,\u) circle (\cw) 
+			  (-\u,0,\u) circle (\cw) 
+			  (-\u,0,-\u) circle (\cw) 
+			  (\u,0,-\u) circle (\cw);
+		\fill [blue]
+			  (0,0,0) circle (\cw);
+	\end{scope}
+\end{tikzpicture}
+BBD with $k=3$. Center point is in blue.
+\end{column}
+	
+\end{columns}
+	
+\end{frame}
+
+
+\begin{frame}{Hoke Designs}
+\begin{itemize}
+	\item Hoke (1974) developed smaller, 3-level designs for $k=$ 3 -- 6 factors.
+	\item For each $k$ there are seven variants, $\V{D}_1 \ldots \V{D}_7$. Designs $\V{D}_1$ -- $\V{D}_3$ are saturated, and the others are near-saturated.
+	\item The most popular designs are $\V{D}_2$ and $\V{D}_6$. For $k=$ 3 factors:
+\end{itemize}
+
+\bigskip
+\begin{center}
+{\small 
+$\V{D}_2 = $
+\begin{tabular}{ccc}
+	\toprule
+	$x_1$ & $x_2$ & $x_3$ \\
+	\midrule
+	\lo & \lo & \lo \\
+	\hi & \hi & \lo \\
+	\hi & \lo & \hi \\
+	\lo & \hi & \hi \\
+	\hi & \lo & \lo \\
+	\lo & \hi & \lo \\
+	\lo & \lo & \hi \\
+	\lo & \ze & \ze \\
+	\ze & \lo & \ze \\
+	\ze & \ze & \lo \\
+	\bottomrule
+	\\
+	\\
+	\\
+\end{tabular}
+$\quad\quad \V{D}_6 = $
+\begin{tabular}{ccc}
+	\toprule
+	$x_1$ & $x_2$ & $x_3$ \\
+	\midrule
+	\lo & \lo & \lo \\
+	\hi & \hi & \lo \\
+	\hi & \lo & \hi \\
+	\lo & \hi & \hi \\
+	\hi & \lo & \lo \\
+	\lo & \hi & \lo \\
+	\lo & \lo & \hi \\
+	\lo & \ze & \ze \\
+	\ze & \lo & \ze \\
+	\ze & \ze & \lo \\
+	\hi & \hi & \ze \\
+	\hi & \ze & \hi \\
+	\ze & \hi & \hi \\
+	\bottomrule
+\end{tabular}
+
+}\end{center}
+
+\end{frame}
+
+\begin{frame}{Koshal Designs}
+\begin{itemize}
+	\item Koshal (1933) developed saturated $d$-level designs for modeling a response surface of order $d$.
+	\item Koshal designs are augmented OFAT designs. They should be reserved for small numbers of factors.
+\end{itemize}
+
+{\small
+\begin{columns}
+\begin{column}{0.3\textwidth}
+	\begin{center}
+		First-order design\\
+		$y = \beta_0 + \beta_1x_1 + \beta_2x_2$\\
+				$\phantom{+}$ \\
+		\smallskip
+		\begin{tabular}{rrr}
+			\toprule
+			$x_1$ & $x_2$ & $x_3$ \\
+			\midrule
+			\Ze & \Ze & \Ze \\
+			\hi & \ze & \ze \\
+			\ze & \hi & \ze \\
+			\ze & \ze & \hi \\
+			\bottomrule
+			\\
+			\\
+			\\
+			\\
+			\\
+			\\
+		\end{tabular}
+	\end{center}
+\end{column}
+\begin{column}{0.3\textwidth}
+	\begin{center}
+		FO+TWI design\\
+		$y = \beta_0 + \beta_1x_1 + \beta_2x_2$\\
+				$\phantom{x} + \beta_{12}x_1x_2$ \\
+		\smallskip
+		\begin{tabular}{rrr}
+			\toprule
+			$x_1$ & $x_2$ & $x_3$ \\
+			\midrule
+			\Ze & \Ze & \Ze \\
+			\hi & \ze & \ze \\
+			\ze & \hi & \ze \\
+			\ze & \ze & \hi \\
+			\hi & \hi & \ze \\
+			\hi & \ze & \hi \\
+			\ze & \hi & \hi \\
+			\bottomrule
+			\\
+			\\
+			\\
+		\end{tabular}
+	\end{center}
+\end{column}
+\begin{column}{0.4\textwidth}
+	\begin{center}
+		Second-order design\\
+		$y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \beta_{12}x_1x_2$\\
+				$\phantom{x} + \beta_{11}x_1^2 + \beta_{22}x_2^2$ \\
+		\smallskip
+		\begin{tabular}{rrr}
+			\toprule
+			$x_1$ & $x_2$ & $x_3$ \\
+			\midrule
+			\Ze & \Ze & \Ze \\
+			\hi & \ze & \ze \\
+			\ze & \hi & \ze \\
+			\ze & \ze & \hi \\
+			\hi & \hi & \ze \\
+			\hi & \ze & \hi \\
+			\ze & \hi & \hi \\
+			\lo & \ze & \ze \\
+			\ze & \lo & \ze \\
+			\ze & \ze & \lo \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+\end{column}
+\end{columns}
+}
+\bigskip
+{\footnotesize Note that in the top row \Vzero\ is a vector, i.e.\ a set of repeated center points.}
+
+\end{frame}
+
+\begin{frame}{Roquemore Hybrid Designs}
+
+\begin{itemize}
+	\item Roquemore (1976) defined a series of \textbf{hybrid designs} for $k =$ 3, 4, 6, \& 7.
+	\item The designs are near-rotatable and saturated or near-saturated.
+\end{itemize}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+	\begin{center}
+		$\V{D}_{310}$ (saturated)
+		\medskip
+		\begin{tabular}{ccc}
+			\toprule
+			$\phan x_1$ & $\phan x_2$ & $x_3$ \\
+			\midrule
+			$\phan0$ & $\phan0$ & $\phan1.2906$ \vphantom{$\sqrt{2}$} \\
+			$\phan0$ & $\phan0$ & $-0.1360$ \vphantom{$\sqrt{2}$} \\
+			$-1$ & $-1$ & $\phan0.6386$ \vphantom{$\sqrt{2}$} \\
+			$\phan1$ & $-1$ & $\phan0.6386$ \vphantom{$\sqrt{2}$} \\
+			$-1$ & $\phan1$ & $\phan0.6386$ \vphantom{$\sqrt{2}$} \\
+			$\phan1$ & $\phan1$ & $\phan0.6386$ \vphantom{$\sqrt{2}$} \\
+			$\phan1.736$ & $\phan0$ & $-0.9273$ \vphantom{$\sqrt{2}$} \\
+			$-1.736$ & $\phan0$ & $-0.9273$ \vphantom{$\sqrt{2}$} \\
+			$\phan0$ & $\phan1.736$ & $-0.9273$ \vphantom{$\sqrt{2}$} \\
+			$\phan0$ & $-1.736$ & $-0.9273$ \vphantom{$\sqrt{2}$} \\
+			\bottomrule
+			\vphantom{$\sqrt{2}$} \\
+		\end{tabular}
+	\end{center}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+	\begin{center}
+		$\V{D}_\mathrm{311A}$ (near-saturated)
+		\medskip
+		\begin{tabular}{ccc}
+			\toprule
+			$\phan x_1$ & $\phan x_2$ & $x_3$ \\
+			\midrule
+			$\phan0$ & $\phan0$ & $\phan\sqrt{2}$ \\
+			$\phan0$ & $\phan0$ & $-\sqrt{2}$ \\
+			$-1$ & $-1$ & $\phan1/\sqrt{2}$ \\
+			$\phan1$ & $-1$ & $\phan1/\sqrt{2}$ \\
+			$-1$ & $\phan1$ & $\phan1/\sqrt{2}$ \\
+			$\phan1$ & $\phan1$ & $\phan1/\sqrt{2}$ \\
+			$\phan\sqrt{2}$ & $\phan0$ & $-1/\sqrt{2}$ \\
+			$-\sqrt{2}$ & $\phan0$ & $-1/\sqrt{2}$ \\
+			$\phan0$ & $\sqrt{2}$ & $-1/\sqrt{2}$ \\
+			$\phan0$ & $\sqrt{2}$ & $-1/\sqrt{2}$ \\
+			$\phan\Vzero$ & $\phan\Vzero$ & $\phan\Vzero$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+\end{column}
+	
+\end{columns}
+
+\bigskip
+{\footnotesize Note that in $\V{D}_\mathrm{311A}$ the bottom row \Vzero\ is a vector, i.e.\ a set of repeated center points.}
+
+\end{frame}
+
+\begin{frame}{Small Composite Design (SCD)}
+
+\begin{columns}
+\begin{column}{0.7\textwidth}
+	\begin{itemize}
+		\item A CCD uses a full or Resolution~V factorial core.
+		\item One alternative is to replace the core with a Resolution~III$^*$ design --- a Resolution~III with no 4-letter word in the defining relation.
+		\item<2-> Unfortunately, the SCD has high variance for main effects and TWI terms.
+		\item<2-> However, a Resolution~III$^*$ design from steepest ascent can be converted into an SCD by adding axial points and center points.
+	\end{itemize}
+\end{column}
+\begin{column}{0.3\textwidth}
+	\begin{tabular}{ccc}
+		\toprule
+		$x_1$ & $x_2$ & $x_3$ \\
+		\midrule
+		$-1$ & $-1$ & $-1$ \\
+		$\phan1$ & $\phan1$ & $-1$ \\
+		$\phan1$ & $-1$ & $\phan1$ \\
+		$-1$ & $\phan1$ & $\phan1$ \\
+		$-\alpha$ & $\phan0$ & $\phan0$ \\
+		$\phan\alpha$ & $\phan0$ & $\phan0$ \\
+		$\phan0$ & $-\alpha$ & $\phan0$ \\
+		$\phan0$ & $\phan\alpha$ & $\phan0$ \\
+		$\phan0$ & $\phan0$ & $-\alpha$ \\
+		$\phan0$ & $\phan0$ & $\phan\alpha$ \\
+		$\phan\Vzero$ & $\phan\Vzero$ & $\phan\Vzero$ \\
+		\bottomrule
+	\end{tabular}
+\end{column}	
+\end{columns}
+
+\end{frame}
+
+\begin{frame}{Final recommendations}
+
+Many designs can be used for RSM. Here are our recommendations in descending order of preference.
+
+\begin{enumerate}
+	\item The \textbf{CCD} is the best overall choice for RSM.
+	\item A \textbf{BBD} is a close second, but only preferable to a CCD when 3-level factors are more convenient than 5-level factors.
+	\item \textbf{Hoke} or \textbf{Hybrid} designs are the preferred designs when your run budget is too small for a CCD or BBD.
+	\item The \textbf{SCD} should only be used when a tight budget demands immediate follow-up from steepest ascent. In this case, you need to use a Resolution~III$^*$ screening design for steepest ascent.
+	\item \textbf{Koshal} designs are obsolete; we include them only for a historical perspective.
+\end{enumerate}
+
+\pause
+\bigskip
+...but wait, there's one more!
+\end{frame}
+
+\begin{frame}{Definitive Screening Designs (DSD)}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+	\begin{itemize}
+		\item The DSD combines features of FF screening, foldover, PB, and BB designs.
+		\item For $k$ factors a DSD requires only $2k+1$ runs.
+		\item Continuous factors use 3 levels; some discrete 2-level factors can be added.
+		\item Can estimate FO, TWI, and PQ terms (up to saturation).
+		\begin{itemize}
+			\item Main effects are clear of TWI and PQ terms.
+			\item All PQ terms are estimable.
+			\item Complex aliasing of TWI and PQ terms.
+		\end{itemize}
+	\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}{\footnotesize
+	\begin{center}
+		\textbf{6-factor, minimum run DSD}
+		\begin{tabular}{rrrrrr}
+			\toprule
+			A & B & C & D & E & F \\
+			\midrule
+			\ze & \hi & \hi & \hi & \hi & \hi \\
+			\ze & \lo & \lo & \lo & \lo & \lo \\
+			\\
+			\hi & \ze & \lo & \hi & \hi & \lo \\
+			\lo & \ze & \hi & \lo & \lo & \hi \\
+			\\
+			\hi & \lo & \ze & \lo & \hi & \hi \\
+			\lo & \hi & \ze & \hi & \lo & \lo \\
+			\\
+			\hi & \hi & \lo & \ze & \lo & \hi \\
+			\lo & \lo & \hi & \ze & \hi & \lo \\
+			\\
+			\hi & \hi & \hi & \lo & \ze & \lo \\
+			\lo & \lo & \lo & \hi & \ze & \hi \\
+			\\
+			\hi & \lo & \hi & \hi & \lo & \ze \\
+			\lo & \hi & \lo & \lo & \hi & \ze \\
+			\\
+			\ze & \ze & \ze & \ze & \ze & \ze \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+}
+\end{column}
+\end{columns}
+	
+\end{frame}
+
+\begin{frame}{Constructing a DSD}
+\begin{itemize}
+	\item Jones and Nachtsheim (2011) discovered the DSD for 6 -- 30 factors using a computer search.
+	\item Xiao et al.\ (2012) showed that DSDs for even $k$ can be built with \emph{conference matrices}. Nguyen and Stylianou (2013) developed a new approach for even and odd $k$.
+	\pause
+	\item Similar to a PB design, you can add ``dummy factors'' to increase the number of runs. The dummy columns for the unused factors are dropped. The original paper recommended adding at least two dummy factors.
+\end{itemize}	
+\end{frame}
+
+\begin{frame}{Analyzing a DSD}
+There are many choices for analyzing the results of a DSD. For a standard DSD with $k$ factors and $2k+1$ runs you can
+\begin{itemize}
+	\item Fit an intercept, clear FO terms, and up to $k$ aliased TWI terms.
+	\item Fit an intercept, FO, and PQ model. This model will be saturated.
+	\item Perform subset selection to identify smaller models (like a PB design).
+	\item If $k\ge6$ you can fit a full SO model for any subset of 3 factors\\(or 4 factors if $k\ge18$ or 5 factors if $k\ge24$).
+	\pause
+	\begin{itemize}
+		\item A DSD can be used for both screening and RSM if the final number of factors is small!
+	\end{itemize}
+\end{itemize}	
+\end{frame}
+
+
+\end{document}
