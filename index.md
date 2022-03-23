@@ -54,5 +54,5 @@ Experiment Design & Optimization</h2>
 * F 3/11: RSM III: Optimization [[slides](files/18_RSM3.pdf)]
 * M 3/14 - F 3/18: *Spring Break*
 * M 3/21: RSM IV: Alternative Designs [[slides](files/19_RSM4.pdf)]
-* W 3/23: RSM V: The *rsm* Package (**online lecture**)
+* W 3/23: RSM V: The *rsm* Package (**online lecture**) [[Rmd](files/20_RSM5.Rmd)]
 * F 3/25: RSM VI: Applications
