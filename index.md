@@ -56,3 +56,6 @@ Experiment Design & Optimization</h2>
 * M 3/21: RSM IV: Alternative Designs [[slides](files/19_RSM4.pdf)]
 * W 3/23: RSM V: The *rsm* Package (**online lecture**) [[Rmd](files/20_RSM5.Rmd)]
 * F 3/25: RSM VI: Applications
+* M 3/28: Class presentations
+* W 3/30: Surrogates 1: Space Filling Designs [[slides](files/21_SpaceFillingDesigns.pdf)] [[Rmd](files/21_SpaceFillingDesigns.Rmd)]
+* F 4/1: Surrogates 2: Gaussian Process Regression [[slides](files/22_GaussianProcessRegression.pdf)] [[Rmd](files/22_GaussianProcessRegression.Rmd)]
