@@ -59,3 +59,7 @@ Experiment Design & Optimization</h2>
 * M 3/28: Class presentations
 * W 3/30: Surrogates 1: Space Filling Designs [[slides](files/21_SpaceFillingDesigns.pdf)] [[Rmd](files/21_SpaceFillingDesigns.Rmd)]
 * F 4/1: Surrogates 2: Gaussian Process Regression [[slides](files/22_GaussianProcessRegression.pdf)] [[Rmd](files/22_GaussianProcessRegression.Rmd)]
+* M 4/4: Surrogates 3: Sequential Optimization [[slides](files/23_SequentialDesign.pdf)] [[Rmd](files/23_SequentialDesign.Rmd)]
+* W 4/6: Surrogates 4: Hyperparameter Tuning [[slides](files/24_GPRHyperparameters.pdf)] [[Rmd](files/24_GPRHyperparameters.Rmd)]
+* F 4/8: Surrogates 5: Expected Improvement [[slides](files/25_ExpectedImprovement.pdf)] [[Rmd](files/25_ExpectedImprovement.Rmd)]
+* M 4/11: Homework 3 Workshop
