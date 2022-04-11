@@ -98,7 +98,7 @@ We can sample $y(x)$ many times, averaging the improvement $I(x)$ for $T$ sample
 \pause
 \bigskip
 Even better, we can leverage that GPR predictions are multivariate normal with mean $\mu(x)$ and variance $\sigma(x)$. Let $z = (\mu(x) - y_\mathrm{max})/\sigma(x)$. Then
-\[ \mathrm{EI}(x) = (\mu(x) - y_\mathrm{max})\mathrm{CDF}(z) + \sigma(x)PDF(z) \]
+\[ \mathrm{EI}(x) = (\mu(x) - y_\mathrm{max})\mathrm{CDF}(z) + \sigma(x)\mathrm{PDF}(z) \]
 using the PDF and CDF of a standard Gaussian distribution.
 
 ## Calculating EI
