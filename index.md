@@ -26,6 +26,7 @@ Experiment Design & Optimization</h2>
     - [GeneEditing.csv](files/GeneEditing.csv)
   - [Homework 2](files/Homework2.pdf) due **Monday, 2/28 by 5pm**.
     - [Slide Formatting Guide](files/SlideFormat.pdf) [[Rmd](files/SlideFormat.Rmd)]
+  - [Homework 3](files/Homework3.pdf) due **Tuesday, 4/27 by 5pm**.
 
 #### Schedule
 * W 1/19: Introduction [[slides](files/01_Introduction.pptx)]
