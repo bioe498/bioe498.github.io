@@ -26,7 +26,7 @@ Experiment Design & Optimization</h2>
     - [GeneEditing.csv](files/GeneEditing.csv)
   - [Homework 2](files/Homework2.pdf) due **Monday, 2/28 by 5pm**.
     - [Slide Formatting Guide](files/SlideFormat.pdf) [[Rmd](files/SlideFormat.Rmd)]
-  - [Homework 3](files/Homework3.pdf) due **Tuesday, 4/27 by 5pm**.
+  - [Homework 3](files/Homework3.pdf) due **Tuesday, 4/26 by 5pm**.
 
 #### Schedule
 * W 1/19: Introduction [[slides](files/01_Introduction.pptx)]
@@ -65,3 +65,12 @@ Experiment Design & Optimization</h2>
 * F 4/8: *No class for EOH.*
 * M 4/11: Surrogates 5: Expected Improvement [[slides](files/25_ExpectedImprovement.pdf)] [[Rmd](files/25_ExpectedImprovement.Rmd)]
 * W 4/13: Homework 3 Workshop
+* F 4/15: 
+* M 4/18:
+* W 4/20:
+* F 4/22:
+* M 4/25:
+* W 4/27: **Exam 2**
+* F 4/29:
+* M 5/2:
+* W 5/4:
