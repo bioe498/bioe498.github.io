@@ -65,11 +65,11 @@ Experiment Design & Optimization</h2>
 * F 4/8: *No class for EOH.*
 * M 4/11: Surrogates 5: Expected Improvement [[slides](files/25_ExpectedImprovement.pdf)] [[Rmd](files/25_ExpectedImprovement.Rmd)]
 * W 4/13: Homework 3 Workshop
-* F 4/15: 
-* M 4/18:
-* W 4/20:
-* F 4/22:
-* M 4/25:
+* F 4/15: RL and MDPs
+* M 4/18: Value Functions
+* W 4/20: Rollout
+* F 4/22: Discounting and Q-factors
+* M 4/25: Exam Review
 * W 4/27: **Exam 2**
 * F 4/29:
 * M 5/2:
