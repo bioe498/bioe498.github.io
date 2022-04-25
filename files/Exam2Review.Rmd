@@ -1,0 +1,55 @@
+---
+title: "Exam 2 Topics"
+author: "BIOE 498/598 PJ"
+date: "Spring 2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Surrogate Optimization
+  * Initial designs
+  * Surrogate models
+  * Model-guided search
+  
+## Steepest Ascent
+  * Purpose
+  * Vocab: design space, center point, design radius
+  * Ascent direction for FO models
+  * Standard step sizes
+  * Confirmation runs and model breakdown
+  * Ascent directions for FO + TWI models
+  * Testing for lack of fit due to curvature
+  
+## Response Surface Methodology
+  * Quadratic approximations to nonlinear response surfaces
+  * Central Composite Designs (CCDs)
+    * Parts and their role is estimating parts of the SO model
+    * Uniform precision
+    * Rotatable designs
+    * Calculating factor levels
+  * Optimization
+    * Stationary points
+    * Eigen-analysis of stationary points
+  * Alternative designs (pros and cons of each)
+    * Box-Behnken
+    * Hoke
+    * Koshal
+    * Roquemore Hybrid
+    * Small Composite Designs (and Resolution III*)
+    * Definitive Screening Designs
+
+## Global Optimization
+  * Space-filling designs
+    * Latin Hypercubes
+    * Maximin
+  * Gaussian Process Regression
+    * Interpolation with kernels
+    * Hyperparameter optimization
+    * Uncertainty
+  * Model-guided search
+    * Exploitation vs. exploration
+    * Expected Improvement
+    * Limitation of greedy optimization
