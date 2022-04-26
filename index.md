@@ -26,7 +26,9 @@ Experiment Design & Optimization</h2>
     - [GeneEditing.csv](files/GeneEditing.csv)
   - [Homework 2](files/Homework2.pdf) due **Monday, 2/28 by 5pm**.
     - [Slide Formatting Guide](files/SlideFormat.pdf) [[Rmd](files/SlideFormat.Rmd)]
-  - [Homework 3](files/Homework3.pdf) due **Tuesday, 4/26 by 5pm**.
+  - [Homework 3](files/Homework3.pdf) due **<font color="red">Friday, 4/29 by 5pm</font>**.
+  - [Homework 4](files/Homework4.pdf) due **Wednesday, 5/4 by 5pm**.
+    - The AlphaGo documentary is available [here](https://www.youtube.com/watch?v=WXuK6gekU1Y).
 
 #### Schedule
 * W 1/19: Introduction [[slides](files/01_Introduction.pptx)]
