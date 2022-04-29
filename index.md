@@ -73,6 +73,6 @@ Experiment Design & Optimization</h2>
 * F 4/22: Applications: Deep Phenotyping
 * M 4/25: Exam Review [[Exam 2 topics](files/Exam2Review.pdf)]
 * W 4/27: **Exam 2**
-* F 4/29: Discounting and Q-factors
+* F 4/29: Discounting and Q-factors [[slides](files/29_DiscountingQFactors.pdf)]
 * M 5/2: Q-learning
 * W 5/4: Summary
