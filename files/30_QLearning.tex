@@ -28,9 +28,9 @@
 \newcommand\lspace{\addtolength{\itemsep}{0.5\baselineskip}}
 \newcommand\red[1]{{\color{red}#1}}
 
-\title{Reinforcement Learning:\\$Q$-learning and Tic-Tac-Go}
+\title{Reinforcement Learning:\\$Q$-learning and AlphaGo}
 \author{BIOE 498/598 PJ}
-\date{Spring 2021}
+\date{Spring 2022}
 
 \begin{document}
 \frame{\titlepage}
@@ -46,7 +46,7 @@
 		\begin{itemize}\lspace
 			\item Review SARSA
 			\item $Q$-learning
-			\item Tic-Tac-Go
+			\item AlphaGo
 		\end{itemize}
 \end{itemize}
 	
@@ -148,247 +148,24 @@ Even if $a_1$ was selected because $Q_1(s_{i+1},a_1)$ was aberrantly high, the v
 	
 \end{frame}
 
-\begin{frame}{Deep $Q$-learning}
+%\begin{frame}{Deep $Q$-learning}
+%
+%\begin{itemize}\lspace
+%	\item Currently, the most common method for approximating $Q$-factors is \emph{deep learning} with artificial neural networks.
+%	\item We're going to learn to play a simple board game called Tic-Tac-Go.
+%	\item We want a game that is simple enough to be computationally tractable, but not easily solved.
+%	\item<2->Tic-Tac-Toe is simple, but solved. If both players follow an optimal strategy, the game will always end in a draw.
+%	\item<3->Go is unsolved, but approximating $Q$-factors is ridiculously expensive.
+%\end{itemize}
+%
+%\end{frame}
 
-\begin{itemize}\lspace
-	\item Currently, the most common method for approximating $Q$-factors is \emph{deep learning} with artificial neural networks.
-	\item We're going to learn to play a simple board game called Tic-Tac-Go.
-	\item We want a game that is simple enough to be computationally tractable, but not easily solved.
-	\item<2->Tic-Tac-Toe is simple, but solved. If both players follow an optimal strategy, the game will always end in a draw.
-	\item<3->Go is unsolved, but approximating $Q$-factors is ridiculously expensive.
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Tic-Tac-Go}
-
-\begin{columns}
-\begin{column}{0.6\textwidth}
-
-\begin{itemize}\lspace
-	\item Tic-Tac-Go is played on a $4\times4$ grid.
-	\item Before playing, $4$ squares are randomly ``blocked''.
-	\item Two players, \texttt{X} and \texttt{O}, alternate placing pieces in open squares.
-	\item Players receive points for making horizontal or vertical ``chains''.
-	\item A chain of length $k$ is worth $(k-1)^2$ points.
-		\begin{align*}
-			\text{length } 2 &= 1 \text{ point} \\
-			\text{length } 3 &= 4 \text{ points} \\
-			\text{length } 4 &= 9 \text{ points} \\	
-		\end{align*}
-
-\end{itemize}
-
-\end{column}
-
-\begin{column}{0.4\textwidth}
-	\begin{center}
-		\begin{tikzpicture}[scale=0.8]
-			\draw [thin,gray] (0,0) grid (4,4);
-			\filldraw [fill=black,draw=gray] 
-						  (0,1) rectangle (1,2)
-						  (0,2) rectangle (1,3)
-						  (1,0) rectangle (2,1)
-						  (3,1) rectangle (4,2);
-			\onslide<2->{
-				\draw (0.5,3.5) node {O}
-					  (1.5,3.5) node {O}
-					  (1.5,2.5) node {O}
-					  (0.5,0.5) node {O}
-					  (2.5,0.5) node {O}
-					  (3.5,3.5) node {O}
-					  (2.5,1.5) node {X}
-					  (2.5,2.5) node {X}
-					  (2.5,3.5) node {X}
-					  (1.5,1.5) node {X}
-					  (3.5,0.5) node {X}
-					  (3.5,2.5) node {X};
-			}
-			\onslide<3->{
-				\draw [blue,very thick] (2,1) rectangle (3,4);
-				\draw [red,very thick,dashed] (1,1) rectangle (3,2);
-				\draw [green,very thick,dashed] (2,2) rectangle (4,3);
-			}
-		\end{tikzpicture}
-		
-		\onslide<3->{
-			\bigskip
-			\texttt{X} score: $(2-1)^2 + (2-1)^2 + (3-1)^2 = 6$
-			
-			\bigskip
-			\texttt{O} score: \\$(2-1)^2 + (2-1)^2 = 2$
-		}
-	\end{center}	
-\end{column}
-\end{columns}
-	
-\end{frame}
-
-\begin{frame}{States for Tic-Tac-Go}
-
-\begin{itemize}
-	\item States $s_i$ are configurations of the board.
-	\item Each of the 16 squares can be empty, blocked, \texttt{X}, or \texttt{O}.
-	\item There are $_{16}C_4 \times 3^{12} = 967,222,620$ possible board configurations.
-	\item Each configuration has, on average, $6$ possible moves, so there are more than $5.8\times10^{9}$ $Q$-factors to learn!
-\end{itemize}
-
-\pskip
-How do we encode the states for a function approximator?
-
-\end{frame}
-
-\begin{frame}{Option 1: Ignore the blocked states, $-1$, $0$, $+1$}
-
-\begin{columns}
-\begin{column}{0.6\textwidth}
-
-\begin{itemize}\lspace
-	\item Let's ignore the blocked squares since we can't play on them.
-	\item A square with \texttt{X} is $-1$, \texttt{0} is $+1$, and empty squares are $0$.
-	\item Each state $s_i$ is a $12\times1$ trinary vectory.
-
-\end{itemize}
-
-\end{column}
-
-\begin{column}{0.4\textwidth}
-	\pause
-	\begin{center}
-		\begin{tikzpicture}[scale=0.8]
-			\draw [thin,gray] (0,0) grid (4,4);
-			\filldraw [fill=black,draw=gray] 
-						  (0,1) rectangle (1,2)
-						  (0,2) rectangle (1,3)
-						  (1,0) rectangle (2,1)
-						  (3,1) rectangle (4,2);
-			\draw (0.5,3.5) node {O}
-				  (1.5,3.5) node {O}
-				  (1.5,2.5) node {O}
-				  (1.5,1.5) node {X}
-				  (3.5,0.5) node {X}
-				  (3.5,2.5) node {X};
-		\end{tikzpicture}
-		
-		\bigskip
-		\begin{tikzpicture}[scale=0.8]
-			\draw [thin,gray] (0,0) grid (4,4);
-			\filldraw [fill=black,draw=gray] 
-						  (0,1) rectangle (1,2)
-						  (0,3) rectangle (1,4)
-						  (1,0) rectangle (2,1)
-						  (3,1) rectangle (4,2);
-			\draw (0.5,2.5) node {O}
-				  (1.5,3.5) node {O}
-				  (1.5,2.5) node {O}
-				  (1.5,1.5) node {X}
-				  (3.5,0.5) node {X}
-				  (3.5,2.5) node {X};
-		\end{tikzpicture}
-
-	\end{center}	
-\end{column}
-\end{columns}
-	
-\end{frame}
-
-\begin{frame}{Option 2: One-hot encoding}
-
-\begin{columns}
-
-\begin{column}{0.3\textwidth}
-	\begin{center}
-		state
-		\begin{tikzpicture}[scale=0.8]
-			\draw [thin,gray] (0,0) grid (4,4);
-			\filldraw [fill=black,draw=gray] 
-						  (0,1) rectangle (1,2)
-						  (0,3) rectangle (1,4)
-						  (1,0) rectangle (2,1)
-						  (3,1) rectangle (4,2);
-			\draw (0.5,2.5) node {O}
-				  (1.5,3.5) node {O}
-				  (1.5,2.5) node {O}
-				  (1.5,1.5) node {X}
-				  (3.5,0.5) node {X}
-				  (3.5,2.5) node {X};
-		\end{tikzpicture}	
-		\onslide<2->{
-			\bigskip
-			
-			Each state is a \\$16\times4$ matrix \\or a \\$64\times1$ vector.
-		}
-	\end{center}
-\end{column}
-
-\begin{column}{0.3\textwidth}
-	\begin{center}
-		blocked
-		\begin{tikzpicture}[scale=0.8]
-			\draw [thin,gray] (0,0) grid (4,4);
-			\draw (0.5,1.5) node {1}
-				  (0.5,3.5) node {1}
-				  (1.5,0.5) node {1}
-				  (3.5,1.5) node {1};
-		\end{tikzpicture}
-		\bigskip
-		
-		empty
-		\begin{tikzpicture}[scale=0.8]
-			\draw [thin,gray] (0,0) grid (4,4);
-			\draw (0.5,0.5) node {1}
-				  (2.5,0.5) node {1}
-				  (2.5,1.5) node {1}
-				  (2.5,2.5) node {1}
-				  (2.5,3.5) node {1}
-				  (3.5,3.5) node {1};
-		\end{tikzpicture}	
-	\end{center}
-\end{column}
-
-\begin{column}{0.3\textwidth}
-	\begin{center}
-		player \texttt{O}
-		\begin{tikzpicture}[scale=0.8]
-			\draw [thin,gray] (0,0) grid (4,4);
-			\draw (0.5,2.5) node {1}
-				  (1.5,3.5) node {1}
-				  (1.5,2.5) node {1};
-		\end{tikzpicture}
-		\bigskip
-		
-		player \texttt{X}
-		\begin{tikzpicture}[scale=0.8]
-			\draw [thin,gray] (0,0) grid (4,4);
-			\draw (1.5,1.5) node {1}
-				  (3.5,0.5) node {1}
-				  (3.5,2.5) node {1};
-		\end{tikzpicture}	
-	\end{center}
-\end{column}
-	
-\end{columns}
-
-\end{frame}
-
-\begin{frame}{Our plan for Tic-Tac-Go}
-
-\begin{itemize}\lspace
-	\item We'll start with a one-hot encoding, as it simplifies the neural network.
-	\item The four features are not independent, but we leave them to accelerate learning.
-	\item However, \emph{state unrolling} loses spatial information about the board. We will eventually avoid unrolling via \emph{convolution}.
-	\item Convolution will also exploit symmetry in the game board.
-\end{itemize}
-	
-\end{frame}
 
 \begin{frame}{Summary}
 
 \begin{itemize}\lspace
 	\item $Q$-learning is a state-of-the-art technique for RL.
 	\item Double $Q$-learning counteracts the bias in the $\max$ operator.
-	\item Defining the state space for simple board games in not trivial. Some state space representations are better for learning.
-	\item<2-> \textbf{Next time:} Artificial neural networks.
 \end{itemize}
 	
 \end{frame}
