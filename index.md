@@ -29,6 +29,7 @@ Experiment Design & Optimization</h2>
   - [Homework 3](files/Homework3.pdf) due **<font color="red">Friday, 4/29 by 5pm</font>**.
   - [Homework 4](files/Homework4.pdf) due **Wednesday, 5/4 by 5pm**.
     - The AlphaGo documentary is available [here](https://www.youtube.com/watch?v=WXuK6gekU1Y).
+  - [Homework 5](files/Homework5.pdf) due **Friday, 5/13 by 5pm**.
 
 #### Schedule
 * W 1/19: Introduction [[slides](files/01_Introduction.pptx)]
